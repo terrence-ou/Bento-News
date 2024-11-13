@@ -1,4 +1,4 @@
-import { GetVersionsFn } from "@shared/types";
+import { GetVersionsFn, GetHeadlinesFn } from "@shared/types";
 
 // Type definition for the preload process
 declare global {
@@ -6,6 +6,7 @@ declare global {
     context: {
       getVersions: GetVersionsFn;
       triggerIPC: () => void;
+      getHeadlines: GetHeadlinesFn;
     };
   }
 }

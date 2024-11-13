@@ -6,7 +6,7 @@ type ArticleParams = {
   url: string;
   urlToImage: string | null;
   publishedAt: string;
-  content: string;
+  content: string | null;
 };
 
 // Class for a list of articles
@@ -36,7 +36,7 @@ export class Article {
   private _url: string;
   private _urlToImage: string | null;
   private _publishedAt: string;
-  private _content: string;
+  private _content: string | null;
 
   constructor({
     source,

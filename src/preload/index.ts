@@ -1,12 +1,14 @@
 import { contextBridge } from "electron";
 import { ipcRenderer } from "electron/renderer";
-import { GetVersionsFn } from "@shared/types";
+import { GetVersionsFn, GetHeadlinesFn } from "@shared/types";
 
 // The preload process plays a middleware role in bridging
 // the call from the front end, and the function in the main process
 
 if (!process.contextIsolated) {
-  throw new Error("Context isolation must be enabled in the Browser window");
+  throw new Error(
+    "Context isolation must be enabled in the Browser window"
+  );
 }
 
 try {
@@ -15,7 +17,12 @@ try {
     getVersions: (...args: Parameters<GetVersionsFn>) =>
       ipcRenderer.invoke("getVersions", ...args),
     triggerIPC: () => ipcRenderer.invoke("triggerIPC"),
+    getHeadlines: (...args: Parameters<GetHeadlinesFn>) =>
+      ipcRenderer.invoke("getHeadlines", ...args),
   });
 } catch (error) {
-  console.error("Error occured when establishing context bridge: ", error);
+  console.error(
+    "Error occured when establishing context bridge: ",
+    error
+  );
 }
