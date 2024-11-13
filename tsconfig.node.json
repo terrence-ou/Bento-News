@@ -17,8 +17,11 @@
         "src/main/*"
       ],
       "@shared/*": [
-        "src/shared/*"
-      ]
+        "src/shared/*",
+      ],
+      "@models/*": [
+        "src/shared/models/*"
+      ],
     }
   }
 }

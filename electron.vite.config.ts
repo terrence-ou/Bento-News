@@ -8,7 +8,8 @@ export default defineConfig({
     resolve: {
       alias: {
         "@/lib": resolve("src/main/lib"),
-        "@/shared": resolve("src/shared"),
+        "@shared": resolve("src/shared"),
+        "@models": resolve("src/shared/models"),
       },
     },
   },
