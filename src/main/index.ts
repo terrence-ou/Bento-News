@@ -1,9 +1,13 @@
 import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
+import * as dotenv from "dotenv";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+
 import icon from "../../resources/icon.png?asset";
 import { getVersions, triggerIPC } from "@/lib";
 import { GetVersionsFn } from "@shared/types";
+
+dotenv.config();
 
 function createWindow(): void {
   // Create the browser window.
@@ -62,8 +66,9 @@ app.whenReady().then(() => {
   });
 
   // IPC events
-  ipcMain.handle("getVersions", (_, ...args: Parameters<GetVersionsFn>) =>
-    getVersions(...args),
+  ipcMain.handle(
+    "getVersions",
+    (_, ...args: Parameters<GetVersionsFn>) => getVersions(...args)
   );
 
   ipcMain.handle("triggerIPC", () => triggerIPC());
