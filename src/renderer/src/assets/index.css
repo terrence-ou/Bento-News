@@ -13,17 +13,28 @@
   }
 
   body {
-    @apply flex items-center justify-center min-h-dvh text-foreground bg-gradient-to-tr from-primary/30 to-background;
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
   }
-}
 
-svg path {
-  fill: red;
+  header {
+    -webkit-app-region: drag;
+  }
+
+  .nav-button {
+    -webkit-app-region: no-drag;
+  }
 }
 
 body {
   font-family: "Inter", sans-serif;
+}
+
+#root {
+  @apply h-dvh flex flex-col;
+}
+
+.bg-grid {
+  @apply bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px];
 }
