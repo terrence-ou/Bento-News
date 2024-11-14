@@ -24,7 +24,7 @@ const Header = () => {
           Headlines
         </NavLink>
         <NavLink
-          to="projects"
+          to="folders"
           className={({ isActive }) =>
             cn(
               navButtonStyle,
@@ -32,13 +32,28 @@ const Header = () => {
             )
           }
         >
-          Projects
+          Folders
+        </NavLink>
+        <NavLink
+          to="editor"
+          className={({ isActive }) =>
+            cn(
+              navButtonStyle,
+              isActive ? "text-background" : "text-primary"
+            )
+          }
+        >
+          Editor
         </NavLink>
         <span
           className={cn(
             "z-10 absolute h-[22px] w-28 bg-primary rounded-full transition-all duration-150",
             "top-[3px]",
-            currRoute === "projects" ? "left-[124px]" : "left-[4px]"
+            currRoute === "folders"
+              ? "left-[124px]"
+              : currRoute === "editor"
+                ? "left-[244px]"
+                : "left-[4px]"
           )}
         ></span>
       </div>

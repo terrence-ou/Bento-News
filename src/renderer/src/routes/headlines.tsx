@@ -8,6 +8,8 @@ const Headlines = () => {
   const data = useLoaderData() as Articles;
   const [cols, _] = useState<number>(4);
 
+  // TODO: use iseEffect to update cols based on window size
+
   const articleGroups = useMemo(() => {
     // create empty groups
     const groups: Article[][] = Array.from(
@@ -23,6 +25,7 @@ const Headlines = () => {
 
   let gridCols = "grid-cols-4";
 
+  // update gridCols based on number of columns
   switch (cols) {
     case 2:
       gridCols = "grid-cols-2";

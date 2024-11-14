@@ -1,36 +1,65 @@
-import { useState, ComponentProps } from "react";
+import { useState, useRef, useEffect, ComponentProps } from "react";
 import { Link } from "lucide-react";
 import { Article } from "@shared/models/Articles";
+import { checkImageValidity, cn } from "@/utils";
 
 type NewsCardProps = {
   article: Article;
 } & ComponentProps<"div">;
 
+const defaultHeight = 112;
+
 const NewsCard = ({ article, ...props }: NewsCardProps) => {
   const [imgError, setImgError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [imgHeight, setImgHeight] = useState<number>(defaultHeight);
+  const imgRef = useRef<HTMLImageElement>(null);
 
-  // TODO: Precheck if article.urlToImage is valid
+  useEffect(() => {
+    const checkImg = async () => {
+      setLoading(true);
+      const imgValid = await checkImageValidity(article.urlToImage!);
+      setLoading(false);
+      if (!imgValid) {
+        setImgError(true);
+      }
+    };
+    checkImg();
+    if (imgRef.current && imgRef.current.offsetHeight !== 0) {
+      setImgHeight(imgRef.current.offsetHeight);
+    }
+  }, [imgRef.current]);
 
   return (
     <div
-      className="p-2 border bg-background/50 rounded-lg"
+      className="p-2 border bg-background/50 rounded-lg transition-all duration-150"
       {...props}
     >
-      {article.urlToImage && !imgError ? (
-        <img
-          className="overflow-hidden rounded-sm"
-          src={article.urlToImage!}
-          onError={() => {
-            setImgError(true);
-          }}
-        />
-      ) : (
-        <div className="w-full h-28 bg-destructive rounded-sm flex items-center justify-center">
-          <span className="font-medium text-2xl text-background">
-            {article.source.name}
-          </span>
-        </div>
-      )}
+      <div
+        className={cn(
+          "transition-all duration-150 overflow-hidden rounded-sm",
+          loading ? "opacity-0" : "opacity-100"
+        )}
+        style={{ height: `${imgHeight}px` }}
+      >
+        {loading && (
+          <div className="w-full h-full bg-transparent rounded-sm flex items-center justify-center"></div>
+        )}
+        {article.urlToImage && !imgError && (
+          <img
+            ref={imgRef}
+            className="overflow-hidden"
+            src={article.urlToImage!}
+          />
+        )}
+        {imgError && (
+          <div className="w-full h-full bg-destructive rounded-sm flex items-center justify-center">
+            <span className="font-medium text-2xl text-background">
+              {article.source.name}
+            </span>
+          </div>
+        )}
+      </div>
       <h1 className="font-semibold leading-tight mt-2">
         {article.title}
       </h1>

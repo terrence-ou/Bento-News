@@ -1,6 +1,7 @@
 import Headlines from "./routes/headlines";
 import Root from "./routes/root";
-import Projects from "./routes/projects";
+import Folders from "./routes/folders";
+import Editor from "./routes/eidtor";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -21,7 +22,8 @@ const router = createBrowserRouter(
             return await window.context.getHeadlines();
           },
         },
-        { path: "projects", element: <Projects />, children: [] },
+        { path: "folders", element: <Folders />, children: [] },
+        { path: "editor", element: <Editor />, children: [] },
       ],
     },
   ],
