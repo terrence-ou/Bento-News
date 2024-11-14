@@ -60,6 +60,10 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      boxShadow: {
+        "news-card": "3px 2px 4px 0px hsl(var(--primary) / 0.1)",
+        workspace: "inset 3px 2px 4px 0px hsl(var(--primary) / 0.2)",
+      },
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
