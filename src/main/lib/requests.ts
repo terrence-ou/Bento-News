@@ -5,7 +5,6 @@ import mockData from "./mockdata";
 
 const getHeadlines: GetHeadlinesFn = async (category?, country?) => {
   const articles = new Articles(mockData);
-  console.log(articles.articles);
   return articles;
   // const apiKey = process.env.NEWSAPI_KEY;
   // const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;

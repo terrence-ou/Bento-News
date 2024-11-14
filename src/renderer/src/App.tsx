@@ -14,7 +14,13 @@ const router = createBrowserRouter(
       element: <Root />,
       children: [
         { index: true, element: <Navigate to="headlines" /> },
-        { path: "headlines", element: <Headlines /> },
+        {
+          path: "headlines",
+          element: <Headlines />,
+          loader: async () => {
+            return await window.context.getHeadlines();
+          },
+        },
         { path: "projects", element: <Projects />, children: [] },
       ],
     },
