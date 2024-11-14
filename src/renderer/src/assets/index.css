@@ -13,6 +13,19 @@
     @apply border-border;
   }
 
+  ::-webkit-scrollbar {
+    @apply w-[0.5rem];
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply my-1;
+  }
+
+  ::-webkit-scrollbar-thumb,
+  ::-webkit-scrollbar-thumb:horizontal {
+    @apply rounded-md bg-primary/10 hover:bg-primary/40;
+  }
+
   body {
     font-feature-settings:
       "rlig" 1,

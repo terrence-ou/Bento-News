@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, ComponentProps } from "react";
-import { Link } from "lucide-react";
 import { Article } from "@shared/models/Articles";
 import { checkImageValidity, cn } from "@/utils";
 
@@ -33,7 +32,7 @@ const NewsCard = ({ article, ...props }: NewsCardProps) => {
 
   return (
     <div
-      className="p-2 border bg-background/50 rounded-lg transition-all duration-150"
+      className="p-2 border bg-background/80 rounded-lg transition-all duration-150 shadow-news-card"
       {...props}
     >
       <div
@@ -61,27 +60,25 @@ const NewsCard = ({ article, ...props }: NewsCardProps) => {
           </div>
         )}
       </div>
-      <h1 className="font-semibold leading-tight mt-2">
-        {article.title}
-      </h1>
-      <div className="flex justify-start items-center gap-2 mt-2 mb-3">
-        <div className="flex items-center justify-center px-2 h-5 font-semibold text-xs text-background bg-primary/70 rounded">
-          {article.source.name}
+      <div className="p-1 pt-2">
+        <h1 className="font-semibold leading-tight text-md hover:underline">
+          <a href={article.url} target="_blank">
+            {article.title}
+          </a>
+        </h1>
+        <div className="flex justify-start items-center gap-2 my-3">
+          <div className="flex items-center justify-center px-2 h-5 font-semibold text-xs text-background bg-primary/70 rounded">
+            {article.source.name}
+          </div>
+
+          <p className="text-xs text-primary/50">
+            {article.publishedAt.slice(0, 10)}
+          </p>
         </div>
-        <a href={article.url} target="_blank">
-          <Link
-            className="stroke-primary/70"
-            strokeWidth={"2px"}
-            size={15}
-          />
-        </a>
-        <p className="text-xs text-primary/50">
-          {article.publishedAt.slice(0, 10)}
+        <p className="font-serif text-[0.8rem]">
+          {article.description}
         </p>
       </div>
-      <p className="font-serif text-[0.8rem]">
-        {article.description}
-      </p>
     </div>
   );
 };

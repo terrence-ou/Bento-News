@@ -42,8 +42,8 @@ const Headlines = () => {
 
   return (
     <div className="p-6 max-h-full">
-      <h1 className="font-serif text-2xl">Headlines</h1>
-      <div className={cn("grid gap-3 my-3", gridCols)}>
+      <h1 className="font-serif text-2xl mb-4">Headlines</h1>
+      <div className={cn("grid gap-y-2 gap-x-4 my-3", gridCols)}>
         {articleGroups.map((group, i) => (
           <div key={`col-${i}`} className="flex flex-col gap-3">
             {group.map((article) => (
