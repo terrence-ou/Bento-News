@@ -13,7 +13,7 @@ type ArticleParams = {
 export class Articles {
   public articles: Article[];
 
-  constructor(articles: ArticleParams[]) {
+  constructor(articles: Article[]) {
     this.articles = [];
     for (const article of articles) {
       if (article.title === "[Removed]") continue;

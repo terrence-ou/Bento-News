@@ -4,8 +4,8 @@ import * as dotenv from "dotenv";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 import icon from "../../resources/icon.png?asset";
-import { getVersions, triggerIPC, getHeadlines } from "@/lib";
-import { GetVersionsFn, GetHeadlinesFn } from "@shared/types";
+import { getHeadlines, loadTodayHeadlines } from "@/lib";
+import { GetHeadlinesFn, LoadTodayHeadlines } from "@shared/types";
 
 dotenv.config();
 
@@ -70,17 +70,17 @@ app.whenReady().then(() => {
   });
 
   // IPC events
-  ipcMain.handle(
-    "getVersions",
-    (_, ...args: Parameters<GetVersionsFn>) => getVersions(...args)
-  );
 
   ipcMain.handle(
     "getHeadlines",
     (_, ...args: Parameters<GetHeadlinesFn>) => getHeadlines(...args)
   );
 
-  ipcMain.handle("triggerIPC", () => triggerIPC());
+  ipcMain.handle(
+    "loadTodayHeadlines",
+    (_, ...args: Parameters<LoadTodayHeadlines>) =>
+      loadTodayHeadlines(...args)
+  );
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

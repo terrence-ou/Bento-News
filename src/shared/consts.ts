@@ -1,3 +1,5 @@
+export const HEADLINE_DIR = "Documents/IntelliNews/headlines";
+
 const Categories = [
   "business",
   "entertainment",

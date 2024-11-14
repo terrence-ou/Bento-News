@@ -15,6 +15,7 @@ const NewsCard = ({ article, ...props }: NewsCardProps) => {
   const [imgHeight, setImgHeight] = useState<number>(defaultHeight);
   const imgRef = useRef<HTMLImageElement>(null);
 
+  // Check if the image is valid and control the image loading animation
   useEffect(() => {
     const checkImg = async () => {
       setLoading(true);

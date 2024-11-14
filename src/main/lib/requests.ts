@@ -1,24 +1,46 @@
-// import axios from "axios";
-import { Articles } from "@shared/models/Articles";
-import { GetHeadlinesFn } from "@shared/types";
-import mockData from "./mockdata";
+import { homedir } from "os";
+import fs from "fs";
+import axios from "axios";
+import path from "path";
+import type { GetHeadlinesFn } from "@shared/types";
+import { HEADLINE_DIR } from "@shared/consts";
 
-const getHeadlines: GetHeadlinesFn = async (category?, country?) => {
-  const articles = new Articles(mockData);
-  return articles;
-  // const apiKey = process.env.NEWSAPI_KEY;
-  // const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
-  // try {
-  //   const response = await axios.get(url);
-  //   const news = response.data.articles;
-  //   const articles = new Articles(news);
-  //   console.log(articles.articles.slice(0, 5));
-  //   return articles;
-  // } catch (error) {
-  //   console.error(error);
-  //   return undefined;
-  // }
-  // // console.log(articles);
+// Consts
+const headlineFolderDir = `${homedir()}/${HEADLINE_DIR}`;
+const endpoint = "https://newsapi.org/v2/top-headlines";
+
+// Functions
+const getHeadlines: GetHeadlinesFn = async (
+  category?,
+  country = "us"
+) => {
+  const apiKey = process.env.NEWSAPI_KEY;
+
+  // create an url with the query parameters
+  let url = endpoint + "?";
+  url += `apiKey=${apiKey}`;
+  if (country !== undefined) url += `&country=${country}`;
+  if (category !== undefined) url += `&category=${category}`;
+
+  try {
+    // Ensure the directory exists
+    if (!fs.existsSync(headlineFolderDir)) {
+      fs.mkdirSync(headlineFolderDir, { recursive: true });
+    }
+
+    // Get the headlines
+    const response = await axios.get(url);
+    const data = response.data;
+
+    // Save file to local
+    const timestamp = new Date().toISOString().slice(0, 10);
+    const filename = `${timestamp}-${category === undefined ? "all" : category}-${country}.json`;
+    const fileDir = path.join(headlineFolderDir, filename);
+
+    fs.writeFileSync(fileDir, JSON.stringify(data, null, 2), "utf-8");
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export { getHeadlines };

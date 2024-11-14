@@ -1,4 +1,3 @@
-import { electronAPI } from "@electron-toolkit/preload";
 import { Articles } from "./models/Articles";
 import { Countries, Categories } from "./consts";
 
@@ -9,8 +8,6 @@ export type Country = (typeof Countries)[number];
 export type GetHeadlinesFn = (
   category?: Category,
   country?: Country
-) => Promise<Articles>;
+) => Promise<void>;
 
-export type GetVersionsFn = () => Promise<
-  typeof electronAPI.process.versions
->;
+export type LoadTodayHeadlines = () => Promise<Articles | undefined>;

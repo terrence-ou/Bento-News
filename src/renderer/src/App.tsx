@@ -19,7 +19,7 @@ const router = createBrowserRouter(
           path: "headlines",
           element: <Headlines />,
           loader: async () => {
-            return await window.context.getHeadlines();
+            return await window.context.loadTodayHeadlines();
           },
         },
         { path: "folders", element: <Folders />, children: [] },
