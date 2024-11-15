@@ -10,4 +10,4 @@ export type GetHeadlinesFn = (
   country?: Country
 ) => Promise<void>;
 
-export type LoadTodayHeadlines = () => Promise<Articles | undefined>;
+export type LoadHeadlines = () => Promise<Articles | undefined>;

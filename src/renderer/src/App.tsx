@@ -7,6 +7,7 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
+import { Articles } from "@shared/models/Articles";
 
 const router = createBrowserRouter(
   [
@@ -19,7 +20,17 @@ const router = createBrowserRouter(
           path: "headlines",
           element: <Headlines />,
           loader: async () => {
-            return await window.context.loadTodayHeadlines();
+            let todayHeadlines =
+              await window.context.loadTodayHeadlines();
+            if (todayHeadlines === undefined) {
+              todayHeadlines = new Articles([]);
+            }
+            let prevHeadlines =
+              await window.context.loadPrevHeadlines();
+            if (prevHeadlines === undefined) {
+              prevHeadlines = new Articles([]);
+            }
+            return { todayHeadlines, prevHeadlines };
           },
         },
         { path: "folders", element: <Folders />, children: [] },

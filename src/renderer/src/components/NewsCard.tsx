@@ -24,10 +24,29 @@ const NewsCard = ({ article, ...props }: NewsCardProps) => {
         setImgError(true);
       }
     };
+
+    const handleResize = () => {
+      if (imgRef.current && imgRef.current.offsetHeight !== 0) {
+        setImgHeight(imgRef.current.offsetHeight);
+      }
+    };
+
+    // debounding the resize event
+    const debounce = (callback: () => void, wait: number) => {
+      let timeout: NodeJS.Timeout;
+      return () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(callback, wait);
+      };
+    };
+
     checkImg();
-    if (imgRef.current && imgRef.current.offsetHeight !== 0) {
-      setImgHeight(imgRef.current.offsetHeight);
-    }
+    const debouncedHandleResize = debounce(handleResize, 100);
+
+    window.addEventListener("resize", debouncedHandleResize);
+    return () => {
+      window.removeEventListener("resize", debouncedHandleResize);
+    };
   }, [imgRef.current]);
 
   return (
@@ -53,7 +72,7 @@ const NewsCard = ({ article, ...props }: NewsCardProps) => {
           />
         )}
         {imgError && (
-          <div className="w-full h-full bg-destructive rounded-sm flex items-center justify-center">
+          <div className="w-full h-full bg-primary rounded-sm flex items-center justify-center">
             <span className="font-medium text-2xl text-background">
               {article.source.name}
             </span>

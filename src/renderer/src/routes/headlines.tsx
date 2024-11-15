@@ -1,40 +1,74 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Article, Articles } from "@shared/models/Articles";
 import { useLoaderData } from "react-router-dom";
 import NewsCard from "@/components/NewsCard";
 import { cn } from "@/utils";
 
+type HeadlinesLoaderData = {
+  todayHeadlines: Articles;
+  prevHeadlines: Articles;
+};
+
+// Helper function to group articles into columns
+const groupArticles = (articles: Articles, cols: number) => {
+  // create empty groups
+  const groups: Article[][] = Array.from({ length: cols }, () => []);
+  // fill groups with articles
+  for (let i = 0; i < articles.articles.length; i++) {
+    groups[i % cols].push(articles.articles[i]);
+  }
+  return groups;
+};
+
 const Headlines = () => {
-  const data = useLoaderData() as Articles;
-  const [cols, _] = useState<number>(4);
+  const data = useLoaderData() as HeadlinesLoaderData;
+  const { todayHeadlines, prevHeadlines } = data;
+  const [cols, setCols] = useState<number>(4);
 
-  // TODO: use iseEffect to update cols based on window size
+  // group articles into columns
+  const todayArticleGroups = useMemo(
+    () => groupArticles(todayHeadlines, cols),
+    [todayHeadlines, cols]
+  );
 
-  const articleGroups = useMemo(() => {
-    // create empty groups
-    const groups: Article[][] = Array.from(
-      { length: cols },
-      () => []
-    );
-    // fill groups with articles
-    for (let i = 0; i < data.articles.length; i++) {
-      groups[i % cols].push(data.articles[i]);
-    }
-    return groups;
-  }, [data, cols]);
+  const prevArticleGroups = useMemo(
+    () => groupArticles(prevHeadlines, cols),
+    [prevHeadlines, cols]
+  );
+
+  // TODO: use useEffect to update cols based on window size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setCols(3);
+      } else if (window.innerWidth < 1600) {
+        setCols(4);
+      } else if (window.innerWidth < 2000) {
+        setCols(5);
+      } else {
+        setCols(6);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize(); // we need to call this once to set the initial value
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   let gridCols = "grid-cols-4";
 
   // update gridCols based on number of columns
   switch (cols) {
-    case 2:
-      gridCols = "grid-cols-2";
-      break;
     case 3:
       gridCols = "grid-cols-3";
       break;
     case 4:
       gridCols = "grid-cols-4";
+      break;
+    case 5:
+      gridCols = "grid-cols-5";
+      break;
+    case 6:
+      gridCols = "grid-cols-6";
       break;
     default:
       gridCols = "grid-cols-4";
@@ -44,7 +78,7 @@ const Headlines = () => {
     <div className="p-6 max-h-full">
       <h1 className="font-serif text-2xl mb-4">Headlines</h1>
       <div className={cn("grid gap-y-2 gap-x-4 my-3", gridCols)}>
-        {articleGroups.map((group, i) => (
+        {todayArticleGroups.map((group, i) => (
           <div key={`col-${i}`} className="flex flex-col gap-3">
             {group.map((article) => (
               <NewsCard key={article.title} article={article} />
@@ -53,6 +87,15 @@ const Headlines = () => {
         ))}
       </div>
       <h1 className="font-serif text-2xl pb-2">Previous</h1>
+      <div className={cn("grid gap-y-2 gap-x-4 my-3", gridCols)}>
+        {prevArticleGroups.map((group, i) => (
+          <div key={`col-${i}`} className="flex flex-col gap-3">
+            {group.map((article) => (
+              <NewsCard key={article.title} article={article} />
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

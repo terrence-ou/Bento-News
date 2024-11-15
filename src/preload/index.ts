@@ -1,6 +1,6 @@
 import { contextBridge } from "electron";
 import { ipcRenderer } from "electron/renderer";
-import { LoadTodayHeadlines, GetHeadlinesFn } from "@shared/types";
+import { LoadHeadlines, GetHeadlinesFn } from "@shared/types";
 
 // The preload process plays a middleware role in bridging
 // the call from the front end, and the function in the main process
@@ -16,8 +16,10 @@ try {
   contextBridge.exposeInMainWorld("context", {
     getHeadlines: (...args: Parameters<GetHeadlinesFn>) =>
       ipcRenderer.invoke("getHeadlines", ...args),
-    loadTodayHeadlines: (...args: Parameters<LoadTodayHeadlines>) =>
+    loadTodayHeadlines: (...args: Parameters<LoadHeadlines>) =>
       ipcRenderer.invoke("loadTodayHeadlines", ...args),
+    loadPrevHeadlines: (...args: Parameters<LoadHeadlines>) =>
+      ipcRenderer.invoke("loadPrevHeadlines", ...args),
   });
 } catch (error) {
   console.error(

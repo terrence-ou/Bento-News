@@ -4,8 +4,12 @@ import * as dotenv from "dotenv";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 import icon from "../../resources/icon.png?asset";
-import { getHeadlines, loadTodayHeadlines } from "@/lib";
-import { GetHeadlinesFn, LoadTodayHeadlines } from "@shared/types";
+import {
+  getHeadlines,
+  loadTodayHeadlines,
+  loadPrevHeadlines,
+} from "@/lib";
+import { GetHeadlinesFn, LoadHeadlines } from "@shared/types";
 
 dotenv.config();
 
@@ -78,8 +82,14 @@ app.whenReady().then(() => {
 
   ipcMain.handle(
     "loadTodayHeadlines",
-    (_, ...args: Parameters<LoadTodayHeadlines>) =>
+    (_, ...args: Parameters<LoadHeadlines>) =>
       loadTodayHeadlines(...args)
+  );
+
+  ipcMain.handle(
+    "loadPrevHeadlines",
+    (_, ...args: Parameters<LoadHeadlines>) =>
+      loadPrevHeadlines(...args)
   );
 });
 

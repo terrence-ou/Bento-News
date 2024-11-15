@@ -2,12 +2,12 @@ import fs from "fs";
 import { homedir } from "os";
 import { Article, Articles } from "@shared/models/Articles";
 import { HEADLINE_DIR } from "@shared/consts";
-import type { LoadTodayHeadlines } from "@shared/types";
+import type { LoadHeadlines } from "@shared/types";
 
 const headlineFolderDir = `${homedir()}/${HEADLINE_DIR}`;
 
 // Load today's headlines from the local file
-const loadTodayHeadlines: LoadTodayHeadlines = async () => {
+const loadTodayHeadlines: LoadHeadlines = async () => {
   if (!fs.existsSync(headlineFolderDir)) {
     return undefined;
   }
@@ -31,7 +31,29 @@ const loadTodayHeadlines: LoadTodayHeadlines = async () => {
   }
 };
 
-const loadPrevHeadlines = async () => {};
+const loadPrevHeadlines: LoadHeadlines = async () => {
+  if (!fs.existsSync(headlineFolderDir)) {
+    return undefined;
+  }
+  try {
+    // Get an array of prevDate's files
+    const prevDate = new Date().toISOString().slice(0, 10);
+    const files = fs.readdirSync(headlineFolderDir);
+    const previousFiles = files.filter(
+      (file) => !file.startsWith(prevDate) && file.endsWith(".json")
+    );
+
+    if (previousFiles.length === 0) {
+      return undefined;
+    }
+    const news = await processFiles(previousFiles);
+    const articles = new Articles(news);
+    return articles;
+  } catch (error) {
+    console.error("Error loading today's file. [ERROR]: ", error);
+    return undefined;
+  }
+};
 
 // Helper functions
 
