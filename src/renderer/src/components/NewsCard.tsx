@@ -41,13 +41,19 @@ const NewsCard = ({ article, ...props }: NewsCardProps) => {
     };
 
     checkImg();
-    const debouncedHandleResize = debounce(handleResize, 100);
 
+    // to ensure the image the ref created before the resize event
+    const timeout = setTimeout(() => {
+      handleResize();
+    }, 10);
+
+    const debouncedHandleResize = debounce(handleResize, 300);
     window.addEventListener("resize", debouncedHandleResize);
     return () => {
       window.removeEventListener("resize", debouncedHandleResize);
+      clearTimeout(timeout);
     };
-  }, [imgRef.current]);
+  }, []);
 
   return (
     <div
@@ -56,7 +62,7 @@ const NewsCard = ({ article, ...props }: NewsCardProps) => {
     >
       <div
         className={cn(
-          "transition-all duration-150 overflow-hidden rounded-sm",
+          "transition-all duration-100 overflow-hidden rounded-sm",
           loading ? "opacity-0" : "opacity-100"
         )}
         style={{ height: `${imgHeight}px` }}

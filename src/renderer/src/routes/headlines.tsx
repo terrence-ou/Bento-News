@@ -49,9 +49,20 @@ const Headlines = () => {
         setCols(6);
       }
     };
-    window.addEventListener("resize", handleResize);
+
+    // debounding the resize event
+    const debounce = (callback: () => void, wait: number) => {
+      let timeout: NodeJS.Timeout;
+      return () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(callback, wait);
+      };
+    };
+
     handleResize(); // we need to call this once to set the initial value
-    return () => window.removeEventListener("resize", handleResize);
+    const deboundResize = debounce(handleResize, 100);
+    window.addEventListener("resize", deboundResize);
+    return () => window.removeEventListener("resize", deboundResize);
   }, []);
 
   let gridCols = "grid-cols-4";
