@@ -1,59 +1,19 @@
-import { useState, useRef, useEffect, ComponentProps } from "react";
+import { useRef, ComponentProps } from "react";
 import { Article } from "@shared/models/Articles";
-import { checkImageValidity, cn } from "@/utils";
+import { cn } from "@/utils";
+import useImageHeight from "@/hooks/useImgHeight";
 
 type NewsCardProps = {
   article: Article;
 } & ComponentProps<"div">;
 
-const defaultHeight = 112;
-
 const NewsCard = ({ article, ...props }: NewsCardProps) => {
-  const [imgError, setImgError] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [imgHeight, setImgHeight] = useState<number>(defaultHeight);
   const imgRef = useRef<HTMLImageElement>(null);
 
-  // Check if the image is valid and control the image loading animation
-  useEffect(() => {
-    const checkImg = async () => {
-      setLoading(true);
-      const imgValid = await checkImageValidity(article.urlToImage!);
-      setLoading(false);
-      if (!imgValid) {
-        setImgError(true);
-      }
-    };
-
-    const handleResize = () => {
-      if (imgRef.current && imgRef.current.offsetHeight !== 0) {
-        setImgHeight(imgRef.current.offsetHeight);
-      }
-    };
-
-    // debounding the resize event
-    const debounce = (callback: () => void, wait: number) => {
-      let timeout: NodeJS.Timeout;
-      return () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(callback, wait);
-      };
-    };
-
-    checkImg();
-
-    // to ensure the image the ref created before the resize event
-    const timeout = setTimeout(() => {
-      handleResize();
-    }, 10);
-
-    const debouncedHandleResize = debounce(handleResize, 300);
-    window.addEventListener("resize", debouncedHandleResize);
-    return () => {
-      window.removeEventListener("resize", debouncedHandleResize);
-      clearTimeout(timeout);
-    };
-  }, []);
+  const { imgError, loading, imgHeight } = useImageHeight(
+    article.urlToImage!,
+    imgRef
+  );
 
   return (
     <div

@@ -13,3 +13,11 @@ export const checkImageValidity = (url: string) => {
     image.src = url;
   });
 };
+
+export const debounce = (callbackFn: () => void, ms: number) => {
+  let timeout: NodeJS.Timeout;
+  return () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(callbackFn, ms);
+  };
+};

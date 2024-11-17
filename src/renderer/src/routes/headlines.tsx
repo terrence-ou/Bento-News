@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Article, Articles } from "@shared/models/Articles";
 import { useLoaderData } from "react-router-dom";
 import NewsCard from "@/components/NewsCard";
 import { cn } from "@/utils";
+import useResize from "@/hooks/useResize";
 
 type HeadlinesLoaderData = {
   todayHeadlines: Articles;
@@ -23,7 +24,9 @@ const groupArticles = (articles: Articles, cols: number) => {
 const Headlines = () => {
   const data = useLoaderData() as HeadlinesLoaderData;
   const { todayHeadlines, prevHeadlines } = data;
-  const [cols, setCols] = useState<number>(4);
+
+  // get number of columns based on window width
+  const { cols } = useResize();
 
   // group articles into columns
   const todayArticleGroups = useMemo(
@@ -35,35 +38,6 @@ const Headlines = () => {
     () => groupArticles(prevHeadlines, cols),
     [prevHeadlines, cols]
   );
-
-  // TODO: use useEffect to update cols based on window size
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setCols(3);
-      } else if (window.innerWidth < 1600) {
-        setCols(4);
-      } else if (window.innerWidth < 2000) {
-        setCols(5);
-      } else {
-        setCols(6);
-      }
-    };
-
-    // debounding the resize event
-    const debounce = (callback: () => void, wait: number) => {
-      let timeout: NodeJS.Timeout;
-      return () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(callback, wait);
-      };
-    };
-
-    handleResize(); // we need to call this once to set the initial value
-    const deboundResize = debounce(handleResize, 100);
-    window.addEventListener("resize", deboundResize);
-    return () => window.removeEventListener("resize", deboundResize);
-  }, []);
 
   let gridCols = "grid-cols-4";
 
@@ -88,19 +62,19 @@ const Headlines = () => {
   return (
     <div className="p-6 max-h-full">
       <h1 className="font-serif text-2xl mb-4">Headlines</h1>
-      <div className={cn("grid gap-y-2 gap-x-4 my-3", gridCols)}>
+      <div className={cn("grid gap-x-5 my-3", gridCols)}>
         {todayArticleGroups.map((group, i) => (
-          <div key={`col-${i}`} className="flex flex-col gap-3">
+          <div key={`col-${i}`} className="flex flex-col gap-4">
             {group.map((article) => (
               <NewsCard key={article.title} article={article} />
             ))}
           </div>
         ))}
       </div>
-      <h1 className="font-serif text-2xl pb-2">Previous</h1>
-      <div className={cn("grid gap-y-2 gap-x-4 my-3", gridCols)}>
+      <h1 className="font-serif text-2xl pb-2 mt-12">Previous</h1>
+      <div className={cn("grid gap-x-5 my-3 pb-10", gridCols)}>
         {prevArticleGroups.map((group, i) => (
-          <div key={`col-${i}`} className="flex flex-col gap-3">
+          <div key={`col-${i}`} className="flex flex-col gap-4">
             {group.map((article) => (
               <NewsCard key={article.title} article={article} />
             ))}

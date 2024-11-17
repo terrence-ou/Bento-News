@@ -9,6 +9,26 @@ import {
 } from "react-router-dom";
 import { Articles } from "@shared/models/Articles";
 
+// Loaders
+// load headlines
+const headlineLoader = async () => {
+  const [todayHeadlines, prevHeadlines] = await Promise.all([
+    window.context.loadTodayHeadlines().then(async (headlines) => {
+      if (headlines === undefined) {
+        await window.context.getHeadlines();
+        return window.context.loadTodayHeadlines();
+      }
+      return headlines;
+    }),
+    window.context.loadPrevHeadlines(),
+  ]);
+  return {
+    todayHeadlines: todayHeadlines || new Articles([]),
+    prevHeadlines: prevHeadlines || new Articles([]),
+  };
+};
+
+// router definition
 const router = createBrowserRouter(
   [
     {
@@ -19,20 +39,7 @@ const router = createBrowserRouter(
         {
           path: "headlines",
           element: <Headlines />,
-          errorElement: <Navigate to="headlines" />,
-          loader: async () => {
-            let todayHeadlines =
-              await window.context.loadTodayHeadlines();
-            if (todayHeadlines === undefined) {
-              todayHeadlines = new Articles([]);
-            }
-            let prevHeadlines =
-              await window.context.loadPrevHeadlines();
-            if (prevHeadlines === undefined) {
-              prevHeadlines = new Articles([]);
-            }
-            return { todayHeadlines, prevHeadlines };
-          },
+          loader: headlineLoader,
         },
         { path: "search", element: <Search />, children: [] },
         { path: "folders", element: <Folders />, children: [] },
@@ -50,6 +57,7 @@ const router = createBrowserRouter(
   }
 );
 
+// The App body
 const App = () => {
   return (
     <RouterProvider

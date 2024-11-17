@@ -17,6 +17,7 @@ export class Articles {
     this.articles = [];
     for (const article of articles) {
       if (article.title === "[Removed]") continue;
+      if (!article.description || !article.content) continue;
       this.articles.push(new Article(article));
     }
   }
