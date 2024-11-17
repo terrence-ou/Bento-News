@@ -1,7 +1,7 @@
 import Headlines from "./routes/headlines";
 import Root from "./routes/root";
+import Search from "./routes/search";
 import Folders from "./routes/folders";
-import Editor from "./routes/eidtor";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -19,6 +19,7 @@ const router = createBrowserRouter(
         {
           path: "headlines",
           element: <Headlines />,
+          errorElement: <Navigate to="headlines" />,
           loader: async () => {
             let todayHeadlines =
               await window.context.loadTodayHeadlines();
@@ -33,8 +34,8 @@ const router = createBrowserRouter(
             return { todayHeadlines, prevHeadlines };
           },
         },
+        { path: "search", element: <Search />, children: [] },
         { path: "folders", element: <Folders />, children: [] },
-        { path: "editor", element: <Editor />, children: [] },
       ],
     },
   ],
