@@ -28,9 +28,12 @@ const useImageHeight = (
   }, [imgRef.current]);
 
   useEffect(() => {
-    const loadImg = async () => {
-      await checkImg();
-      handleUpdateHeight();
+    const loadImg = () => {
+      checkImg();
+      const timeout = setTimeout(() => {
+        handleUpdateHeight();
+        return clearTimeout(timeout);
+      }, 10);
     };
 
     loadImg();

@@ -52,7 +52,7 @@ const NewsCard = ({ article, ...props }: NewsCardProps) => {
           </a>
         </h1>
         <div className="flex justify-start items-center gap-2 my-3">
-          <div className="flex items-center justify-center px-2 h-5 font-semibold text-xs text-background bg-primary/70 rounded">
+          <div className="flex items-center justify-center max-w-[60%] px-2 font-semibold text-xs text-background bg-primary/70 rounded">
             {article.source.name}
           </div>
 

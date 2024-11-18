@@ -67,8 +67,9 @@ const processFiles = async (files: string[]): Promise<Article[]> => {
   const existedNews = new Set<string>();
   const news: Article[] = [];
   // Read each file and extract the articles
+  const sortedFiles = files.sort((a, b) => -a.localeCompare(b));
   await Promise.all(
-    files.map(async (file) => {
+    sortedFiles.map(async (file) => {
       try {
         const data = fs.readFileSync(
           `${headlineFolderDir}/${file}`,
