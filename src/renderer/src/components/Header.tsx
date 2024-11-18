@@ -1,6 +1,13 @@
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import { Settings } from "lucide-react";
 import { cn } from "@/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import SettingDialog from "@/components/SettingDialog";
 
 const Header = () => {
   const navButtonStyle =
@@ -10,8 +17,8 @@ const Header = () => {
   const currRoute = location.pathname.split("/")[1];
 
   return (
-    <header className="w-full flex justify-center items-center pt-3">
-      <div className="relative z-0 p-1 flex items-center justify-center gap-2 bg-accent rounded-full">
+    <header className="w-full grid grid-cols-3 pt-3 px-6">
+      <div className="relative mx-auto col-start-2 z-0 p-1 w-[360px] flex items-center justify-center gap-2 bg-accent rounded-full">
         <NavLink
           to="headlines"
           className={({ isActive }) =>
@@ -56,6 +63,19 @@ const Header = () => {
                 : "left-[4px]"
           )}
         ></span>
+      </div>
+      <div className="col-start-3 flex justify-end items-center focus-visible:outline-none">
+        <Dialog>
+          <DialogTrigger className="focus-visible:outline-none">
+            <Settings
+              className="nav-button w-8 h-6 stroke-primary/70 rounded-md hover:cursor-pointer hover:animate-spin-once hover:stroke-primary"
+              strokeWidth={1.5}
+            />
+          </DialogTrigger>
+          <DialogContent className="min-w-[650px] min-h-96">
+            <SettingDialog />
+          </DialogContent>
+        </Dialog>
       </div>
     </header>
   );
