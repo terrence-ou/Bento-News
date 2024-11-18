@@ -72,7 +72,7 @@ const Header = () => {
               strokeWidth={1.5}
             />
           </DialogTrigger>
-          <DialogContent className="min-w-[650px] min-h-96">
+          <DialogContent className="min-w-[650px] min-h-[450px]">
             <SettingDialog />
           </DialogContent>
         </Dialog>

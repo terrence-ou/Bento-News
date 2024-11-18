@@ -1,46 +1,48 @@
 import { useState } from "react";
 import { cn } from "@/utils";
+import { CircleUser, Newspaper, Search } from "lucide-react";
 import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogClose,
 } from "@/components/ui/dialog";
+import AccountSettings from "@/components/settings/AccountSettings";
+import { Button } from "./ui/button";
 
-import { CircleUser, Newspaper, Search } from "lucide-react";
+// Enum for the menu items
+enum Menu {
+  Account = "Account",
+  Headlines = "Headlines",
+  Search = "Search",
+}
 
-const settingMenu = ["Account", "Headlines", "Search"] as const;
-
-const getIcon = (menu: (typeof settingMenu)[number]) => {
-  const iconStyle = {
-    className: "h-5 stroke-primary/80",
-    strokeWidth: 1.5,
-  };
-  switch (menu) {
-    case "Account":
-      return <CircleUser {...iconStyle} />;
-    case "Headlines":
-      return <Newspaper {...iconStyle} />;
-    case "Search":
-      return <Search {...iconStyle} />;
-  }
+const iconStyle = {
+  className: "h-5 stroke-primary/80",
+  strokeWidth: 1.5,
 };
 
-const getSelectionPos = (menu: (typeof settingMenu)[number]) => {
-  switch (menu) {
-    case "Account":
-      return "top-0";
-    case "Headlines":
-      return "top-8";
-    case "Search":
-      return "top-16";
-    default:
-      return "top-0";
-  }
+const icons = {
+  [Menu.Account]: <CircleUser {...iconStyle} />,
+  [Menu.Headlines]: <Newspaper {...iconStyle} />,
+  [Menu.Search]: <Search {...iconStyle} />,
 };
 
+const selectionPositions = {
+  [Menu.Account]: "top-0",
+  [Menu.Headlines]: "top-8",
+  [Menu.Search]: "top-16",
+};
+
+const menuContent = {
+  [Menu.Account]: <AccountSettings />,
+  [Menu.Headlines]: <></>,
+  [Menu.Search]: <></>,
+};
+
+// The SettingDialog component
 const SettingDialog = () => {
-  const [currMenu, setCurrMenu] =
-    useState<(typeof settingMenu)[number]>("Account");
+  const [currMenu, setCurrMenu] = useState<Menu>(Menu.Account);
 
   return (
     <>
@@ -51,9 +53,9 @@ const SettingDialog = () => {
         {/* the description placeholder is necessary to supress warnings */}
         <DialogDescription></DialogDescription>
       </DialogHeader>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 flex-1">
         <div className="relative flex flex-col items-start gap-2 text-[0.9rem] border-r">
-          {settingMenu.map((menu) => (
+          {Object.values(Menu).map((menu) => (
             <button
               key={menu}
               onClick={() => setCurrMenu(menu)}
@@ -62,23 +64,27 @@ const SettingDialog = () => {
                 currMenu === menu && "font-semibold"
               )}
             >
-              {getIcon(menu)}
+              {icons[menu]}
               {menu}
             </button>
           ))}
           <span
             className={cn(
               "absolute z-10 w-[90%] h-6 bg-primary/10 rounded-sm transition-all duration-150",
-              getSelectionPos(currMenu)
+              selectionPositions[currMenu]
             )}
           ></span>
         </div>
         <div className="col-span-2 pl-2 pr-4 w-full">
-          <p className="text-sm">NewAPI key:</p>
-          <input className="border w-full border-primary/30 rounded-[0.3rem] px-1 font-mono font-light text-sm" />
-          <p className="text-sm">OpenAI key:</p>
-          <input className="border w-full border-primary/80 rounded-sm px-1 font-mono font-light text-sm" />
+          {menuContent[currMenu]}
         </div>
+      </div>
+      <div className="mt-3 flex justify-end">
+        <DialogClose asChild>
+          <Button className="px-2 h-8 text-sm" variant={"secondary"}>
+            Save Changes
+          </Button>
+        </DialogClose>
       </div>
     </>
   );

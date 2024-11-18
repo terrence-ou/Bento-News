@@ -37,7 +37,6 @@ const useImageHeight = (
     };
 
     loadImg();
-
     const debouncedHandleImgHeight = debounce(
       handleUpdateHeight,
       300
