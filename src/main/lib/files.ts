@@ -2,24 +2,48 @@ import fs from "fs";
 import path from "path";
 import { homedir } from "os";
 import { Article, Articles } from "@shared/models/Articles";
-import { APP_FOLDER, HEADLINE_DIR } from "@shared/consts";
+import {
+  APP_FOLDER,
+  HEADLINE_DIR,
+  USER_FOLDERS_DIR,
+} from "@shared/consts";
 import type {
   LoadApiKeys,
   LoadHeadlines,
   WriteApiKeys,
 } from "@shared/types";
 
-const headlineFolderDir = `${homedir()}/${HEADLINE_DIR}`;
+const projectFolder = path.join(homedir(), APP_FOLDER);
+const headlinesFolder = path.join(homedir(), HEADLINE_DIR);
+const userFolder = path.join(homedir(), USER_FOLDERS_DIR);
+const settingsFile = path.join(
+  homedir(),
+  APP_FOLDER,
+  "settings.json"
+);
+
+// Ensure settings.json file
+const ensureProjectFiles = () => {
+  if (!fs.existsSync(projectFolder))
+    fs.mkdirSync(projectFolder, { recursive: true });
+  if (!fs.existsSync(headlinesFolder))
+    fs.mkdirSync(headlinesFolder, { recursive: true });
+  if (!fs.existsSync(userFolder))
+    fs.mkdirSync(userFolder, { recursive: true });
+  if (!fs.existsSync(settingsFile))
+    fs.writeFileSync(
+      settingsFile,
+      JSON.stringify({}, null, 2),
+      "utf-8"
+    );
+};
 
 // Load today's headlines from the local file
 const loadTodayHeadlines: LoadHeadlines = async () => {
-  if (!fs.existsSync(headlineFolderDir)) {
-    return undefined;
-  }
   try {
     // Get an array of today's files
     const today = new Date().toISOString().slice(0, 10); // it is actually the Greenwich time
-    const files = fs.readdirSync(headlineFolderDir);
+    const files = fs.readdirSync(headlinesFolder);
     const todayFiles = files.filter(
       (file) => file.startsWith(today) && file.endsWith(".json")
     );
@@ -38,13 +62,10 @@ const loadTodayHeadlines: LoadHeadlines = async () => {
 
 // Load previous headlines from the local file
 const loadPrevHeadlines: LoadHeadlines = async () => {
-  if (!fs.existsSync(headlineFolderDir)) {
-    return undefined;
-  }
   try {
     // Get an array of prevDate's files
     const prevDate = new Date().toISOString().slice(0, 10);
-    const files = fs.readdirSync(headlineFolderDir);
+    const files = fs.readdirSync(headlinesFolder);
     const previousFiles = files.filter(
       (file) => !file.startsWith(prevDate) && file.endsWith(".json")
     );
@@ -68,24 +89,17 @@ const loadApiKeys: LoadApiKeys = async () => {
     APP_FOLDER,
     "settings.json"
   );
-
   const emptyKeys = { newsapi: "", openai: "" };
-
-  if (!fs.existsSync(settingsDir)) {
-    fs.writeFileSync(
-      settingsDir,
-      JSON.stringify({ keys: emptyKeys }, null, 2),
-      "utf-8"
-    );
-    return emptyKeys;
-  }
 
   try {
     const data = fs.readFileSync(settingsDir, "utf-8");
     const settings = JSON.parse(data);
+    if (!settings.keys) {
+      return emptyKeys;
+    }
     return {
-      newsapi: settings.keys.newsapi,
-      openai: settings.keys.openai,
+      newsapi: settings.keys.newsapi || "",
+      openai: settings.keys.openai || "",
     };
   } catch (error) {
     console.error("Error loading API keys. [ERROR]: ", error);
@@ -94,18 +108,14 @@ const loadApiKeys: LoadApiKeys = async () => {
 };
 
 const writeApiKeys: WriteApiKeys = async ({ newsapi, openai }) => {
-  const settingsDir = path.join(
-    homedir(),
-    APP_FOLDER,
-    "settings.json"
-  );
   try {
-    const data = fs.readFileSync(settingsDir, "utf-8");
+    const data = fs.readFileSync(settingsFile, "utf-8");
     const settings = JSON.parse(data);
+    if (!settings.keys) settings.keys = {};
     settings.keys.newsapi = newsapi;
     settings.keys.openai = openai;
     fs.writeFileSync(
-      settingsDir,
+      settingsFile,
       JSON.stringify(settings, null, 2),
       "utf-8"
     );
@@ -114,7 +124,7 @@ const writeApiKeys: WriteApiKeys = async ({ newsapi, openai }) => {
   }
 };
 
-// Helper functions
+// ======== Helper functions ========
 
 // validate the parsed json file
 const isValidData = (data: any): data is { articles: Article[] } => {
@@ -131,7 +141,7 @@ const processFiles = async (files: string[]): Promise<Article[]> => {
     sortedFiles.map(async (file) => {
       try {
         const data = fs.readFileSync(
-          `${headlineFolderDir}/${file}`,
+          path.join(headlinesFolder, file),
           "utf-8"
         );
         const parsedData = JSON.parse(data);
@@ -157,6 +167,7 @@ const processFiles = async (files: string[]): Promise<Article[]> => {
 };
 
 export {
+  ensureProjectFiles,
   loadPrevHeadlines,
   loadTodayHeadlines,
   loadApiKeys,

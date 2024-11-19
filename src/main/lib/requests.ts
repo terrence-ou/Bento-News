@@ -23,11 +23,6 @@ const getHeadlines: GetHeadlinesFn = async (
   if (category !== undefined) url += `&category=${category}`;
 
   try {
-    // Ensure the directory exists
-    if (!fs.existsSync(headlineFolderDir)) {
-      fs.mkdirSync(headlineFolderDir, { recursive: true });
-    }
-
     // Get the headlines
     const response = await axios.get(url);
     const data = response.data;

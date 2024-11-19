@@ -1,7 +1,11 @@
+// File system constants
 export const APP_FOLDER = "Documents/IntelliNews";
 export const HEADLINE_DIR = APP_FOLDER + "/headlines";
+export const USER_FOLDERS_DIR = APP_FOLDER + "/user_folders";
 
-const Categories = [
+// News API - related constants
+export const Categories = [
+  "all",
   "business",
   "entertainment",
   "general",
@@ -11,7 +15,7 @@ const Categories = [
   "technology",
 ] as const;
 
-const Countries = [
+export const Countries = [
   "ar",
   "au",
   "at",
@@ -68,4 +72,66 @@ const Countries = [
   "ve",
 ] as const;
 
-export { Categories, Countries };
+export const CountryNameToCodes = {
+  Argentina: "ar",
+  Australia: "au",
+  Austria: "at",
+  Belgium: "be",
+  Brazil: "br",
+  Bulgaria: "bg",
+  Canada: "ca",
+  China: "cn",
+  Colombia: "co",
+  Cuba: "cu",
+  "Czech Republic": "cz",
+  Egypt: "eg",
+  France: "fr",
+  Germany: "de",
+  Greece: "gr",
+  "Hong Kong": "hk",
+  Hungary: "hu",
+  India: "in",
+  Indonesia: "id",
+  Ireland: "ie",
+  Israel: "il",
+  Italy: "it",
+  Japan: "jp",
+  Latvia: "lv",
+  Lithuania: "lt",
+  Malaysia: "my",
+  Mexico: "mx",
+  Morocco: "ma",
+  Netherlands: "nl",
+  "New Zealand": "nz",
+  Nigeria: "ng",
+  Norway: "no",
+  Philippines: "ph",
+  Poland: "pl",
+  Portugal: "pt",
+  Romania: "ro",
+  Russia: "ru",
+  "Saudi Arabia": "sa",
+  Serbia: "rs",
+  Singapore: "sg",
+  Slovakia: "sk",
+  Slovenia: "si",
+  "South Africa": "za",
+  "South Korea": "kr",
+  Sweden: "se",
+  Switzerland: "ch",
+  Taiwan: "tw",
+  Thailand: "th",
+  Turkey: "tr",
+  "United Arab Emirates": "ae",
+  Ukraine: "ua",
+  "United Kingdom": "gb",
+  "United States": "us",
+  Venezuela: "ve",
+};
+
+export const CountryCodeToNames = Object.fromEntries(
+  Object.entries(CountryNameToCodes).map(([key, value]) => [
+    value,
+    key,
+  ])
+);
