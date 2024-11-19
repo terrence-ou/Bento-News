@@ -80,7 +80,9 @@ const Headlines = () => {
 
   return (
     <div className="p-6">
-      <h1 className="font-serif text-2xl mb-4">Headlines</h1>
+      <h1 className="font-serif font-semibold text-3xl my-6 mx-2">
+        Today's Headlines
+      </h1>
       <div className={cn("grid gap-x-5 my-3", gridCols)}>
         {todayArticleGroups.map((group, i) => (
           <div key={`col-${i}`} className="flex flex-col gap-4">
@@ -90,7 +92,9 @@ const Headlines = () => {
           </div>
         ))}
       </div>
-      <h1 className="font-serif text-2xl pb-2 mt-12">Previous</h1>
+      <h1 className="font-serif font-semibold text-3xl mt-14 mb-6 mx-2">
+        Past 7 Days
+      </h1>
       <div className={cn("grid gap-x-5 my-3", gridCols)}>
         {prevArticleGroups.map((group, i) => (
           <div key={`col-${i}`} className="flex flex-col gap-4">

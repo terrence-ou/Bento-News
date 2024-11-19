@@ -113,7 +113,7 @@ const APIInput = ({
       </p>
       <div className="flex items-center gap-1">
         <input
-          className="border w-full border-primary/30 rounded-[0.3rem] px-1 py-[3px] font-mono font-light tracking-tight text-xs focus-visible:outline-primary/60"
+          className="border w-full border-primary/30 rounded-[0.3rem] px-1 py-[4px] my-1 font-mono font-light tracking-tight text-xs focus-visible:outline-primary"
           type={visible ? "text" : "password"}
           value={value}
           onChange={onChange}

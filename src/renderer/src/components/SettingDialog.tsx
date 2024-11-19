@@ -7,6 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import AccountSettings from "@/components/settings/AccountSettings";
+import HeadlinesSettings from "./settings/HeadlinesSettings";
 
 // Enum for the menu items
 enum Menu {
@@ -34,7 +35,7 @@ const selectionPositions = {
 
 const menuContent = {
   [Menu.Account]: <AccountSettings />,
-  [Menu.Headlines]: <></>,
+  [Menu.Headlines]: <HeadlinesSettings />,
   [Menu.Search]: <></>,
 };
 
