@@ -11,3 +11,16 @@ export type GetHeadlinesFn = (
 ) => Promise<void>;
 
 export type LoadHeadlines = () => Promise<Articles | undefined>;
+
+export type LoadApiKeys = () => Promise<{
+  newsapi: string;
+  openai: string;
+}>;
+
+export type WriteApiKeys = ({
+  newsapi,
+  openai,
+}: {
+  newsapi: string;
+  openai: string;
+}) => Promise<void>;

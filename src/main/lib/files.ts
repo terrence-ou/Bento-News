@@ -1,8 +1,13 @@
 import fs from "fs";
+import path from "path";
 import { homedir } from "os";
 import { Article, Articles } from "@shared/models/Articles";
-import { HEADLINE_DIR } from "@shared/consts";
-import type { LoadHeadlines } from "@shared/types";
+import { APP_FOLDER, HEADLINE_DIR } from "@shared/consts";
+import type {
+  LoadApiKeys,
+  LoadHeadlines,
+  WriteApiKeys,
+} from "@shared/types";
 
 const headlineFolderDir = `${homedir()}/${HEADLINE_DIR}`;
 
@@ -13,7 +18,7 @@ const loadTodayHeadlines: LoadHeadlines = async () => {
   }
   try {
     // Get an array of today's files
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date().toISOString().slice(0, 10); // it is actually the Greenwich time
     const files = fs.readdirSync(headlineFolderDir);
     const todayFiles = files.filter(
       (file) => file.startsWith(today) && file.endsWith(".json")
@@ -31,6 +36,7 @@ const loadTodayHeadlines: LoadHeadlines = async () => {
   }
 };
 
+// Load previous headlines from the local file
 const loadPrevHeadlines: LoadHeadlines = async () => {
   if (!fs.existsSync(headlineFolderDir)) {
     return undefined;
@@ -52,6 +58,59 @@ const loadPrevHeadlines: LoadHeadlines = async () => {
   } catch (error) {
     console.error("Error loading today's file. [ERROR]: ", error);
     return undefined;
+  }
+};
+
+// Load API keys from the local setting file
+const loadApiKeys: LoadApiKeys = async () => {
+  const settingsDir = path.join(
+    homedir(),
+    APP_FOLDER,
+    "settings.json"
+  );
+
+  const emptyKeys = { newsapi: "", openai: "" };
+
+  if (!fs.existsSync(settingsDir)) {
+    fs.writeFileSync(
+      settingsDir,
+      JSON.stringify({ keys: emptyKeys }, null, 2),
+      "utf-8"
+    );
+    return emptyKeys;
+  }
+
+  try {
+    const data = fs.readFileSync(settingsDir, "utf-8");
+    const settings = JSON.parse(data);
+    return {
+      newsapi: settings.keys.newsapi,
+      openai: settings.keys.openai,
+    };
+  } catch (error) {
+    console.error("Error loading API keys. [ERROR]: ", error);
+    return emptyKeys;
+  }
+};
+
+const writeApiKeys: WriteApiKeys = async ({ newsapi, openai }) => {
+  const settingsDir = path.join(
+    homedir(),
+    APP_FOLDER,
+    "settings.json"
+  );
+  try {
+    const data = fs.readFileSync(settingsDir, "utf-8");
+    const settings = JSON.parse(data);
+    settings.keys.newsapi = newsapi;
+    settings.keys.openai = openai;
+    fs.writeFileSync(
+      settingsDir,
+      JSON.stringify(settings, null, 2),
+      "utf-8"
+    );
+  } catch (error) {
+    console.error("Error writing API keys. [ERROR]: ", error);
   }
 };
 
@@ -97,4 +156,9 @@ const processFiles = async (files: string[]): Promise<Article[]> => {
   return news;
 };
 
-export { loadPrevHeadlines, loadTodayHeadlines };
+export {
+  loadPrevHeadlines,
+  loadTodayHeadlines,
+  loadApiKeys,
+  writeApiKeys,
+};

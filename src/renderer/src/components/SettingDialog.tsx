@@ -5,10 +5,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogClose,
 } from "@/components/ui/dialog";
 import AccountSettings from "@/components/settings/AccountSettings";
-import { Button } from "./ui/button";
 
 // Enum for the menu items
 enum Menu {
@@ -78,13 +76,6 @@ const SettingDialog = () => {
         <div className="col-span-2 pl-2 pr-4 w-full">
           {menuContent[currMenu]}
         </div>
-      </div>
-      <div className="mt-3 flex justify-end">
-        <DialogClose asChild>
-          <Button className="px-2 h-8 text-sm" variant={"secondary"}>
-            Save Changes
-          </Button>
-        </DialogClose>
       </div>
     </>
   );

@@ -20,6 +20,11 @@ try {
       ipcRenderer.invoke("loadTodayHeadlines", ...args),
     loadPrevHeadlines: (...args: Parameters<LoadHeadlines>) =>
       ipcRenderer.invoke("loadPrevHeadlines", ...args),
+    // Settings
+    loadApiKeys: (...args: Parameters<LoadHeadlines>) =>
+      ipcRenderer.invoke("loadApiKeys", ...args),
+    writeApiKeys: (...args: Parameters<LoadHeadlines>) =>
+      ipcRenderer.invoke("writeApiKeys", ...args),
   });
 } catch (error) {
   console.error(

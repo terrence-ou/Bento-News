@@ -1,4 +1,5 @@
-export const HEADLINE_DIR = "Documents/IntelliNews/headlines";
+export const APP_FOLDER = "Documents/IntelliNews";
+export const HEADLINE_DIR = APP_FOLDER + "/headlines";
 
 const Categories = [
   "business",

@@ -1,4 +1,9 @@
-import { LoadHeadlines, GetHeadlinesFn } from "@shared/types";
+import {
+  LoadHeadlines,
+  GetHeadlinesFn,
+  LoadApiKeys,
+  WriteApiKeys,
+} from "@shared/types";
 
 // Type definition for the preload process
 declare global {
@@ -7,6 +12,8 @@ declare global {
       getHeadlines: GetHeadlinesFn;
       loadTodayHeadlines: LoadHeadlines;
       loadPrevHeadlines: LoadHeadlines;
+      loadApiKeys: LoadApiKeys;
+      writeApiKeys: WriteApiKeys;
     };
   }
 }

@@ -8,8 +8,15 @@ import {
   getHeadlines,
   loadTodayHeadlines,
   loadPrevHeadlines,
+  loadApiKeys,
+  writeApiKeys,
 } from "@/lib";
-import { GetHeadlinesFn, LoadHeadlines } from "@shared/types";
+import {
+  GetHeadlinesFn,
+  LoadApiKeys,
+  LoadHeadlines,
+  WriteApiKeys,
+} from "@shared/types";
 
 dotenv.config();
 
@@ -89,6 +96,17 @@ app.whenReady().then(() => {
     "loadPrevHeadlines",
     (_, ...args: Parameters<LoadHeadlines>) =>
       loadPrevHeadlines(...args)
+  );
+
+  // API keys
+  ipcMain.handle(
+    "loadApiKeys",
+    (_, ...args: Parameters<LoadApiKeys>) => loadApiKeys(...args)
+  );
+
+  ipcMain.handle(
+    "writeApiKeys",
+    (_, ...args: Parameters<WriteApiKeys>) => writeApiKeys(...args)
   );
 });
 
