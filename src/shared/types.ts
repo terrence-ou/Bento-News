@@ -17,10 +17,29 @@ export type LoadApiKeys = () => Promise<{
   openai: string;
 }>;
 
+export type LoadHeadlineSettings = () => Promise<{
+  country: Country;
+  category: Category;
+  headline_size: number;
+  previous_days: number;
+}>;
+
 export type WriteApiKeys = ({
   newsapi,
   openai,
 }: {
   newsapi: string;
   openai: string;
+}) => Promise<void>;
+
+export type WriteHeadlineSettings = ({
+  country,
+  category,
+  headline_size,
+  previous_days,
+}: {
+  country: Country;
+  category: Category;
+  headline_size: number;
+  previous_days: number;
 }) => Promise<void>;

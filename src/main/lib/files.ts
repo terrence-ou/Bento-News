@@ -10,7 +10,9 @@ import {
 import type {
   LoadApiKeys,
   LoadHeadlines,
+  LoadHeadlineSettings,
   WriteApiKeys,
+  WriteHeadlineSettings,
 } from "@shared/types";
 
 const projectFolder = path.join(homedir(), APP_FOLDER);
@@ -37,6 +39,8 @@ const ensureProjectFiles = () => {
       "utf-8"
     );
 };
+
+// ============ Loaders =============
 
 // Load today's headlines from the local file
 const loadTodayHeadlines: LoadHeadlines = async () => {
@@ -84,15 +88,10 @@ const loadPrevHeadlines: LoadHeadlines = async () => {
 
 // Load API keys from the local setting file
 const loadApiKeys: LoadApiKeys = async () => {
-  const settingsDir = path.join(
-    homedir(),
-    APP_FOLDER,
-    "settings.json"
-  );
   const emptyKeys = { newsapi: "", openai: "" };
 
   try {
-    const data = fs.readFileSync(settingsDir, "utf-8");
+    const data = fs.readFileSync(settingsFile, "utf-8");
     const settings = JSON.parse(data);
     if (!settings.keys) {
       return emptyKeys;
@@ -107,6 +106,39 @@ const loadApiKeys: LoadApiKeys = async () => {
   }
 };
 
+// load Headline preferences from the local setting file
+const loadHeadlineSettings: LoadHeadlineSettings = async () => {
+  const defaultHeadlineSettings = {
+    country: "us",
+    category: "all",
+    headline_size: 30,
+    previous_days: 7,
+  };
+  try {
+    const data = fs.readFileSync(settingsFile, "utf-8");
+    const settings = JSON.parse(data);
+    if (!settings.headline) {
+      return defaultHeadlineSettings;
+    }
+    const currSettings = settings.headline;
+    return {
+      country: currSettings.country || "us",
+      category: currSettings.category || "all",
+      headline_size: currSettings.headline_size || 30,
+      previous_days: currSettings.previous_headlines || 7,
+    };
+  } catch (error) {
+    console.error(
+      "Error loading headline preferences. [ERROR]: ",
+      error
+    );
+    return defaultHeadlineSettings;
+  }
+};
+
+// ============ Writers =============
+
+// Write API keys to the local setting file with the user's input
 const writeApiKeys: WriteApiKeys = async ({ newsapi, openai }) => {
   try {
     const data = fs.readFileSync(settingsFile, "utf-8");
@@ -121,6 +153,26 @@ const writeApiKeys: WriteApiKeys = async ({ newsapi, openai }) => {
     );
   } catch (error) {
     console.error("Error writing API keys. [ERROR]: ", error);
+  }
+};
+
+const writeHeadlineSettings: WriteHeadlineSettings = async (
+  settings
+) => {
+  try {
+    const data = fs.readFileSync(settingsFile, "utf-8");
+    const currSettings = JSON.parse(data);
+    currSettings.headline = settings;
+    fs.writeFileSync(
+      settingsFile,
+      JSON.stringify(currSettings, null, 2),
+      "utf-8"
+    );
+  } catch (error) {
+    console.error(
+      "Error writing headline preferences. [ERROR]: ",
+      error
+    );
   }
 };
 
@@ -170,6 +222,8 @@ export {
   ensureProjectFiles,
   loadPrevHeadlines,
   loadTodayHeadlines,
+  loadHeadlineSettings,
   loadApiKeys,
   writeApiKeys,
+  writeHeadlineSettings,
 };

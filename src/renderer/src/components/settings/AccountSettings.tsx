@@ -25,12 +25,11 @@ const AccountSettings = () => {
     openai: string;
   }>({ newsapi: "", openai: "" });
   const [writing, setWriting] = useState<boolean>(false);
-  const [showSaveButton, setShowSaveButton] =
-    useState<boolean>(false);
+  const [edited, setEdited] = useState<boolean>(false);
 
   const handleSetApiKeys = (source: "newsapi" | "openai") => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      setShowSaveButton(true);
+      setEdited(true);
       setApiKeys((prev) => ({
         ...prev,
         [source]: event.target.value,
@@ -44,7 +43,7 @@ const AccountSettings = () => {
     // add a delay to show the saving state
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setWriting(false);
-    setShowSaveButton(false);
+    setEdited(false);
   };
 
   useEffect(() => {
@@ -67,7 +66,7 @@ const AccountSettings = () => {
         />
       ))}
       <div className="flex-1 flex items-end justify-end">
-        {showSaveButton && (
+        {edited && (
           <Button
             className="h-6 w-32 text-xs rounded-[0.25rem]"
             onClick={writeApiKeys}

@@ -3,6 +3,8 @@ import {
   GetHeadlinesFn,
   LoadApiKeys,
   WriteApiKeys,
+  LoadHeadlineSettings,
+  WriteHeadlineSettings,
 } from "@shared/types";
 
 // Type definition for the preload process
@@ -13,7 +15,9 @@ declare global {
       loadTodayHeadlines: LoadHeadlines;
       loadPrevHeadlines: LoadHeadlines;
       loadApiKeys: LoadApiKeys;
+      loadHeadlineSettings: LoadHeadlineSettings;
       writeApiKeys: WriteApiKeys;
+      writeHeadlineSettings: WriteHeadlineSettings;
     };
   }
 }

@@ -1,6 +1,11 @@
 import { contextBridge } from "electron";
 import { ipcRenderer } from "electron/renderer";
-import { LoadHeadlines, GetHeadlinesFn } from "@shared/types";
+import {
+  LoadHeadlines,
+  GetHeadlinesFn,
+  LoadHeadlineSettings,
+  WriteHeadlineSettings,
+} from "@shared/types";
 
 // The preload process plays a middleware role in bridging
 // the call from the front end, and the function in the main process
@@ -23,8 +28,14 @@ try {
     // Settings
     loadApiKeys: (...args: Parameters<LoadHeadlines>) =>
       ipcRenderer.invoke("loadApiKeys", ...args),
+    loadHeadlineSettings: (
+      ...args: Parameters<LoadHeadlineSettings>
+    ) => ipcRenderer.invoke("loadHeadlineSettings", ...args),
     writeApiKeys: (...args: Parameters<LoadHeadlines>) =>
       ipcRenderer.invoke("writeApiKeys", ...args),
+    writeHeadlineSettings: (
+      ...args: Parameters<WriteHeadlineSettings>
+    ) => ipcRenderer.invoke("writeHeadlineSettings", ...args),
   });
 } catch (error) {
   console.error(

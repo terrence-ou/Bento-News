@@ -11,12 +11,16 @@ import {
   loadApiKeys,
   writeApiKeys,
   ensureProjectFiles,
+  loadHeadlineSettings,
+  writeHeadlineSettings,
 } from "@/lib";
 import {
   GetHeadlinesFn,
   LoadApiKeys,
   LoadHeadlines,
+  LoadHeadlineSettings,
   WriteApiKeys,
+  WriteHeadlineSettings,
 } from "@shared/types";
 
 dotenv.config();
@@ -102,15 +106,27 @@ app.whenReady().then(() => {
       loadPrevHeadlines(...args)
   );
 
-  // API keys
+  // Settings
   ipcMain.handle(
     "loadApiKeys",
     (_, ...args: Parameters<LoadApiKeys>) => loadApiKeys(...args)
   );
 
   ipcMain.handle(
+    "loadHeadlineSettings",
+    (_, ...args: Parameters<LoadHeadlineSettings>) =>
+      loadHeadlineSettings(...args)
+  );
+
+  ipcMain.handle(
     "writeApiKeys",
     (_, ...args: Parameters<WriteApiKeys>) => writeApiKeys(...args)
+  );
+
+  ipcMain.handle(
+    "writeHeadlineSettings",
+    (_, ...args: Parameters<WriteHeadlineSettings>) =>
+      writeHeadlineSettings(...args)
   );
 });
 
