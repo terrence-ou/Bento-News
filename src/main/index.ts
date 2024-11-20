@@ -1,6 +1,5 @@
 import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
-import * as dotenv from "dotenv";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
 import icon from "../../resources/icon.png?asset";
@@ -24,8 +23,6 @@ import {
   WriteHeadlineSettings,
   RemoveTodayHeadlines,
 } from "@shared/types";
-
-dotenv.config(); // probably not needed
 
 function createWindow(): void {
   // Create the browser window.

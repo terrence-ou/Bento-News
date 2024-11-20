@@ -30,11 +30,16 @@ const groupArticles = (
 // The body of Headlines component
 const Headlines = () => {
   const data = useLoaderData() as HeadlinesLoaderData;
-  const [extendedCount, setExtendedCount] = useState<number>(0);
   const { todayHeadlines, prevHeadlines } = data;
+  const [todayExtendCount, setTodayExtendCount] = useState<number>(0);
+  const [prevExtendCount, setPrevExtendCount] = useState<number>(0);
 
-  const handleSetExtendedCount = (count: number) => {
-    setExtendedCount((prevCount) => prevCount + count);
+  const handleSetTodayExtendedCount = (count: number) => {
+    setTodayExtendCount((prevCount) => prevCount + count);
+  };
+
+  const handleSetPrevExtendedCount = (count: number) => {
+    setPrevExtendCount((prevCount) => prevCount + count);
   };
 
   // get number of columns based on window width
@@ -63,19 +68,24 @@ const Headlines = () => {
   }
 
   // group articles into columns
-  const todayArticleGroups = useMemo(
-    () => groupArticles(todayHeadlines, cols),
-    [todayHeadlines, cols]
+  const totalTodayDisplayCount = Math.min(
+    defaultDisplayCount + todayExtendCount,
+    todayHeadlines.articles.length
   );
 
-  const totalDisplayCount = Math.min(
-    defaultDisplayCount + extendedCount,
+  const totalPrevDisplayCount = Math.min(
+    defaultDisplayCount + prevExtendCount,
     prevHeadlines.articles.length
   );
 
+  const todayArticleGroups = useMemo(
+    () => groupArticles(todayHeadlines, cols, totalTodayDisplayCount),
+    [todayHeadlines, cols, todayExtendCount]
+  );
+
   const prevArticleGroups = useMemo(
-    () => groupArticles(prevHeadlines, cols, totalDisplayCount),
-    [prevHeadlines, cols, extendedCount]
+    () => groupArticles(prevHeadlines, cols, totalPrevDisplayCount),
+    [prevHeadlines, cols, prevExtendCount]
   );
 
   return (
@@ -92,6 +102,17 @@ const Headlines = () => {
           </div>
         ))}
       </div>
+      {totalTodayDisplayCount < todayHeadlines.articles.length && (
+        <div className="flex w-full justify-center">
+          <Button
+            onClick={() =>
+              handleSetTodayExtendedCount(defaultDisplayCount)
+            }
+          >
+            Load more
+          </Button>
+        </div>
+      )}
       <h1 className="font-serif font-semibold text-3xl mt-14 mb-6 mx-2">
         Past 7 Days
       </h1>
@@ -104,11 +125,11 @@ const Headlines = () => {
           </div>
         ))}
       </div>
-      {totalDisplayCount < prevHeadlines.articles.length && (
+      {totalPrevDisplayCount < prevHeadlines.articles.length && (
         <div className="flex w-full justify-center">
           <Button
             onClick={() =>
-              handleSetExtendedCount(defaultDisplayCount)
+              handleSetPrevExtendedCount(defaultDisplayCount)
             }
           >
             Load more
