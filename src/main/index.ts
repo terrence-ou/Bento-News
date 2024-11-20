@@ -10,6 +10,7 @@ import {
   loadPrevHeadlines,
   loadApiKeys,
   writeApiKeys,
+  removeTodayHeadlines,
   ensureProjectFiles,
   loadHeadlineSettings,
   writeHeadlineSettings,
@@ -21,9 +22,10 @@ import {
   LoadHeadlineSettings,
   WriteApiKeys,
   WriteHeadlineSettings,
+  RemoveTodayHeadlines,
 } from "@shared/types";
 
-dotenv.config();
+dotenv.config(); // probably not needed
 
 function createWindow(): void {
   // Create the browser window.
@@ -127,6 +129,12 @@ app.whenReady().then(() => {
     "writeHeadlineSettings",
     (_, ...args: Parameters<WriteHeadlineSettings>) =>
       writeHeadlineSettings(...args)
+  );
+
+  ipcMain.handle(
+    "removeTodayHeadlines",
+    (_, ...args: Parameters<RemoveTodayHeadlines>) =>
+      removeTodayHeadlines(...args)
   );
 });
 

@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  CountryNameToCodes,
-  Categories,
-  CountryCodeToNames,
-} from "@shared/consts";
+import { Categories } from "@shared/consts";
 import {
   Select,
   SelectContent,
@@ -13,17 +9,15 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { useMemo } from "react";
-import { Category, Country } from "@shared/types";
+import { Category } from "@shared/types";
 import { useNavigate } from "react-router-dom";
 
 const HeadlinesSettings = () => {
   const [settings, setSettings] = useState<{
-    country: Country;
     category: Category;
     headline_size: number;
     previous_days: number;
   }>({
-    country: "us",
     category: "all",
     headline_size: 30,
     previous_days: 7,
@@ -32,7 +26,7 @@ const HeadlinesSettings = () => {
   const [writing, setWriting] = useState<boolean>(false);
   const navigate = useNavigate();
   const onChange = (
-    key: "country" | "category" | "headline_size" | "previous_days"
+    key: "category" | "headline_size" | "previous_days"
   ) => {
     return (value: string | number) => {
       setEdited(true);
@@ -43,6 +37,7 @@ const HeadlinesSettings = () => {
   const writeHeadlineSettings = async () => {
     setWriting(true);
     await window.context.writeHeadlineSettings(settings);
+    await window.context.removeTodayHeadlines();
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setEdited(false);
     setWriting(false);
@@ -59,13 +54,6 @@ const HeadlinesSettings = () => {
   // country, category, pagesize
   return (
     <div className="flex flex-col h-full gap-6">
-      <HeadlineOption
-        title="Country"
-        placeholder={CountryCodeToNames[settings.country]}
-        onChange={onChange("country")}
-        description="Select the country for which you want to see headlines."
-        options={CountryNameToCodes}
-      />
       <HeadlineOption
         title="Category"
         placeholder={settings.category}

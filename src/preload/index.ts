@@ -5,6 +5,7 @@ import {
   GetHeadlinesFn,
   LoadHeadlineSettings,
   WriteHeadlineSettings,
+  RemoveTodayHeadlines,
 } from "@shared/types";
 
 // The preload process plays a middleware role in bridging
@@ -36,6 +37,9 @@ try {
     writeHeadlineSettings: (
       ...args: Parameters<WriteHeadlineSettings>
     ) => ipcRenderer.invoke("writeHeadlineSettings", ...args),
+    removeTodayHeadlines: (
+      ...args: Parameters<RemoveTodayHeadlines>
+    ) => ipcRenderer.invoke("removeTodayHeadlines", ...args),
   });
 } catch (error) {
   console.error(

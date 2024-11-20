@@ -5,10 +5,7 @@ export type Category = (typeof Categories)[number];
 export type Country = (typeof Countries)[number];
 
 // Types for the main process
-export type GetHeadlinesFn = (
-  category?: Category,
-  country?: Country
-) => Promise<void>;
+export type GetHeadlinesFn = () => Promise<void>;
 
 export type LoadHeadlines = () => Promise<Articles | undefined>;
 
@@ -33,13 +30,13 @@ export type WriteApiKeys = ({
 }) => Promise<void>;
 
 export type WriteHeadlineSettings = ({
-  country,
   category,
   headline_size,
   previous_days,
 }: {
-  country: Country;
   category: Category;
   headline_size: number;
   previous_days: number;
 }) => Promise<void>;
+
+export type RemoveTodayHeadlines = () => Promise<void>;

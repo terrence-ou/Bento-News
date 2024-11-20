@@ -11,6 +11,7 @@ import type {
   LoadApiKeys,
   LoadHeadlines,
   LoadHeadlineSettings,
+  RemoveTodayHeadlines,
   WriteApiKeys,
   WriteHeadlineSettings,
 } from "@shared/types";
@@ -176,6 +177,27 @@ const writeHeadlineSettings: WriteHeadlineSettings = async (
   }
 };
 
+const removeTodayHeadlines: RemoveTodayHeadlines = async () => {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const files = fs.readdirSync(headlinesFolder);
+    const todayFiles = files.filter((filename) =>
+      filename.startsWith(today)
+    );
+    if (todayFiles.length === 0) {
+      return;
+    }
+    todayFiles.forEach((filename) =>
+      fs.unlinkSync(path.join(headlinesFolder, filename))
+    );
+  } catch (error) {
+    console.error(
+      "Error removing today's headlines. [ERROR]: ",
+      error
+    );
+  }
+};
+
 // ======== Helper functions ========
 
 // validate the parsed json file
@@ -226,4 +248,5 @@ export {
   loadApiKeys,
   writeApiKeys,
   writeHeadlineSettings,
+  removeTodayHeadlines,
 };
