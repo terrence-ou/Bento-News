@@ -31,7 +31,6 @@
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "dotenv": "^16.4.5",
     "lucide-react": "^0.454.0",
     "react-router-dom": "^6.28.0",
     "tailwind-merge": "^2.5.4",
