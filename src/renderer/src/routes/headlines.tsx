@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 type HeadlinesLoaderData = {
   todayHeadlines: Articles;
   prevHeadlines: Articles;
+  prevDays: number;
 };
 
 // Helper function to group articles into columns
@@ -30,7 +31,7 @@ const groupArticles = (
 // The body of Headlines component
 const Headlines = () => {
   const data = useLoaderData() as HeadlinesLoaderData;
-  const { todayHeadlines, prevHeadlines } = data;
+  const { todayHeadlines, prevHeadlines, prevDays } = data;
   const [todayExtendCount, setTodayExtendCount] = useState<number>(0);
   const [prevExtendCount, setPrevExtendCount] = useState<number>(0);
 
@@ -113,8 +114,9 @@ const Headlines = () => {
           </Button>
         </div>
       )}
+      <div className="w-full my-10 h-2 border-b-2 border-dotted border-primary/50"></div>
       <h1 className="font-serif font-semibold text-3xl mt-14 mb-6 mx-2">
-        Past 7 Days
+        {`Past ${prevDays} Days`}
       </h1>
       <div className={cn("grid gap-x-5 my-3", gridCols)}>
         {prevArticleGroups.map((group, i) => (

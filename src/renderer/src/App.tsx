@@ -12,19 +12,27 @@ import { Articles } from "@shared/models/Articles";
 // Loaders
 // load headlines
 const headlineLoader = async () => {
-  const [todayHeadlines, prevHeadlines] = await Promise.all([
-    window.context.loadTodayHeadlines().then(async (headlines) => {
-      if (headlines === undefined) {
-        await window.context.getHeadlines();
-        return window.context.loadTodayHeadlines();
-      }
-      return headlines;
-    }),
-    window.context.loadPrevHeadlines(),
-  ]);
+  const [todayHeadlines, prevHeadlines, prevDays] = await Promise.all(
+    [
+      // load today's headlines
+      window.context.loadTodayHeadlines().then(async (headlines) => {
+        if (headlines === undefined) {
+          await window.context.getHeadlines();
+          return window.context.loadTodayHeadlines();
+        }
+        return headlines;
+      }),
+      // load previous headlines
+      window.context.loadPrevHeadlines(),
+      window.context
+        .loadHeadlineSettings()
+        .then(async (settings) => settings.previous_days),
+    ]
+  );
   return {
     todayHeadlines: todayHeadlines || new Articles([]),
     prevHeadlines: prevHeadlines || new Articles([]),
+    prevDays,
   };
 };
 

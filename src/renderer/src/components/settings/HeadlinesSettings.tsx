@@ -22,14 +22,14 @@ const HeadlinesSettings = () => {
     headline_size: 30,
     previous_days: 7,
   });
-  const [edited, setEdited] = useState<boolean>(false);
+  const [edited, setEdited] = useState<string[]>([]);
   const [writing, setWriting] = useState<boolean>(false);
   const navigate = useNavigate();
   const onChange = (
     key: "category" | "headline_size" | "previous_days"
   ) => {
     return (value: string | number) => {
-      setEdited(true);
+      setEdited((prev) => [...prev, key]);
       setSettings((prev) => ({ ...prev, [key]: value }));
     };
   };
@@ -37,9 +37,14 @@ const HeadlinesSettings = () => {
   const writeHeadlineSettings = async () => {
     setWriting(true);
     await window.context.writeHeadlineSettings(settings);
-    await window.context.removeTodayHeadlines();
+    // Only re-fetch headlines if category or headline size is changed
+    if (
+      edited.includes("category") ||
+      edited.includes("headline_size")
+    )
+      await window.context.removeTodayHeadlines();
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    setEdited(false);
+    setEdited([]);
     setWriting(false);
   };
 
@@ -51,7 +56,6 @@ const HeadlinesSettings = () => {
     })();
   }, []);
 
-  // country, category, pagesize
   return (
     <div className="flex flex-col h-full gap-6">
       <HeadlineOption
@@ -76,7 +80,7 @@ const HeadlinesSettings = () => {
         options={[7, 14, 28]}
       />
       <div className="flex-1 flex items-end justify-end">
-        {edited && (
+        {edited.length > 0 && (
           <Button
             className="h-6 w-32 text-xs rounded-[0.25rem]"
             onClick={() => {

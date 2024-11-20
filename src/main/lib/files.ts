@@ -68,12 +68,22 @@ const loadTodayHeadlines: LoadHeadlines = async () => {
 // Load previous headlines from the local file
 const loadPrevHeadlines: LoadHeadlines = async () => {
   try {
-    // Get an array of prevDate's files
-    const prevDate = new Date().toISOString().slice(0, 10);
+    const { previous_days: prevDays } = await loadHeadlineSettings();
+    // Get an array of files within the last prevDays days
+    const currDate = new Date();
     const files = fs.readdirSync(headlinesFolder);
-    const previousFiles = files.filter(
-      (file) => !file.startsWith(prevDate) && file.endsWith(".json")
-    );
+    const previousFiles = files.filter((file) => {
+      const fileDate = new Date(file.slice(0, 10));
+      const diffTime = Math.abs(
+        currDate.getTime() - fileDate.getTime()
+      );
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return (
+        diffDays <= prevDays &&
+        !file.startsWith(currDate.toISOString().slice(0, 10)) &&
+        file.endsWith(".json")
+      );
+    });
 
     if (previousFiles.length === 0) {
       return undefined;
@@ -82,7 +92,10 @@ const loadPrevHeadlines: LoadHeadlines = async () => {
     const articles = new Articles(news);
     return articles;
   } catch (error) {
-    console.error("Error loading today's file. [ERROR]: ", error);
+    console.error(
+      "Error loading previous headlines. [ERROR]: ",
+      error
+    );
     return undefined;
   }
 };
@@ -126,7 +139,7 @@ const loadHeadlineSettings: LoadHeadlineSettings = async () => {
       country: currSettings.country || "us",
       category: currSettings.category || "all",
       headline_size: currSettings.headline_size || 30,
-      previous_days: currSettings.previous_headlines || 7,
+      previous_days: currSettings.previous_days || 7,
     };
   } catch (error) {
     console.error(
