@@ -12,6 +12,7 @@ import { useMemo } from "react";
 import { Category } from "@shared/types";
 import { useNavigate } from "react-router-dom";
 
+// ======== HeadlinesSettings component ========
 const HeadlinesSettings = () => {
   const [settings, setSettings] = useState<{
     category: Category;
@@ -95,6 +96,8 @@ const HeadlinesSettings = () => {
     </div>
   );
 };
+
+// ======== Sub Component ========
 
 const HeadlineOption = ({
   title,
