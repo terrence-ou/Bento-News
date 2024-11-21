@@ -3,7 +3,7 @@ import Root from "./routes/root";
 import Search from "./routes/search";
 import Folders from "./routes/folders";
 import {
-  createBrowserRouter,
+  createHashRouter,
   RouterProvider,
   Navigate,
 } from "react-router-dom";
@@ -37,7 +37,7 @@ const headlineLoader = async () => {
 };
 
 // router definition
-const router = createBrowserRouter(
+const router = createHashRouter(
   [
     {
       path: "/",

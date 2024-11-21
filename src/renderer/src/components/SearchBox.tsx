@@ -18,14 +18,14 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
         </h1>
         <X className="w-5 hover:cursor-pointer" onClick={onClose} />
       </div>
-      <SearchBlock title="Key Words (Separate by comma)">
+      <SearchBlock title="Keywords (separate by comma)">
         <textarea className="border resize-none w-full border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono font-light tracking-tight focus-visible:outline-primary" />
       </SearchBlock>
       <SearchBlock title="Language">
-        <SearchBoxOptions type={"languages"} placeholder="English" />
+        <Options type={"languages"} placeholder="English" />
       </SearchBlock>
       <SearchBlock title="Sort By">
-        <SearchBoxOptions type={"sortBy"} placeholder="Relevance" />
+        <Options type={"sortBy"} placeholder="Relevance" />
       </SearchBlock>
       <div className="flex justify-between">
         <SearchBlock title="From">
@@ -44,7 +44,7 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
 
 // ======== Sub Components ========
 
-const SearchBoxOptions = ({
+const Options = ({
   type,
   placeholder,
 }: {

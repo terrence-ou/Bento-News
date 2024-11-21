@@ -17,18 +17,18 @@ export const Categories = [
 
 export enum LanguageCodes {
   Arabic = "ar",
-  German = "de",
-  English = "en",
-  Spanish = "es",
-  French = "fr",
-  Italian = "it",
+  Chinese = "zh",
   Dutch = "nl",
+  English = "en",
+  French = "fr",
+  German = "de",
+  Italian = "it",
   Norwegian = "no",
   Portuguese = "pt",
   Russian = "ru",
+  Spanish = "es",
   Swedish = "sv",
   Ukrainian = "uk",
-  Chinese = "zh",
 }
 
 export enum SortBy {
