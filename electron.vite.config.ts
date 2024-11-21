@@ -24,6 +24,7 @@ export default defineConfig({
         "@/components": resolve("src/renderer/src/components"),
         "@/utils": resolve("src/renderer/src/utils"),
         "@/hooks": resolve("src/renderer/src/hooks"),
+        "@/atoms": resolve("src/renderer/src/atoms"),
       },
     },
     plugins: [react()],
