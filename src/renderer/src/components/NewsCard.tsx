@@ -1,4 +1,4 @@
-import { useRef, ComponentProps } from "react";
+import { useRef, ComponentProps, memo } from "react";
 import { Article } from "@shared/models/Articles";
 import { cn } from "@/utils";
 import useImageHeight from "@/hooks/useImgHeight";
@@ -7,7 +7,7 @@ type NewsCardProps = {
   article: Article;
 } & ComponentProps<"div">;
 
-const NewsCard = ({ article, ...props }: NewsCardProps) => {
+const NewsCardComponent = ({ article, ...props }: NewsCardProps) => {
   const imgRef = useRef<HTMLImageElement>(null);
 
   const { imgError, loading, imgHeight } = useImageHeight(
@@ -67,5 +67,10 @@ const NewsCard = ({ article, ...props }: NewsCardProps) => {
     </div>
   );
 };
+
+const NewsCard = memo(
+  NewsCardComponent,
+  (prev, next) => prev.article.title === next.article.title
+);
 
 export default NewsCard;

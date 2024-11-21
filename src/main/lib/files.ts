@@ -123,7 +123,6 @@ const loadApiKeys: LoadApiKeys = async () => {
 // load Headline preferences from the local setting file
 const loadHeadlineSettings: LoadHeadlineSettings = async () => {
   const defaultHeadlineSettings = {
-    country: "us",
     category: "all",
     headline_size: 30,
     previous_days: 7,
@@ -136,7 +135,6 @@ const loadHeadlineSettings: LoadHeadlineSettings = async () => {
     }
     const currSettings = settings.headline;
     return {
-      country: currSettings.country || "us",
       category: currSettings.category || "all",
       headline_size: currSettings.headline_size || 30,
       previous_days: currSettings.previous_days || 7,
