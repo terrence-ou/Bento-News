@@ -1,3 +1,8 @@
+import { useCallback } from "react";
+import { useAtom } from "jotai";
+import { cn } from "@/utils";
+import { LanguageCodes, SortBy } from "@shared/consts";
+import { searchQueryAtom } from "@/atoms/searchAtoms";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import {
@@ -7,9 +12,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LanguageCodes, SortBy } from "@shared/consts";
+
+// ======== Main Component ========
 
 const SearchBox = ({ onClose }: { onClose: () => void }) => {
+  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
+
+  const handleSearchQueryUpdate = useCallback((key: string) => {
+    return (value: string) => {
+      setSearchQuery((prev) => ({ ...prev, [key]: value }));
+    };
+  }, []);
+
+  const validDates = (() => {
+    if (searchQuery.from && searchQuery.to) {
+      const fromDate = new Date(searchQuery.from);
+      const toDate = new Date(searchQuery.to);
+      return fromDate < toDate;
+    }
+    return true;
+  })();
+
+  const keywordsMissing =
+    searchQuery.keywords !== undefined &&
+    searchQuery.keywords.length === 0;
+
   return (
     <div className="w-full h-full py-4 px-5 flex flex-col gap-4 animate-fadeIn">
       <div className="flex justify-between items-center">
@@ -20,26 +47,68 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
       </div>
       <SearchBlock title="Keywords (separate by comma) *">
         <textarea
-          className="border resize-none w-full border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono font-light tracking-tight focus-visible:outline-primary"
+          className={cn(
+            "border resize-none w-full border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono font-light tracking-tight focus-visible:outline-primary",
+            keywordsMissing && "border-destructive/80 border-2"
+          )}
+          defaultValue={searchQuery.keywords}
+          onBlur={(e) =>
+            handleSearchQueryUpdate("keywords")(e.target.value)
+          }
           required={true}
         />
       </SearchBlock>
       <SearchBlock title="Language">
-        <Options type={"languages"} placeholder="English" />
+        <Options
+          type={"languages"}
+          placeholder={searchQuery.language || "English"}
+          onChange={handleSearchQueryUpdate("language")}
+        />
       </SearchBlock>
       <SearchBlock title="Sort By">
-        <Options type={"sortBy"} placeholder="Relevance" />
+        <Options
+          type={"sortBy"}
+          placeholder="Relevance"
+          onChange={handleSearchQueryUpdate("sortBy")}
+        />
       </SearchBlock>
       <div className="flex justify-between">
         <SearchBlock title="From">
-          <DatePicker />
+          <DatePicker
+            onChange={handleSearchQueryUpdate("from")}
+            valid={validDates}
+          />
         </SearchBlock>
         <SearchBlock title="To">
-          <DatePicker />
+          <DatePicker
+            onChange={handleSearchQueryUpdate("to")}
+            valid={validDates}
+          />
         </SearchBlock>
       </div>
       <div className="flex-1 content-end">
-        <Button className="w-full">Search</Button>
+        <div className="pb-1">
+          {keywordsMissing && (
+            <p className="text-sm text-destructive/80 italic">
+              *The keywords field is required.
+            </p>
+          )}
+          {!validDates && (
+            <p className="text-sm text-destructive/80 italic">
+              *Invalid date range.
+            </p>
+          )}
+        </div>
+        <Button
+          className="w-full"
+          disabled={
+            keywordsMissing ||
+            searchQuery.keywords === undefined ||
+            validDates
+          }
+        >
+          Search
+        </Button>
       </div>
     </div>
   );
@@ -50,23 +119,25 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
 const Options = ({
   type,
   placeholder,
+  onChange,
 }: {
   type: "languages" | "sortBy";
   placeholder: string;
+  onChange: (value: string) => void;
 }) => {
   const options = type === "languages" ? LanguageCodes : SortBy;
   return (
     <div>
-      <Select>
+      <Select onValueChange={onChange}>
         <SelectTrigger className="h-7 rounded-[0.3rem] border-primary/30 px-2 py-[2px] font-mono focus:ring-offset-0">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="max-h-60">
-          {Object.entries(options).map(([name, code]) => (
+          {Object.entries(options).map(([name, _]) => (
             <SelectItem
-              key={`search-lan-${code}`}
+              key={`search-lan-${name}`}
               className="font-mono"
-              value={code}
+              value={name}
             >
               {name}
             </SelectItem>
@@ -77,7 +148,13 @@ const Options = ({
   );
 };
 
-const DatePicker = () => {
+const DatePicker = ({
+  onChange,
+  valid = true,
+}: {
+  onChange: (string) => void;
+  valid?: boolean;
+}) => {
   const maxDate = new Date().toISOString().split("T")[0];
   const fiveMonthsAgo = new Date();
   fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
@@ -87,8 +164,11 @@ const DatePicker = () => {
       type="date"
       max={maxDate}
       min={minDate}
-      className="border w-32 border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono text-sm font-light tracking-tight focus-visible:outline-primary"
-      onChange={(e) => console.log(e.target.value)}
+      className={cn(
+        "border w-32 border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono text-sm font-light tracking-tight focus-visible:outline-primary",
+        cn(!valid && "border-destructive/80 border-2")
+      )}
+      onChange={(e) => onChange(e.target.value)}
     />
   );
 };
