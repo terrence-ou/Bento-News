@@ -17,6 +17,7 @@ export type GetSearchResultsFn = (
 ) => Promise<void>;
 
 export type LoadHeadlinesFn = () => Promise<Articles | undefined>;
+export type LoadSearchResultsFn = () => Promise<Articles | undefined>;
 
 export type LoadApiKeysFn = () => Promise<{
   newsapi: string;

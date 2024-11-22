@@ -36,6 +36,11 @@ const headlineLoader = async () => {
   };
 };
 
+const searchResultsLoader = async () => {
+  const searchResults = await window.context.loadSearchResults();
+  return searchResults || new Articles([]);
+};
+
 // router definition
 const router = createHashRouter(
   [
@@ -49,7 +54,12 @@ const router = createHashRouter(
           element: <Headlines />,
           loader: headlineLoader,
         },
-        { path: "search", element: <Search />, children: [] },
+        {
+          path: "search",
+          element: <Search />,
+          loader: searchResultsLoader,
+          children: [],
+        },
         { path: "folders", element: <Folders />, children: [] },
       ],
     },

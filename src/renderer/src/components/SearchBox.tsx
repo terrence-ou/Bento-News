@@ -45,6 +45,7 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
         </h1>
         <X className="w-5 hover:cursor-pointer" onClick={onClose} />
       </div>
+      {/* Keywords */}
       <SearchBlock title="Keywords (separate by comma) *">
         <textarea
           className={cn(
@@ -58,6 +59,7 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
           required={true}
         />
       </SearchBlock>
+      {/* Language */}
       <SearchBlock title="Language">
         <Options
           type={"languages"}
@@ -65,6 +67,7 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
           onChange={handleSearchQueryUpdate("language")}
         />
       </SearchBlock>
+      {/* Sort by */}
       <SearchBlock title="Sort By">
         <Options
           type={"sortBy"}
@@ -73,12 +76,14 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
         />
       </SearchBlock>
       <div className="flex justify-between">
+        {/* From date */}
         <SearchBlock title="From">
           <DatePicker
             onChange={handleSearchQueryUpdate("from")}
             valid={validDates}
           />
         </SearchBlock>
+        {/* To date */}
         <SearchBlock title="To">
           <DatePicker
             onChange={handleSearchQueryUpdate("to")}

@@ -14,6 +14,7 @@ import {
   loadHeadlineSettings,
   writeHeadlineSettings,
   getSearchResults,
+  loadSearchResults,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -24,6 +25,7 @@ import {
   WriteHeadlineSettingsFn,
   RemoveTodayHeadlinesFn,
   GetSearchResultsFn,
+  LoadSearchResultsFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -111,6 +113,12 @@ app.whenReady().then(() => {
     "loadPrevHeadlines",
     (_, ...args: Parameters<LoadHeadlinesFn>) =>
       loadPrevHeadlines(...args)
+  );
+
+  ipcMain.handle(
+    "loadSearchResults",
+    (_, ...args: Parameters<LoadSearchResultsFn>) =>
+      loadSearchResults(...args)
   );
 
   // Settings

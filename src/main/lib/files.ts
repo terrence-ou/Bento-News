@@ -7,6 +7,7 @@ import {
   SEARCH_DIR,
   HEADLINE_DIR,
   USER_FOLDERS_DIR,
+  SEARCH_RESULTS_FILENAME,
 } from "@shared/consts";
 import type {
   LoadApiKeysFn,
@@ -15,6 +16,7 @@ import type {
   RemoveTodayHeadlinesFn,
   WriteApiKeysFn,
   WriteHeadlineSettingsFn,
+  LoadSearchResultsFn,
 } from "@shared/types";
 
 const projectFolder = path.join(homedir(), APP_FOLDER);
@@ -62,7 +64,7 @@ const loadTodayHeadlines: LoadHeadlinesFn = async () => {
     if (todayFiles.length === 0) {
       return undefined;
     }
-    const news = await processFiles(todayFiles);
+    const news = await processFiles(headlinesFolder, todayFiles);
     const articles = new Articles(news);
     return articles;
   } catch (error) {
@@ -94,7 +96,7 @@ const loadPrevHeadlines: LoadHeadlinesFn = async () => {
     if (previousFiles.length === 0) {
       return undefined;
     }
-    const news = await processFiles(previousFiles);
+    const news = await processFiles(headlinesFolder, previousFiles);
     const articles = new Articles(news);
     return articles;
   } catch (error) {
@@ -102,6 +104,28 @@ const loadPrevHeadlines: LoadHeadlinesFn = async () => {
       "Error loading previous headlines. [ERROR]: ",
       error
     );
+    return undefined;
+  }
+};
+
+const loadSearchResults: LoadSearchResultsFn = async () => {
+  try {
+    // Get an array of today's files
+    const searchResultFile = path.join(
+      searchFolder,
+      SEARCH_RESULTS_FILENAME
+    );
+    if (!fs.existsSync(searchResultFile)) {
+      return undefined;
+    }
+
+    const news = await processFiles(searchFolder, [
+      SEARCH_RESULTS_FILENAME,
+    ]);
+    const articles = new Articles(news);
+    return articles;
+  } catch (error) {
+    console.error("Error loading today's file. [ERROR]: ", error);
     return undefined;
   }
 };
@@ -223,7 +247,10 @@ const isValidData = (data: any): data is { articles: Article[] } => {
 };
 
 // load files into the array
-const processFiles = async (files: string[]): Promise<Article[]> => {
+const processFiles = async (
+  folder: string,
+  files: string[]
+): Promise<Article[]> => {
   const existedNews = new Set<string>();
   const news: Article[] = [];
   // Read each file and extract the articles
@@ -232,7 +259,7 @@ const processFiles = async (files: string[]): Promise<Article[]> => {
     sortedFiles.map(async (file) => {
       try {
         const data = fs.readFileSync(
-          path.join(headlinesFolder, file),
+          path.join(folder, file),
           "utf-8"
         );
         const parsedData = JSON.parse(data);
@@ -261,6 +288,7 @@ export {
   ensureProjectFiles,
   loadPrevHeadlines,
   loadTodayHeadlines,
+  loadSearchResults,
   loadHeadlineSettings,
   loadApiKeys,
   writeApiKeys,

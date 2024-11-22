@@ -1,10 +1,14 @@
 import { useAtom } from "jotai";
+import { useLoaderData } from "react-router-dom";
 import { searchBoxExpandedAtom } from "@/atoms/searchAtoms";
 import { ScanSearch as SearchIcon } from "lucide-react";
 import { cn } from "@/utils";
 import SearchBox from "@/components/SearchBox";
+import { Articles } from "@shared/models/Articles";
 
 const Search = () => {
+  const data = useLoaderData() as Articles;
+  console.log(data);
   const [expanded, setExpanded] = useAtom(searchBoxExpandedAtom);
   const handleSetExpanded = (value: boolean) => {
     setExpanded(value);

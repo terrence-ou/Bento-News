@@ -3,6 +3,7 @@ export const APP_FOLDER = "Documents/IntelliNews";
 export const HEADLINE_DIR = APP_FOLDER + "/headlines";
 export const SEARCH_DIR = APP_FOLDER + "/search";
 export const USER_FOLDERS_DIR = APP_FOLDER + "/user_folders";
+export const SEARCH_RESULTS_FILENAME = "search_results.json";
 
 // News API - related constants
 export const Categories = [

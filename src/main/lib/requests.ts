@@ -6,7 +6,12 @@ import type {
   GetHeadlinesFn,
   GetSearchResultsFn,
 } from "@shared/types";
-import { LanguageCodes, SEARCH_DIR, SortBy } from "@shared/consts";
+import {
+  LanguageCodes,
+  SEARCH_DIR,
+  SEARCH_RESULTS_FILENAME,
+  SortBy,
+} from "@shared/consts";
 import { HEADLINE_DIR, APP_FOLDER } from "@shared/consts";
 
 // Consts
@@ -113,7 +118,10 @@ const getSearchResults: GetSearchResultsFn = async (searchParams) => {
   try {
     const response = await axios.get(url);
     const data = response.data;
-    const fileDir = path.join(searchFolderDir, "search_results.json");
+    const fileDir = path.join(
+      searchFolderDir,
+      SEARCH_RESULTS_FILENAME
+    );
     fs.writeFileSync(fileDir, JSON.stringify(data, null, 2), "utf-8");
   } catch (error) {
     console.error(error);
