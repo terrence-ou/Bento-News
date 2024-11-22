@@ -1,11 +1,11 @@
 import {
-  LoadHeadlines,
+  LoadHeadlinesFn,
   GetHeadlinesFn,
-  LoadApiKeys,
-  WriteApiKeys,
-  LoadHeadlineSettings,
-  WriteHeadlineSettings,
-  RemoveTodayHeadlines,
+  LoadApiKeysFn,
+  WriteApiKeysFn,
+  LoadHeadlineSettingsFn,
+  WriteHeadlineSettingsFn,
+  RemoveTodayHeadlinesFn,
 } from "@shared/types";
 
 // Type definition for the preload process
@@ -13,13 +13,13 @@ declare global {
   interface Window {
     context: {
       getHeadlines: GetHeadlinesFn;
-      loadTodayHeadlines: LoadHeadlines;
-      loadPrevHeadlines: LoadHeadlines;
-      loadApiKeys: LoadApiKeys;
-      loadHeadlineSettings: LoadHeadlineSettings;
-      writeApiKeys: WriteApiKeys;
-      writeHeadlineSettings: WriteHeadlineSettings;
-      removeTodayHeadlines: RemoveTodayHeadlines;
+      loadTodayHeadlines: LoadHeadlinesFn;
+      loadPrevHeadlines: LoadHeadlinesFn;
+      loadApiKeys: LoadApiKeysFn;
+      loadHeadlineSettings: LoadHeadlineSettingsFn;
+      writeApiKeys: WriteApiKeysFn;
+      writeHeadlineSettings: WriteHeadlineSettingsFn;
+      removeTodayHeadlines: RemoveTodayHeadlinesFn;
     };
   }
 }

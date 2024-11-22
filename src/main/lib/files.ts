@@ -4,20 +4,22 @@ import { homedir } from "os";
 import { Article, Articles } from "@shared/models/Articles";
 import {
   APP_FOLDER,
+  SEARCH_DIR,
   HEADLINE_DIR,
   USER_FOLDERS_DIR,
 } from "@shared/consts";
 import type {
-  LoadApiKeys,
-  LoadHeadlines,
-  LoadHeadlineSettings,
-  RemoveTodayHeadlines,
-  WriteApiKeys,
-  WriteHeadlineSettings,
+  LoadApiKeysFn,
+  LoadHeadlinesFn,
+  LoadHeadlineSettingsFn,
+  RemoveTodayHeadlinesFn,
+  WriteApiKeysFn,
+  WriteHeadlineSettingsFn,
 } from "@shared/types";
 
 const projectFolder = path.join(homedir(), APP_FOLDER);
 const headlinesFolder = path.join(homedir(), HEADLINE_DIR);
+const searchFolder = path.join(homedir(), SEARCH_DIR);
 const userFolder = path.join(homedir(), USER_FOLDERS_DIR);
 const settingsFile = path.join(
   homedir(),
@@ -27,12 +29,16 @@ const settingsFile = path.join(
 
 // Ensure settings.json file
 const ensureProjectFiles = () => {
-  if (!fs.existsSync(projectFolder))
-    fs.mkdirSync(projectFolder, { recursive: true });
-  if (!fs.existsSync(headlinesFolder))
-    fs.mkdirSync(headlinesFolder, { recursive: true });
-  if (!fs.existsSync(userFolder))
-    fs.mkdirSync(userFolder, { recursive: true });
+  for (const folder of [
+    projectFolder,
+    headlinesFolder,
+    searchFolder,
+    userFolder,
+  ]) {
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true });
+    }
+  }
   if (!fs.existsSync(settingsFile))
     fs.writeFileSync(
       settingsFile,
@@ -44,7 +50,7 @@ const ensureProjectFiles = () => {
 // ============ Loaders =============
 
 // Load today's headlines from the local file
-const loadTodayHeadlines: LoadHeadlines = async () => {
+const loadTodayHeadlines: LoadHeadlinesFn = async () => {
   try {
     // Get an array of today's files
     const today = new Date().toISOString().slice(0, 10); // it is actually the Greenwich time
@@ -66,7 +72,7 @@ const loadTodayHeadlines: LoadHeadlines = async () => {
 };
 
 // Load previous headlines from the local file
-const loadPrevHeadlines: LoadHeadlines = async () => {
+const loadPrevHeadlines: LoadHeadlinesFn = async () => {
   try {
     const { previous_days: prevDays } = await loadHeadlineSettings();
     // Get an array of files within the last prevDays days
@@ -101,7 +107,7 @@ const loadPrevHeadlines: LoadHeadlines = async () => {
 };
 
 // Load API keys from the local setting file
-const loadApiKeys: LoadApiKeys = async () => {
+const loadApiKeys: LoadApiKeysFn = async () => {
   const emptyKeys = { newsapi: "", openai: "" };
 
   try {
@@ -121,7 +127,7 @@ const loadApiKeys: LoadApiKeys = async () => {
 };
 
 // load Headline preferences from the local setting file
-const loadHeadlineSettings: LoadHeadlineSettings = async () => {
+const loadHeadlineSettings: LoadHeadlineSettingsFn = async () => {
   const defaultHeadlineSettings = {
     category: "all",
     headline_size: 30,
@@ -151,7 +157,7 @@ const loadHeadlineSettings: LoadHeadlineSettings = async () => {
 // ============ Writers =============
 
 // Write API keys to the local setting file with the user's input
-const writeApiKeys: WriteApiKeys = async ({ newsapi, openai }) => {
+const writeApiKeys: WriteApiKeysFn = async ({ newsapi, openai }) => {
   try {
     const data = fs.readFileSync(settingsFile, "utf-8");
     const settings = JSON.parse(data);
@@ -168,7 +174,7 @@ const writeApiKeys: WriteApiKeys = async ({ newsapi, openai }) => {
   }
 };
 
-const writeHeadlineSettings: WriteHeadlineSettings = async (
+const writeHeadlineSettings: WriteHeadlineSettingsFn = async (
   settings
 ) => {
   try {
@@ -188,7 +194,7 @@ const writeHeadlineSettings: WriteHeadlineSettings = async (
   }
 };
 
-const removeTodayHeadlines: RemoveTodayHeadlines = async () => {
+const removeTodayHeadlines: RemoveTodayHeadlinesFn = async () => {
   try {
     const today = new Date().toISOString().slice(0, 10);
     const files = fs.readdirSync(headlinesFolder);

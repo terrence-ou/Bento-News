@@ -2,24 +2,34 @@ import { Articles } from "./models/Articles";
 import { Categories } from "./consts";
 
 export type Category = (typeof Categories)[number];
+export type SearchParams = {
+  keywords?: string;
+  language?: string;
+  sortBy?: string;
+  from?: string;
+  to?: string;
+};
 
 // Types for the main process
 export type GetHeadlinesFn = () => Promise<void>;
+export type GetSearchResultsFn = (
+  searchParams: SearchParams
+) => Promise<void>;
 
-export type LoadHeadlines = () => Promise<Articles | undefined>;
+export type LoadHeadlinesFn = () => Promise<Articles | undefined>;
 
-export type LoadApiKeys = () => Promise<{
+export type LoadApiKeysFn = () => Promise<{
   newsapi: string;
   openai: string;
 }>;
 
-export type LoadHeadlineSettings = () => Promise<{
+export type LoadHeadlineSettingsFn = () => Promise<{
   category: Category;
   headline_size: number;
   previous_days: number;
 }>;
 
-export type WriteApiKeys = ({
+export type WriteApiKeysFn = ({
   newsapi,
   openai,
 }: {
@@ -27,7 +37,7 @@ export type WriteApiKeys = ({
   openai: string;
 }) => Promise<void>;
 
-export type WriteHeadlineSettings = ({
+export type WriteHeadlineSettingsFn = ({
   category,
   headline_size,
   previous_days,
@@ -37,4 +47,4 @@ export type WriteHeadlineSettings = ({
   previous_days: number;
 }) => Promise<void>;
 
-export type RemoveTodayHeadlines = () => Promise<void>;
+export type RemoveTodayHeadlinesFn = () => Promise<void>;

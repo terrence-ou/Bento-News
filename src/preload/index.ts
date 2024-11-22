@@ -1,11 +1,11 @@
 import { contextBridge } from "electron";
 import { ipcRenderer } from "electron/renderer";
 import {
-  LoadHeadlines,
+  LoadHeadlinesFn,
   GetHeadlinesFn,
-  LoadHeadlineSettings,
-  WriteHeadlineSettings,
-  RemoveTodayHeadlines,
+  LoadHeadlineSettingsFn,
+  WriteHeadlineSettingsFn,
+  RemoveTodayHeadlinesFn,
 } from "@shared/types";
 
 // The preload process plays a middleware role in bridging
@@ -22,23 +22,23 @@ try {
   contextBridge.exposeInMainWorld("context", {
     getHeadlines: (...args: Parameters<GetHeadlinesFn>) =>
       ipcRenderer.invoke("getHeadlines", ...args),
-    loadTodayHeadlines: (...args: Parameters<LoadHeadlines>) =>
+    loadTodayHeadlines: (...args: Parameters<LoadHeadlinesFn>) =>
       ipcRenderer.invoke("loadTodayHeadlines", ...args),
-    loadPrevHeadlines: (...args: Parameters<LoadHeadlines>) =>
+    loadPrevHeadlines: (...args: Parameters<LoadHeadlinesFn>) =>
       ipcRenderer.invoke("loadPrevHeadlines", ...args),
     // Settings
-    loadApiKeys: (...args: Parameters<LoadHeadlines>) =>
+    loadApiKeys: (...args: Parameters<LoadHeadlinesFn>) =>
       ipcRenderer.invoke("loadApiKeys", ...args),
     loadHeadlineSettings: (
-      ...args: Parameters<LoadHeadlineSettings>
+      ...args: Parameters<LoadHeadlineSettingsFn>
     ) => ipcRenderer.invoke("loadHeadlineSettings", ...args),
-    writeApiKeys: (...args: Parameters<LoadHeadlines>) =>
+    writeApiKeys: (...args: Parameters<LoadHeadlinesFn>) =>
       ipcRenderer.invoke("writeApiKeys", ...args),
     writeHeadlineSettings: (
-      ...args: Parameters<WriteHeadlineSettings>
+      ...args: Parameters<WriteHeadlineSettingsFn>
     ) => ipcRenderer.invoke("writeHeadlineSettings", ...args),
     removeTodayHeadlines: (
-      ...args: Parameters<RemoveTodayHeadlines>
+      ...args: Parameters<RemoveTodayHeadlinesFn>
     ) => ipcRenderer.invoke("removeTodayHeadlines", ...args),
   });
 } catch (error) {

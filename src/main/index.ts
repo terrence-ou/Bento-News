@@ -16,12 +16,12 @@ import {
 } from "@/lib";
 import {
   GetHeadlinesFn,
-  LoadApiKeys,
-  LoadHeadlines,
-  LoadHeadlineSettings,
-  WriteApiKeys,
-  WriteHeadlineSettings,
-  RemoveTodayHeadlines,
+  LoadApiKeysFn,
+  LoadHeadlinesFn,
+  LoadHeadlineSettingsFn,
+  WriteApiKeysFn,
+  WriteHeadlineSettingsFn,
+  RemoveTodayHeadlinesFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -95,42 +95,42 @@ app.whenReady().then(() => {
 
   ipcMain.handle(
     "loadTodayHeadlines",
-    (_, ...args: Parameters<LoadHeadlines>) =>
+    (_, ...args: Parameters<LoadHeadlinesFn>) =>
       loadTodayHeadlines(...args)
   );
 
   ipcMain.handle(
     "loadPrevHeadlines",
-    (_, ...args: Parameters<LoadHeadlines>) =>
+    (_, ...args: Parameters<LoadHeadlinesFn>) =>
       loadPrevHeadlines(...args)
   );
 
   // Settings
   ipcMain.handle(
     "loadApiKeys",
-    (_, ...args: Parameters<LoadApiKeys>) => loadApiKeys(...args)
+    (_, ...args: Parameters<LoadApiKeysFn>) => loadApiKeys(...args)
   );
 
   ipcMain.handle(
     "loadHeadlineSettings",
-    (_, ...args: Parameters<LoadHeadlineSettings>) =>
+    (_, ...args: Parameters<LoadHeadlineSettingsFn>) =>
       loadHeadlineSettings(...args)
   );
 
   ipcMain.handle(
     "writeApiKeys",
-    (_, ...args: Parameters<WriteApiKeys>) => writeApiKeys(...args)
+    (_, ...args: Parameters<WriteApiKeysFn>) => writeApiKeys(...args)
   );
 
   ipcMain.handle(
     "writeHeadlineSettings",
-    (_, ...args: Parameters<WriteHeadlineSettings>) =>
+    (_, ...args: Parameters<WriteHeadlineSettingsFn>) =>
       writeHeadlineSettings(...args)
   );
 
   ipcMain.handle(
     "removeTodayHeadlines",
-    (_, ...args: Parameters<RemoveTodayHeadlines>) =>
+    (_, ...args: Parameters<RemoveTodayHeadlinesFn>) =>
       removeTodayHeadlines(...args)
   );
 });

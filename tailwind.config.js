@@ -93,12 +93,17 @@ module.exports = {
             "animation-timing-function": "cubic-bezier(0.8, 0, 1, 1)",
           },
         },
+        fadeIn: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "spin-once": "spin 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1",
         "bounce-slow": "bounce 3s infinite",
+        fadeIn: "fadeIn 0.3s ease-out",
       },
     },
   },

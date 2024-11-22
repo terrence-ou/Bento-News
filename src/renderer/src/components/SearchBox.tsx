@@ -11,15 +11,18 @@ import { LanguageCodes, SortBy } from "@shared/consts";
 
 const SearchBox = ({ onClose }: { onClose: () => void }) => {
   return (
-    <div className="w-full h-full py-4 px-5 flex flex-col gap-4">
+    <div className="w-full h-full py-4 px-5 flex flex-col gap-4 animate-fadeIn">
       <div className="flex justify-between items-center">
         <h1 className="font-serif font-semibold text-lg">
           New Search
         </h1>
         <X className="w-5 hover:cursor-pointer" onClick={onClose} />
       </div>
-      <SearchBlock title="Keywords (separate by comma)">
-        <textarea className="border resize-none w-full border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono font-light tracking-tight focus-visible:outline-primary" />
+      <SearchBlock title="Keywords (separate by comma) *">
+        <textarea
+          className="border resize-none w-full border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono font-light tracking-tight focus-visible:outline-primary"
+          required={true}
+        />
       </SearchBlock>
       <SearchBlock title="Language">
         <Options type={"languages"} placeholder="English" />
@@ -74,11 +77,18 @@ const Options = ({
   );
 };
 
-const DatePicker = ({}) => {
+const DatePicker = () => {
+  const maxDate = new Date().toISOString().split("T")[0];
+  const fiveMonthsAgo = new Date();
+  fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
+  const minDate = fiveMonthsAgo.toISOString().split("T")[0];
   return (
     <input
       type="date"
-      className="border w-full border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono text-sm font-light tracking-tight focus-visible:outline-primary"
+      max={maxDate}
+      min={minDate}
+      className="border w-32 border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono text-sm font-light tracking-tight focus-visible:outline-primary"
+      onChange={(e) => console.log(e.target.value)}
     />
   );
 };
