@@ -1,6 +1,7 @@
 import {
   LoadHeadlinesFn,
   GetHeadlinesFn,
+  GetSearchResultsFn,
   LoadApiKeysFn,
   WriteApiKeysFn,
   LoadHeadlineSettingsFn,
@@ -13,6 +14,7 @@ declare global {
   interface Window {
     context: {
       getHeadlines: GetHeadlinesFn;
+      getSearchResults: GetSearchResultsFn;
       loadTodayHeadlines: LoadHeadlinesFn;
       loadPrevHeadlines: LoadHeadlinesFn;
       loadApiKeys: LoadApiKeysFn;

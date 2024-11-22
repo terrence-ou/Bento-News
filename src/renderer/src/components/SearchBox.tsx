@@ -104,8 +104,11 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
           disabled={
             keywordsMissing ||
             searchQuery.keywords === undefined ||
-            validDates
+            !validDates
           }
+          onClick={() => {
+            window.context.getSearchResults(searchQuery);
+          }}
         >
           Search
         </Button>

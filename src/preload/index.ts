@@ -6,6 +6,7 @@ import {
   LoadHeadlineSettingsFn,
   WriteHeadlineSettingsFn,
   RemoveTodayHeadlinesFn,
+  GetSearchResultsFn,
 } from "@shared/types";
 
 // The preload process plays a middleware role in bridging
@@ -22,6 +23,8 @@ try {
   contextBridge.exposeInMainWorld("context", {
     getHeadlines: (...args: Parameters<GetHeadlinesFn>) =>
       ipcRenderer.invoke("getHeadlines", ...args),
+    getSearchResults: (...args: Parameters<GetSearchResultsFn>) =>
+      ipcRenderer.invoke("getSearchResults", ...args),
     loadTodayHeadlines: (...args: Parameters<LoadHeadlinesFn>) =>
       ipcRenderer.invoke("loadTodayHeadlines", ...args),
     loadPrevHeadlines: (...args: Parameters<LoadHeadlinesFn>) =>

@@ -6,11 +6,12 @@ import type {
   GetHeadlinesFn,
   GetSearchResultsFn,
 } from "@shared/types";
-import { LanguageCodes } from "@shared/consts";
+import { LanguageCodes, SEARCH_DIR, SortBy } from "@shared/consts";
 import { HEADLINE_DIR, APP_FOLDER } from "@shared/consts";
 
 // Consts
 const headlineFolderDir = `${homedir()}/${HEADLINE_DIR}`;
+const searchFolderDir = `${homedir()}/${SEARCH_DIR}`;
 const headlineEndpoint = "https://newsapi.org/v2/top-headlines";
 const everythingEndpoint = "https://newsapi.org/v2/everything";
 
@@ -94,23 +95,29 @@ const getSearchResults: GetSearchResultsFn = async (searchParams) => {
   const apiKey = settingsJson.keys.newsapi;
   const queryParams = new URLSearchParams({ apiKey });
 
-  if (keywords) {
-    const formattedKeywords = keywords
-      .trim()
-      .replace(/\s+/g, " ")
-      .replace(",", "AND");
-    queryParams.append("q", formattedKeywords);
-  }
+  const formattedKeywords = keywords
+    .split(",")
+    .map((word) => word.trim())
+    .join(" AND ")
+    .replace(/\s/g, " ");
 
   if (language)
     queryParams.append("language", LanguageCodes[language]);
-  if (sortBy) queryParams.append("sortBy", sortBy);
+  if (sortBy) queryParams.append("sortBy", SortBy[sortBy]);
   if (from) queryParams.append("from", from);
   if (to) queryParams.append("to", to);
 
-  const url = `${everythingEndpoint}?${queryParams.toString()}`;
+  // we cannot put the keywords in the queryParams due to NewsAPI's special query format
+  const url = `${everythingEndpoint}?${queryParams.toString()}&q=${formattedKeywords}`;
 
-  console.log(url);
+  try {
+    const response = await axios.get(url);
+    const data = response.data;
+    const fileDir = path.join(searchFolderDir, "search_results.json");
+    fs.writeFileSync(fileDir, JSON.stringify(data, null, 2), "utf-8");
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export { getHeadlines, getSearchResults };

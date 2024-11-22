@@ -13,6 +13,7 @@ import {
   ensureProjectFiles,
   loadHeadlineSettings,
   writeHeadlineSettings,
+  getSearchResults,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -22,6 +23,7 @@ import {
   WriteApiKeysFn,
   WriteHeadlineSettingsFn,
   RemoveTodayHeadlinesFn,
+  GetSearchResultsFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -91,6 +93,12 @@ app.whenReady().then(() => {
   ipcMain.handle(
     "getHeadlines",
     (_, ...args: Parameters<GetHeadlinesFn>) => getHeadlines(...args)
+  );
+
+  ipcMain.handle(
+    "getSearchResults",
+    (_, ...args: Parameters<GetSearchResultsFn>) =>
+      getSearchResults(...args)
   );
 
   ipcMain.handle(
