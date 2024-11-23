@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { cn } from "@/utils";
 import { LanguageCodes, SortBy } from "@shared/consts";
@@ -17,7 +18,7 @@ import {
 
 const SearchBox = ({ onClose }: { onClose: () => void }) => {
   const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
-
+  const navigate = useNavigate();
   const handleSearchQueryUpdate = useCallback((key: string) => {
     return (value: string) => {
       setSearchQuery((prev) => ({ ...prev, [key]: value }));
@@ -111,8 +112,9 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
             searchQuery.keywords === undefined ||
             !validDates
           }
-          onClick={() => {
-            window.context.getSearchResults(searchQuery);
+          onClick={async () => {
+            await window.context.getSearchResults(searchQuery);
+            navigate("/search");
           }}
         >
           Search

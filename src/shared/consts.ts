@@ -17,6 +17,7 @@ export const Categories = [
   "technology",
 ] as const;
 
+// maybe convert them into the native language
 export enum LanguageCodes {
   Arabic = "ar",
   Chinese = "zh",
