@@ -114,7 +114,7 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
           }
           onClick={async () => {
             await window.context.getSearchResults(searchQuery);
-            navigate("/search");
+            navigate("/search"); // trigger the loader funciton once the search completed
           }}
         >
           Search

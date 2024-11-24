@@ -1,23 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { useLoaderData } from "react-router-dom";
+import { ScanSearch as SearchIcon } from "lucide-react";
 import {
-  ScanSearch as SearchIcon,
-  Newspaper,
-  StickyNote,
-  LayoutList,
-  ArrowDownNarrowWide,
-} from "lucide-react";
-import { searchBoxExpandedAtom } from "@/atoms/searchAtoms";
+  searchBoxExpandedAtom,
+  displaySortByAtom,
+} from "@/atoms/searchAtoms";
 import { cn } from "@/utils";
 import { Articles } from "@shared/models/Articles";
 import useResize from "@/hooks/useResize";
 import SearchBox from "@/components/SearchBox";
 import NewsCardFixed from "@/components/search/NewsCardFixed";
 import { Button } from "@/components/ui/button";
+import LayoutControl from "@/components/search/LayoutControl";
 
 const Search = () => {
   const data = useLoaderData() as Articles;
+  const [sortBy] = useAtom(displaySortByAtom);
   const { defaultDisplayCount, gridCols } = useResize();
   const [expanded, setExpanded] = useAtom(searchBoxExpandedAtom);
   const handleSetExpanded = (value: boolean) => {
@@ -28,6 +27,26 @@ const Search = () => {
   const handleSetExpandedCount = () => {
     setExtendCount((prevCount) => prevCount + defaultDisplayCount);
   };
+
+  const sortedData = useMemo(
+    () =>
+      data.articles.sort((a, b) => {
+        if (sortBy === "date-new") {
+          return (
+            new Date(b.publishedAt).getTime() -
+            new Date(a.publishedAt).getTime()
+          );
+        } else if (sortBy === "date-old") {
+          return (
+            new Date(a.publishedAt).getTime() -
+            new Date(b.publishedAt).getTime()
+          );
+        } else {
+          return a.source.name.localeCompare(b.source.name);
+        }
+      }),
+    [data]
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -44,29 +63,24 @@ const Search = () => {
           <h1 className="font-serif font-semibold text-3xl my-6 mx-2">
             Search Results
           </h1>
-          <div className="flex gap-4">
-            <Newspaper className="w-6 stroke-[1.5px] stroke-primary/70" />
-            <StickyNote className="w-6 stroke-[1.5px] stroke-primary/70" />
-            <LayoutList className="w-6 stroke-[1.5px] stroke-primary/70" />
-            <ArrowDownNarrowWide className="w-6 stroke-[1.5px] stroke-primary/70" />
-          </div>
+          <LayoutControl />
         </div>
         {/* No result */}
-        {data.articles.length === 0 && (
+        {sortedData.length === 0 && (
           <div className="absolute w-full h-full text-center content-center">
             <h1 className="text-2xl text-primary/40">
               No search result available. Try to start a new search.
             </h1>
           </div>
         )}
-        {data.articles.length > 0 && (
+        {sortedData.length > 0 && (
           <div
             className={cn(
               "grid gap-x-5 gap-y-3 transition-all duration-200",
               gridCols
             )}
           >
-            {data.articles
+            {sortedData
               .slice(0, defaultDisplayCount + extendCount)
               .map((article) => (
                 <NewsCardFixed
@@ -78,7 +92,7 @@ const Search = () => {
         )}
       </div>
       {/* Load more button */}
-      {defaultDisplayCount + extendCount < data.articles.length && (
+      {defaultDisplayCount + extendCount < sortedData.length && (
         <div className="flex w-full justify-center pb-6">
           <Button onClick={handleSetExpandedCount}>Load more</Button>
         </div>
