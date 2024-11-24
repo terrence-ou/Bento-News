@@ -1,28 +1,37 @@
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useLoaderData } from "react-router-dom";
-import { searchBoxExpandedAtom } from "@/atoms/searchAtoms";
 import { ScanSearch as SearchIcon } from "lucide-react";
+import { searchBoxExpandedAtom } from "@/atoms/searchAtoms";
 import { cn } from "@/utils";
-import SearchBox from "@/components/SearchBox";
 import { Articles } from "@shared/models/Articles";
-import NewsCard from "@/components/NewsCard";
-import { useEffect } from "react";
+import useResize from "@/hooks/useResize";
+import SearchBox from "@/components/SearchBox";
+import NewsCardFixed from "@/components/search/NewsCardFixed";
+import { Button } from "@/components/ui/button";
 
 const Search = () => {
   const data = useLoaderData() as Articles;
+  const { defaultDisplayCount, gridCols } = useResize();
   const [expanded, setExpanded] = useAtom(searchBoxExpandedAtom);
   const handleSetExpanded = (value: boolean) => {
     setExpanded(value);
   };
 
+  const [extendCount, setExtendCount] = useState<number>(0);
+  const handleSetExpandedCount = () => {
+    setExtendCount((prevCount) => prevCount + defaultDisplayCount);
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [data]);
+  }, []);
 
   return (
     <div
       className="h-full w-full flex flex-col"
-      onClick={() => expanded && handleSetExpanded(false)}
+      // use onMouseDown instead of onClick to prevent the event triggered by selecting text in search box
+      onMouseDown={() => expanded && handleSetExpanded(false)}
     >
       <div className="p-6">
         <h1 className="font-serif font-semibold text-3xl my-6 mx-2">
@@ -37,13 +46,24 @@ const Search = () => {
           </div>
         )}
         {data.articles.length > 0 && (
-          <div className="grid grid-cols-4 gap-x-5 gap-y-3">
-            {data.articles.map((article) => (
-              <NewsCard key={article.title} article={article} />
-            ))}
+          <div className={cn("grid gap-x-5 gap-y-3", gridCols)}>
+            {data.articles
+              .slice(0, defaultDisplayCount + extendCount)
+              .map((article) => (
+                <NewsCardFixed
+                  key={article.title}
+                  article={article}
+                />
+              ))}
           </div>
         )}
       </div>
+      {/* Load more button */}
+      {defaultDisplayCount + extendCount < data.articles.length && (
+        <div className="flex w-full justify-center pb-6">
+          <Button onClick={handleSetExpandedCount}>Load more</Button>
+        </div>
+      )}
       {/* Search box */}
       <div
         className={cn(
@@ -52,7 +72,8 @@ const Search = () => {
             ? "w-16 h-16 rounded-[50%] opacity-40 hover:cursor-pointer hover:opacity-90"
             : "w-80 h-[475px] rounded-[10px] opacity-100 bg-background border-[1.5px] border-dashed border-primary/50 shadow-news-card"
         )}
-        onClick={(e) => e.stopPropagation()}
+        // use onMouseDown instead of onClick to prevent the event triggered by selecting text in search box
+        onMouseDown={(e) => e.stopPropagation()}
       >
         {!expanded && (
           <SearchIcon

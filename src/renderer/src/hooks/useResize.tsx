@@ -23,7 +23,28 @@ const useResize = () => {
     return () => window.removeEventListener("resize", deboundResize);
   }, []);
 
-  return { cols };
+  let defaultDisplayCount = 16;
+  let gridCols = "grid-cols-4";
+
+  switch (cols) {
+    case 3:
+      gridCols = "grid-cols-3";
+      defaultDisplayCount = 12;
+      break;
+    case 5:
+      gridCols = "grid-cols-5";
+      defaultDisplayCount = 20;
+      break;
+    case 6:
+      gridCols = "grid-cols-6";
+      defaultDisplayCount = 24;
+      break;
+    default:
+      gridCols = "grid-cols-4";
+      defaultDisplayCount = 16;
+  }
+
+  return { cols, defaultDisplayCount, gridCols };
 };
 
 export default useResize;

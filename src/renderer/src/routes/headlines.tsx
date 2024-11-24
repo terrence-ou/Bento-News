@@ -44,29 +44,7 @@ const Headlines = () => {
   };
 
   // get number of columns based on window width
-  const { cols } = useResize();
-
-  let gridCols = "grid-cols-4";
-  let defaultDisplayCount = 16;
-
-  // update gridCols based on number of columns
-  switch (cols) {
-    case 3:
-      gridCols = "grid-cols-3";
-      defaultDisplayCount = 12;
-      break;
-    case 5:
-      gridCols = "grid-cols-5";
-      defaultDisplayCount = 20;
-      break;
-    case 6:
-      gridCols = "grid-cols-6";
-      defaultDisplayCount = 24;
-      break;
-    default:
-      gridCols = "grid-cols-4";
-      defaultDisplayCount = 16;
-  }
+  const { cols, defaultDisplayCount, gridCols } = useResize();
 
   // group articles into columns
   const totalTodayDisplayCount = Math.min(
