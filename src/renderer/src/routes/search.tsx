@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useLoaderData } from "react-router-dom";
-import { ScanSearch as SearchIcon } from "lucide-react";
+import {
+  ScanSearch as SearchIcon,
+  Newspaper,
+  StickyNote,
+  LayoutList,
+  ArrowDownNarrowWide,
+} from "lucide-react";
 import { searchBoxExpandedAtom } from "@/atoms/searchAtoms";
 import { cn } from "@/utils";
 import { Articles } from "@shared/models/Articles";
@@ -34,9 +40,17 @@ const Search = () => {
       onMouseDown={() => expanded && handleSetExpanded(false)}
     >
       <div className="p-6">
-        <h1 className="font-serif font-semibold text-3xl my-6 mx-2">
-          Search Results
-        </h1>
+        <div className="flex justify-between items-center">
+          <h1 className="font-serif font-semibold text-3xl my-6 mx-2">
+            Search Results
+          </h1>
+          <div className="flex gap-4">
+            <Newspaper className="w-6 stroke-[1.5px] stroke-primary/70" />
+            <StickyNote className="w-6 stroke-[1.5px] stroke-primary/70" />
+            <LayoutList className="w-6 stroke-[1.5px] stroke-primary/70" />
+            <ArrowDownNarrowWide className="w-6 stroke-[1.5px] stroke-primary/70" />
+          </div>
+        </div>
         {/* No result */}
         {data.articles.length === 0 && (
           <div className="absolute w-full h-full text-center content-center">
@@ -46,7 +60,12 @@ const Search = () => {
           </div>
         )}
         {data.articles.length > 0 && (
-          <div className={cn("grid gap-x-5 gap-y-3", gridCols)}>
+          <div
+            className={cn(
+              "grid gap-x-5 gap-y-3 transition-all duration-200",
+              gridCols
+            )}
+          >
             {data.articles
               .slice(0, defaultDisplayCount + extendCount)
               .map((article) => (
