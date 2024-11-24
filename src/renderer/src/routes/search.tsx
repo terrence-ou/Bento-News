@@ -5,6 +5,7 @@ import { ScanSearch as SearchIcon } from "lucide-react";
 import {
   searchBoxExpandedAtom,
   displaySortByAtom,
+  searchLayoutAtom,
 } from "@/atoms/searchAtoms";
 import { cn } from "@/utils";
 import { Articles } from "@shared/models/Articles";
@@ -17,6 +18,7 @@ import LayoutControl from "@/components/search/LayoutControl";
 const Search = () => {
   const data = useLoaderData() as Articles;
   const [sortBy] = useAtom(displaySortByAtom);
+  const [layout] = useAtom(searchLayoutAtom);
   const { defaultDisplayCount, gridCols } = useResize();
   const [expanded, setExpanded] = useAtom(searchBoxExpandedAtom);
   const handleSetExpanded = (value: boolean) => {
@@ -41,11 +43,13 @@ const Search = () => {
             new Date(a.publishedAt).getTime() -
             new Date(b.publishedAt).getTime()
           );
-        } else {
+        } else if (sortBy === "source-a-z") {
           return a.source.name.localeCompare(b.source.name);
+        } else {
+          return b.source.name.localeCompare(a.source.name);
         }
       }),
-    [data]
+    [data, sortBy]
   );
 
   useEffect(() => {
@@ -77,6 +81,7 @@ const Search = () => {
           <div
             className={cn(
               "grid gap-x-5 gap-y-3 transition-all duration-200",
+              layout === "mini" && "gap-6",
               gridCols
             )}
           >

@@ -1,4 +1,6 @@
 import { memo, ComponentProps, useRef } from "react";
+import { useAtom } from "jotai";
+import { searchLayoutAtom } from "@/atoms/searchAtoms";
 import useImageHeight from "@/hooks/useImgHeight";
 import { cn } from "@/utils";
 import { Article } from "@shared/models/Articles";
@@ -12,6 +14,8 @@ const NewsCardFixedComponent = ({
   ...props
 }: NewsCardFixedProps) => {
   const imgRef = useRef<HTMLImageElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
+  const [layout] = useAtom(searchLayoutAtom);
 
   const { imgError, loading } = useImageHeight(
     article.urlToImage!,
@@ -20,7 +24,8 @@ const NewsCardFixedComponent = ({
 
   return (
     <div
-      className="p-2 border bg-background/80 rounded-lg transition-all duration-150 shadow-news-card"
+      ref={divRef}
+      className="flex flex-col p-2 border bg-background/80 rounded-lg transition-all duration-150 shadow-news-card"
       {...props}
     >
       <div
@@ -40,31 +45,47 @@ const NewsCardFixedComponent = ({
           />
         )}
         {imgError && (
-          <div className="w-full h-28 bg-primary rounded-sm flex items-center justify-center">
+          <div className="w-full h-36 bg-primary rounded-sm flex items-center justify-center">
             <span className="font-medium text-2xl text-background">
               {article.source.name}
             </span>
           </div>
         )}
       </div>
-      <div className="p-1 pt-2">
+      <div
+        className={cn(
+          "p-1 pt-2",
+          layout === "mini" && "flex flex-col-reverse"
+        )}
+      >
         <h1 className="font-semibold leading-tight text-md hover:underline">
           <a href={article.url} target="_blank">
             {article.title}
           </a>
         </h1>
         <div className="flex justify-start items-center gap-2 my-3">
-          <div className="flex items-center justify-center max-w-[60%] px-2 font-semibold text-xs text-background bg-primary/70 rounded">
+          <div
+            className={cn(
+              "flex items-center justify-center max-w-[60%] px-2 font-semibold text-xs text-background bg-primary/70 rounded",
+              layout === "mini" ? "text-sm" : "text-xs"
+            )}
+          >
             {article.source.name}
           </div>
-
-          <p className="text-xs text-primary/50">
+          <p
+            className={cn(
+              "text-primary/50",
+              layout === "mini" ? "text-sm" : "text-xs"
+            )}
+          >
             {article.publishedAt.slice(0, 10)}
           </p>
         </div>
-        <p className="font-serif text-[0.8rem]">
-          {article.description}
-        </p>
+        {layout === "full" && (
+          <p className="font-serif text-[0.8rem]">
+            {article.description}
+          </p>
+        )}
       </div>
     </div>
   );

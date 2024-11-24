@@ -8,7 +8,7 @@ export const searchLayoutAtom = atom<"full" | "mini" | "list">(
 );
 
 export const displaySortByAtom = atom<
-  "date-new" | "date-old" | "source"
+  "date-new" | "date-old" | "source-a-z" | "source-z-a"
 >("date-new");
 
 export const searchQueryAtom = atom<SearchParams>({
