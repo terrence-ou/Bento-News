@@ -17,6 +17,7 @@ import type {
   WriteApiKeysFn,
   WriteHeadlineSettingsFn,
   LoadSearchResultsFn,
+  LoadUserFoldersFn,
 } from "@shared/types";
 
 const projectFolder = path.join(homedir(), APP_FOLDER);
@@ -39,6 +40,16 @@ const ensureProjectFiles = () => {
   ]) {
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder, { recursive: true });
+    }
+    if (folder === userFolder) {
+      const subFolders = fs
+        .readdirSync(folder, { withFileTypes: true })
+        .filter((dirent) => dirent.isDirectory()).length;
+      if (subFolders === 0) {
+        fs.mkdirSync(path.join(folder, "default"), {
+          recursive: true,
+        });
+      }
     }
   }
   if (!fs.existsSync(settingsFile))
@@ -108,6 +119,7 @@ const loadPrevHeadlines: LoadHeadlinesFn = async () => {
   }
 };
 
+// Load search results from the local file
 const loadSearchResults: LoadSearchResultsFn = async () => {
   try {
     // Get an array of today's files
@@ -127,6 +139,17 @@ const loadSearchResults: LoadSearchResultsFn = async () => {
   } catch (error) {
     console.error("Error loading today's file. [ERROR]: ", error);
     return undefined;
+  }
+};
+
+// Load user's news folders
+const loadUserFolders: LoadUserFoldersFn = async () => {
+  try {
+    const folders = fs.readdirSync(userFolder);
+    return folders;
+  } catch (error) {
+    console.error("Error loading user's folders. [ERROR]: ", error);
+    return [];
   }
 };
 
@@ -290,6 +313,7 @@ export {
   loadTodayHeadlines,
   loadSearchResults,
   loadHeadlineSettings,
+  loadUserFolders,
   loadApiKeys,
   writeApiKeys,
   writeHeadlineSettings,

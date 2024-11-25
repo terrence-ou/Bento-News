@@ -6,6 +6,7 @@ import {
   WriteApiKeysFn,
   LoadHeadlineSettingsFn,
   LoadSearchResultsFn,
+  LoadUserFoldersFn,
   WriteHeadlineSettingsFn,
   RemoveTodayHeadlinesFn,
 } from "@shared/types";
@@ -21,6 +22,7 @@ declare global {
       loadSearchResults: LoadSearchResultsFn;
       loadApiKeys: LoadApiKeysFn;
       loadHeadlineSettings: LoadHeadlineSettingsFn;
+      loadUserFolders: LoadUserFoldersFn;
       writeApiKeys: WriteApiKeysFn;
       writeHeadlineSettings: WriteHeadlineSettingsFn;
       removeTodayHeadlines: RemoveTodayHeadlinesFn;

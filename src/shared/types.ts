@@ -10,11 +10,10 @@ export type SearchParams = {
   to?: string;
 };
 
-// Types for the main process
+// ======== Types for the main process ========
+// Loaders
 export type GetHeadlinesFn = () => Promise<void>;
-export type GetSearchResultsFn = (
-  searchParams: SearchParams
-) => Promise<void>;
+export type GetSearchResultsFn = (searchParams: SearchParams) => Promise<void>;
 
 export type LoadHeadlinesFn = () => Promise<Articles | undefined>;
 export type LoadSearchResultsFn = () => Promise<Articles | undefined>;
@@ -30,6 +29,9 @@ export type LoadHeadlineSettingsFn = () => Promise<{
   previous_days: number;
 }>;
 
+export type LoadUserFoldersFn = () => Promise<string[]>;
+
+// Writers
 export type WriteApiKeysFn = ({
   newsapi,
   openai,

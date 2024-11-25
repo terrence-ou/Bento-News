@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import { Articles } from "@shared/models/Articles";
 
-// Loaders
+/* ========= Route functions ========== */
 // load headlines
 const headlineLoader = async () => {
   const [todayHeadlines, prevHeadlines, prevDays] = await Promise.all(
@@ -36,9 +36,16 @@ const headlineLoader = async () => {
   };
 };
 
+// load search results
 const searchResultsLoader = async () => {
   const searchResults = await window.context.loadSearchResults();
   return searchResults || new Articles([]);
+};
+
+// load user folders
+const userFoldersLoader = async () => {
+  const folders = await window.context.loadUserFolders();
+  return folders;
 };
 
 // router definition
@@ -60,7 +67,12 @@ const router = createHashRouter(
           loader: searchResultsLoader,
           children: [],
         },
-        { path: "folders", element: <Folders />, children: [] },
+        {
+          path: "folders",
+          element: <Folders />,
+          loader: userFoldersLoader,
+          children: [],
+        },
       ],
     },
   ],
@@ -75,7 +87,7 @@ const router = createHashRouter(
   }
 );
 
-// The App body
+/*  ========== The App body ========== */
 const App = () => {
   return (
     <RouterProvider

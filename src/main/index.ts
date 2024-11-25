@@ -5,16 +5,17 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import {
   getHeadlines,
+  getSearchResults,
   loadTodayHeadlines,
   loadPrevHeadlines,
   loadApiKeys,
-  writeApiKeys,
-  removeTodayHeadlines,
-  ensureProjectFiles,
   loadHeadlineSettings,
-  writeHeadlineSettings,
-  getSearchResults,
   loadSearchResults,
+  loadUserFolders,
+  writeApiKeys,
+  writeHeadlineSettings,
+  ensureProjectFiles,
+  removeTodayHeadlines,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -26,6 +27,7 @@ import {
   RemoveTodayHeadlinesFn,
   GetSearchResultsFn,
   LoadSearchResultsFn,
+  LoadUserFoldersFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -131,6 +133,12 @@ app.whenReady().then(() => {
     "loadHeadlineSettings",
     (_, ...args: Parameters<LoadHeadlineSettingsFn>) =>
       loadHeadlineSettings(...args)
+  );
+
+  ipcMain.handle(
+    "loadUserFolders",
+    (_, ...args: Parameters<LoadUserFoldersFn>) =>
+      loadUserFolders(...args)
   );
 
   ipcMain.handle(

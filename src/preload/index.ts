@@ -8,6 +8,7 @@ import {
   RemoveTodayHeadlinesFn,
   GetSearchResultsFn,
   LoadSearchResultsFn,
+  LoadUserFoldersFn,
 } from "@shared/types";
 
 // The preload process plays a middleware role in bridging
@@ -32,6 +33,8 @@ try {
       ipcRenderer.invoke("loadPrevHeadlines", ...args),
     loadSearchResults: (...args: Parameters<LoadSearchResultsFn>) =>
       ipcRenderer.invoke("loadSearchResults", ...args),
+    loadUserFolders: (...args: Parameters<LoadUserFoldersFn>) =>
+      ipcRenderer.invoke("loadUserFolders", ...args),
     // Settings
     loadApiKeys: (...args: Parameters<LoadHeadlinesFn>) =>
       ipcRenderer.invoke("loadApiKeys", ...args),
