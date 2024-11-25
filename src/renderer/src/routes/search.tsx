@@ -8,7 +8,7 @@ import {
   searchLayoutAtom,
 } from "@/atoms/searchAtoms";
 import { cn } from "@/utils";
-import { Articles } from "@shared/models/Articles";
+import { Article, Articles } from "@shared/models/Articles";
 import useResize from "@/hooks/useResize";
 import SearchBox from "@/components/SearchBox";
 import NewsCardFixed from "@/components/search/NewsCardFixed";
@@ -16,6 +16,25 @@ import { Button } from "@/components/ui/button";
 import LayoutControl from "@/components/search/LayoutControl";
 import NewsCardRow from "@/components/search/NewsCardRow";
 
+const sortArticles = (articles: Article[], sortBy: string) => {
+  return articles.sort((a, b) => {
+    if (sortBy === "date-new") {
+      return (
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      );
+    } else if (sortBy === "date-old") {
+      return (
+        new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
+      );
+    } else if (sortBy === "source-a-z") {
+      return a.source.name.localeCompare(b.source.name);
+    } else {
+      return b.source.name.localeCompare(a.source.name);
+    }
+  });
+};
+
+// The body of Search component
 const Search = () => {
   const data = useLoaderData() as Articles;
   const [sortBy] = useAtom(displaySortByAtom);
@@ -32,25 +51,8 @@ const Search = () => {
   };
 
   const sortedData = useMemo(
-    () =>
-      data.articles.sort((a, b) => {
-        if (sortBy === "date-new") {
-          return (
-            new Date(b.publishedAt).getTime() -
-            new Date(a.publishedAt).getTime()
-          );
-        } else if (sortBy === "date-old") {
-          return (
-            new Date(a.publishedAt).getTime() -
-            new Date(b.publishedAt).getTime()
-          );
-        } else if (sortBy === "source-a-z") {
-          return a.source.name.localeCompare(b.source.name);
-        } else {
-          return b.source.name.localeCompare(a.source.name);
-        }
-      }),
-    [data, sortBy]
+    () => sortArticles(data.articles, sortBy),
+    [data, sortBy],
   );
 
   useEffect(() => {
@@ -86,26 +88,16 @@ const Search = () => {
               layout === "mini" && "gap-6",
               layout !== "list"
                 ? gridCols
-                : "grid-cols-1 xl:grid-cols-2 gap-y-4"
+                : "grid-cols-1 xl:grid-cols-2 gap-y-4",
             )}
           >
             {sortedData
               .slice(0, defaultDisplayCount + extendCount)
               .map((article) => {
                 if (layout === "list") {
-                  return (
-                    <NewsCardRow
-                      key={article.title}
-                      article={article}
-                    />
-                  );
+                  return <NewsCardRow key={article.title} article={article} />;
                 }
-                return (
-                  <NewsCardFixed
-                    key={article.title}
-                    article={article}
-                  />
-                );
+                return <NewsCardFixed key={article.title} article={article} />;
               })}
           </div>
         )}
@@ -122,7 +114,7 @@ const Search = () => {
           "absolute flex justify-center items-center bottom-12 right-12 md:bottom-20 md:right-20 bg-primary transition-all duration-200 overflow-hidden",
           !expanded
             ? "w-16 h-16 rounded-[50%] opacity-40 hover:cursor-pointer hover:opacity-90"
-            : "w-80 h-[475px] rounded-[10px] opacity-100 bg-background border-[1.5px] border-dashed border-primary/50 shadow-news-card"
+            : "w-80 h-[475px] rounded-[10px] opacity-100 bg-background border-[1.5px] border-dashed border-primary/50 shadow-news-card",
         )}
         // use onMouseDown instead of onClick to prevent the event triggered by selecting text in search box
         onMouseDown={(e) => e.stopPropagation()}
@@ -135,9 +127,7 @@ const Search = () => {
             onClick={() => handleSetExpanded(true)}
           />
         )}
-        {expanded && (
-          <SearchBox onClose={() => handleSetExpanded(false)} />
-        )}
+        {expanded && <SearchBox onClose={() => handleSetExpanded(false)} />}
       </div>
     </div>
   );
