@@ -64,6 +64,7 @@ module.exports = {
         sm: "768px",
         md: "1024px",
         lg: "1280px",
+        xl: "1400px",
       },
       boxShadow: {
         "news-card": "3px 2px 4px 0px hsl(var(--primary) / 0.1)",
