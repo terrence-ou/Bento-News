@@ -4,7 +4,7 @@ import { atom } from "jotai";
 export const searchBoxExpandedAtom = atom<boolean>(false);
 
 export const searchLayoutAtom = atom<"full" | "mini" | "list">(
-  "full"
+  "list"
 );
 
 export const displaySortByAtom = atom<

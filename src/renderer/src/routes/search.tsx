@@ -14,6 +14,7 @@ import SearchBox from "@/components/SearchBox";
 import NewsCardFixed from "@/components/search/NewsCardFixed";
 import { Button } from "@/components/ui/button";
 import LayoutControl from "@/components/search/LayoutControl";
+import NewsCardRow from "@/components/search/NewsCardRow";
 
 const Search = () => {
   const data = useLoaderData() as Articles;
@@ -54,7 +55,7 @@ const Search = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [data]);
 
   return (
     <div
@@ -77,22 +78,35 @@ const Search = () => {
             </h1>
           </div>
         )}
+        {/* Have results */}
         {sortedData.length > 0 && (
           <div
             className={cn(
               "grid gap-x-5 gap-y-3 transition-all duration-200",
               layout === "mini" && "gap-6",
-              gridCols
+              layout !== "list"
+                ? gridCols
+                : "grid-cols-1 xl:grid-cols-2 gap-y-4"
             )}
           >
             {sortedData
               .slice(0, defaultDisplayCount + extendCount)
-              .map((article) => (
-                <NewsCardFixed
-                  key={article.title}
-                  article={article}
-                />
-              ))}
+              .map((article) => {
+                if (layout === "list") {
+                  return (
+                    <NewsCardRow
+                      key={article.title}
+                      article={article}
+                    />
+                  );
+                }
+                return (
+                  <NewsCardFixed
+                    key={article.title}
+                    article={article}
+                  />
+                );
+              })}
           </div>
         )}
       </div>

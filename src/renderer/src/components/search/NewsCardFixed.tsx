@@ -64,20 +64,10 @@ const NewsCardFixedComponent = ({
           </a>
         </h1>
         <div className="flex justify-start items-center gap-2 my-3">
-          <div
-            className={cn(
-              "flex items-center justify-center max-w-[60%] px-2 font-semibold text-xs text-background bg-primary/70 rounded",
-              layout === "mini" ? "text-sm" : "text-xs"
-            )}
-          >
+          <div className="flex items-center justify-center max-w-[60%] px-2 font-semibold text-xs text-background bg-primary/70 rounded">
             {article.source.name}
           </div>
-          <p
-            className={cn(
-              "text-primary/50",
-              layout === "mini" ? "text-sm" : "text-xs"
-            )}
-          >
+          <p className="text-primary/50 text-xs">
             {article.publishedAt.slice(0, 10)}
           </p>
         </div>

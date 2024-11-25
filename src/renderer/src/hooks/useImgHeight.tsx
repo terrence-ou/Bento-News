@@ -33,13 +33,13 @@ const useImageHeight = (
       const timeout = setTimeout(() => {
         handleUpdateHeight();
         return clearTimeout(timeout);
-      }, 20);
+      }, 50);
     };
 
     loadImg();
     const debouncedHandleImgHeight = debounce(
       handleUpdateHeight,
-      300
+      200
     );
     window.addEventListener("resize", debouncedHandleImgHeight);
     return () => {
