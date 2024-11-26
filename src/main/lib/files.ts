@@ -18,6 +18,7 @@ import type {
   WriteHeadlineSettingsFn,
   LoadSearchResultsFn,
   LoadUserFoldersFn,
+  ManageFolderFn,
 } from "@shared/types";
 
 const projectFolder = path.join(homedir(), APP_FOLDER);
@@ -30,7 +31,9 @@ const settingsFile = path.join(
   "settings.json"
 );
 
-// Ensure settings.json file
+// ============ Folder Management =============
+
+// Ensure project folder setup
 const ensureProjectFiles = () => {
   for (const folder of [
     projectFolder,
@@ -58,6 +61,34 @@ const ensureProjectFiles = () => {
       JSON.stringify({}, null, 2),
       "utf-8"
     );
+};
+
+const createUserFolder: ManageFolderFn = async (folderName) => {
+  if (
+    fs.existsSync(
+      path.join(
+        userFolder,
+        folderName || new Date().toISOString().slice(0, 10)
+      )
+    )
+  ) {
+    return false;
+  }
+  try {
+    fs.mkdirSync(path.join(userFolder, folderName), {
+      recursive: true,
+    });
+    return true;
+  } catch (error) {
+    console.error("Error creating user folder. [ERROR]: ", error);
+    return false;
+  }
+};
+
+const removeUserFolder: ManageFolderFn = async (
+  folderName: string
+) => {
+  return false;
 };
 
 // ============ Loaders =============
@@ -309,6 +340,7 @@ const processFiles = async (
 
 export {
   ensureProjectFiles,
+  createUserFolder,
   loadPrevHeadlines,
   loadTodayHeadlines,
   loadSearchResults,

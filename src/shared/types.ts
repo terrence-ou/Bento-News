@@ -11,9 +11,15 @@ export type SearchParams = {
 };
 
 // ======== Types for the main process ========
+
+// Folders
+export type ManageFolderFn = (folderName: string) => Promise<boolean>;
+
 // Loaders
 export type GetHeadlinesFn = () => Promise<void>;
-export type GetSearchResultsFn = (searchParams: SearchParams) => Promise<void>;
+export type GetSearchResultsFn = (
+  searchParams: SearchParams
+) => Promise<void>;
 
 export type LoadHeadlinesFn = () => Promise<Articles | undefined>;
 export type LoadSearchResultsFn = () => Promise<Articles | undefined>;

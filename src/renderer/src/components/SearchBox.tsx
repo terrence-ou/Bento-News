@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { cn } from "@/utils";
 import { LanguageCodes, SortBy } from "@shared/consts";
-import { searchQueryAtom } from "@/atoms/searchAtoms";
+import {
+  searchQueryAtom,
+  searchCountAtom,
+} from "@/atoms/searchAtoms";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import {
@@ -18,12 +21,21 @@ import {
 
 const SearchBox = ({ onClose }: { onClose: () => void }) => {
   const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
+  // Maybe change to atom setter
+  const [, setSearchCount] = useAtom(searchCountAtom);
   const navigate = useNavigate();
   const handleSearchQueryUpdate = useCallback((key: string) => {
     return (value: string) => {
       setSearchQuery((prev) => ({ ...prev, [key]: value }));
     };
   }, []);
+
+  // The search action function
+  const searchAction = useCallback(async () => {
+    await window.context.getSearchResults(searchQuery);
+    navigate("/search"); // trigger the loader funciton once the search completed
+    setSearchCount((prev) => prev + 1);
+  }, [searchQuery]);
 
   const validDates = (() => {
     if (searchQuery.from && searchQuery.to) {
@@ -112,10 +124,7 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
             searchQuery.keywords === undefined ||
             !validDates
           }
-          onClick={async () => {
-            await window.context.getSearchResults(searchQuery);
-            navigate("/search"); // trigger the loader funciton once the search completed
-          }}
+          onClick={searchAction}
         >
           Search
         </Button>

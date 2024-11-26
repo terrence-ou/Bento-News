@@ -31,13 +31,13 @@ const NewsCardRow = ({ article }: { article: Article }) => {
           </div>
         )}
       </div>
-      <div className="col-span-2 content-end">
+      <div className="col-span-2 content-center">
         <h1 className="font-semibold text-base text-primary leading-tight hover:underline">
           <a href={article.url} target="_blank">
             {article.title}
           </a>
         </h1>
-        <div className="flex justify-start items-center gap-2 mt-1">
+        <div className="flex justify-start items-center gap-2 mt-[2px]">
           <div className="flex items-center justify-center max-w-[60%] px-2 py-[2px] font-semibold text-xs text-background bg-primary/70 rounded">
             {article.source.name}
           </div>
@@ -46,7 +46,7 @@ const NewsCardRow = ({ article }: { article: Article }) => {
           </p>
         </div>
       </div>
-      <div className="col-span-4 content-end">
+      <div className="col-span-4 content-center">
         <p className="text-sm font-serif">{article.description}</p>
       </div>
     </div>
