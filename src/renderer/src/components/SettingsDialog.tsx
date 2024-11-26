@@ -40,7 +40,7 @@ const menuContent = {
 };
 
 // The SettingDialog component
-const SettingDialog = () => {
+const SettingsDialog = () => {
   const [currMenu, setCurrMenu] = useState<Menu>(Menu.Account);
 
   return (
@@ -82,4 +82,4 @@ const SettingDialog = () => {
   );
 };
 
-export default SettingDialog;
+export default SettingsDialog;

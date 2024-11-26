@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import SettingDialog from "@/components/SettingDialog";
+import SettingsDialog from "@/components/SettingsDialog";
 
 const Header = () => {
   const navButtonStyle =
@@ -73,7 +73,7 @@ const Header = () => {
             />
           </DialogTrigger>
           <DialogContent className="min-w-[650px] min-h-[450px]">
-            <SettingDialog />
+            <SettingsDialog />
           </DialogContent>
         </Dialog>
       </div>

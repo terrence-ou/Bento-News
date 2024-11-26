@@ -1,5 +1,6 @@
-import { FolderIcon, Plus } from "lucide-react";
+import { FolderIcon } from "lucide-react";
 import { cn } from "@/utils";
+import AddFolder from "./AddFolder";
 
 const FolderDisplay = ({
   folderName,
@@ -16,13 +17,6 @@ const FolderDisplay = ({
           "border-primary/40 bg-background/40 hover:bg-background/90 hover:shadow-news-card transition-all duration-150"
       )}
     >
-      {type === "void" && (
-        <Plus
-          className="stroke-[0.7px] stroke-primary/50 fill-background"
-          height={80}
-          width={80}
-        />
-      )}
       {type === "empty" && (
         <>
           <FolderIcon
@@ -33,6 +27,7 @@ const FolderDisplay = ({
           <p className="font-serif">{folderName}</p>
         </>
       )}
+      {type === "void" && <AddFolder />}
     </div>
   );
 };
