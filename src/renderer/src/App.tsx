@@ -8,6 +8,9 @@ import {
   Navigate,
 } from "react-router-dom";
 import { Articles } from "@shared/models/Articles";
+import Workspace, {
+  loader as workspaceLoader,
+} from "./routes/workspace";
 
 /* ========= Route functions ========== */
 // load headlines
@@ -71,7 +74,11 @@ const router = createHashRouter(
           path: "folders",
           element: <Folders />,
           loader: userFoldersLoader,
-          children: [],
+        },
+        {
+          path: "folders/:folderName",
+          element: <Workspace />,
+          loader: workspaceLoader,
         },
       ],
     },

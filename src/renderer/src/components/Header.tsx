@@ -8,6 +8,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import SettingsDialog from "@/components/SettingsDialog";
+import { useAtomValue } from "jotai";
+import { readFolderRouteAtom } from "@/atoms/routesAtoms";
 
 const Header = () => {
   const navButtonStyle =
@@ -15,6 +17,9 @@ const Header = () => {
 
   const location = useLocation();
   const currRoute = location.pathname.split("/")[1];
+
+  // reading the active folder
+  const activeFolder = useAtomValue(readFolderRouteAtom);
 
   return (
     <header className="w-full grid grid-cols-4 pt-3 px-6">
@@ -42,7 +47,11 @@ const Header = () => {
           Search
         </NavLink>
         <NavLink
-          to="folders"
+          to={
+            activeFolder === undefined
+              ? "folders"
+              : `folders/${activeFolder}`
+          }
           className={({ isActive }) =>
             cn(
               navButtonStyle,

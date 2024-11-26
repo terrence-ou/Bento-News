@@ -15,6 +15,8 @@ import {
 import AddFolder from "./AddFolder";
 import { ReactNode } from "react";
 import { Button } from "../ui/button";
+import { useSetAtom } from "jotai";
+import { setFolderRouteAtom } from "@/atoms/routesAtoms";
 
 // ========== FolderDisplay Component ==========
 const FolderDisplay = ({
@@ -24,6 +26,14 @@ const FolderDisplay = ({
   folderName?: string;
   type?: "empty" | "content" | "void";
 }) => {
+  const navigate = useNavigate();
+  const setFolderRoute = useSetAtom(setFolderRouteAtom);
+
+  const handleNavigate = () => {
+    navigate("/folders/" + folderName);
+    setFolderRoute(folderName);
+  };
+
   return (
     <div
       className={cn(
@@ -31,6 +41,7 @@ const FolderDisplay = ({
         type !== "void" &&
           "border-primary/40 bg-background/40 hover:bg-background/90 hover:shadow-news-card transition-all duration-150"
       )}
+      onClick={handleNavigate}
     >
       {type === "empty" && (
         <>
