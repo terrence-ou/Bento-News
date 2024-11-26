@@ -1,4 +1,4 @@
-import { Articles } from "./models/Articles";
+import { Articles, Article } from "./models/Articles";
 import { Categories } from "./consts";
 
 export type Category = (typeof Categories)[number];
@@ -8,6 +8,15 @@ export type SearchParams = {
   sortBy?: string;
   from?: string;
   to?: string;
+};
+export type FolderContents = {
+  articles: Article[];
+  generated_contents: {
+    summary: string;
+    trends: string;
+    suggestions: string;
+    report: string;
+  };
 };
 
 // ======== Types for the main process ========
@@ -36,6 +45,9 @@ export type LoadHeadlineSettingsFn = () => Promise<{
 }>;
 
 export type LoadUserFoldersFn = () => Promise<string[]>;
+export type LoadFolderContentsFn = (
+  folder: string
+) => Promise<FolderContents>;
 
 // Writers
 export type WriteApiKeysFn = ({

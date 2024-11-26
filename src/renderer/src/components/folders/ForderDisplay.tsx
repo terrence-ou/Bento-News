@@ -24,12 +24,14 @@ const FolderDisplay = ({
   type = "empty",
 }: {
   folderName?: string;
-  type?: "empty" | "content" | "void";
+  type?: "empty" | "content" | "add";
 }) => {
   const navigate = useNavigate();
   const setFolderRoute = useSetAtom(setFolderRouteAtom);
 
   const handleNavigate = () => {
+    if (type === "add") return;
+    console.log("go");
     navigate("/folders/" + folderName);
     setFolderRoute(folderName);
   };
@@ -38,7 +40,7 @@ const FolderDisplay = ({
     <div
       className={cn(
         "relative flex flex-col gap-1 justify-center items-center h-52 w-52 mx-auto border-[2px] border-dashed border-primary/20 rounded-lg hover:cursor-pointer group",
-        type !== "void" &&
+        type !== "add" &&
           "border-primary/40 bg-background/40 hover:bg-background/90 hover:shadow-news-card transition-all duration-150"
       )}
       onClick={handleNavigate}
@@ -61,7 +63,7 @@ const FolderDisplay = ({
           <p className="font-serif">{folderName}</p>
         </>
       )}
-      {type === "void" && <AddFolder />}
+      {type === "add" && <AddFolder />}
     </div>
   );
 };
@@ -85,7 +87,9 @@ const DeleteModal = ({
 
   return (
     <Dialog>
-      <DialogTrigger>{children}</DialogTrigger>
+      <DialogTrigger onClick={(e) => e.stopPropagation()}>
+        {children}
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="font-serif mb-2">
@@ -101,7 +105,7 @@ const DeleteModal = ({
           </DialogDescription>
         </DialogHeader>
         <div className="flex gap-2 justify-end mt-6">
-          <DialogClose asChild>
+          <DialogClose asChild onClick={(e) => e.stopPropagation()}>
             <Button
               variant={"ghost"}
               className="h-8 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -109,7 +113,7 @@ const DeleteModal = ({
               Cancel
             </Button>
           </DialogClose>
-          <DialogClose asChild>
+          <DialogClose asChild onClick={(e) => e.stopPropagation()}>
             <Button
               variant={"destructive"}
               className="h-8"

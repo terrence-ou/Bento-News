@@ -6,10 +6,14 @@ import {
   SEARCH_DIR,
   HEADLINE_DIR,
   USER_FOLDERS_DIR,
+  SAVED_ARTICLES_FILENAME,
+  GENERATED_CONTENTS_FILENAME,
 } from "@shared/consts";
 import type {
   ManageFolderFn,
   LoadUserFoldersFn,
+  LoadFolderContentsFn,
+  FolderContents,
 } from "@shared/types";
 
 const projectFolder = path.join(homedir(), APP_FOLDER);
@@ -112,9 +116,90 @@ const loadUserFolders: LoadUserFoldersFn = async () => {
   }
 };
 
+// Load user folder's content
+const loadFolderContents: LoadFolderContentsFn = async (
+  folder: string
+) => {
+  const folderPath = path.join(userFolder, folder);
+  const savedArticlesFilePath = path.join(
+    folderPath,
+    SAVED_ARTICLES_FILENAME
+  );
+  const generatedContentsFilePath = path.join(
+    folderPath,
+    GENERATED_CONTENTS_FILENAME
+  );
+  ensureFolderContents(folder);
+  try {
+    const [savedArticlesFile, generatedContentsFile] =
+      await Promise.all([
+        fs.readFileSync(savedArticlesFilePath, "utf-8"),
+        fs.readFileSync(generatedContentsFilePath, "utf-8"),
+      ]);
+    const savedArticles = JSON.parse(savedArticlesFile);
+    const generatedContents = JSON.parse(generatedContentsFile);
+    return {
+      articles: savedArticles.articles,
+      generated_contents: generatedContents.generated_contents,
+    } as FolderContents;
+  } catch (error) {
+    console.error("Error loading folder content. [ERROR]: ", error);
+    return {
+      articles: [],
+      generated_contents: {
+        summary: "",
+        trends: "",
+        suggestions: "",
+        report: "",
+      },
+    } as FolderContents;
+  }
+};
+
+// ================== Helper Functions ==================
+
+// Ensure folder has articles and generated contents files
+const ensureFolderContents = (folder: string) => {
+  const folderPath = path.join(userFolder, folder);
+  const savedArticlesFile = path.join(
+    folderPath,
+    SAVED_ARTICLES_FILENAME
+  );
+  const generatedContentsFile = path.join(
+    folderPath,
+    GENERATED_CONTENTS_FILENAME
+  );
+  if (!fs.existsSync(savedArticlesFile)) {
+    fs.writeFileSync(
+      savedArticlesFile,
+      JSON.stringify({ articles: [] }, null, 2),
+      "utf-8"
+    );
+  }
+  if (!fs.existsSync(generatedContentsFile)) {
+    fs.writeFileSync(
+      generatedContentsFile,
+      JSON.stringify(
+        {
+          generated_contents: {
+            summary: "",
+            trends: "",
+            suggestions: "",
+            report: "",
+          },
+        },
+        null,
+        2
+      ),
+      "utf-8"
+    );
+  }
+};
+
 export {
   ensureProjectFiles,
   createUserFolder,
   loadUserFolders,
+  loadFolderContents,
   removeUserFolder,
 };

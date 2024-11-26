@@ -10,6 +10,7 @@ import {
   WriteHeadlineSettingsFn,
   RemoveTodayHeadlinesFn,
   ManageFolderFn,
+  LoadFolderContentsFn,
 } from "@shared/types";
 
 // Type definition for the preload process
@@ -24,6 +25,7 @@ declare global {
       loadApiKeys: LoadApiKeysFn;
       loadHeadlineSettings: LoadHeadlineSettingsFn;
       loadUserFolders: LoadUserFoldersFn;
+      loadFolderContents: LoadFolderContentsFn;
       writeApiKeys: WriteApiKeysFn;
       writeHeadlineSettings: WriteHeadlineSettingsFn;
       removeTodayHeadlines: RemoveTodayHeadlinesFn;

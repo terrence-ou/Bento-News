@@ -16,7 +16,7 @@ const Folders = () => {
             folderName={folder}
           />
         ))}
-        <FolderDisplay key={`folders-add`} type="void" />
+        <FolderDisplay key={`folders-add`} type="add" />
       </div>
     </div>
   );

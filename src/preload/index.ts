@@ -1,6 +1,6 @@
 import { contextBridge } from "electron";
 import { ipcRenderer } from "electron/renderer";
-import {
+import type {
   LoadHeadlinesFn,
   GetHeadlinesFn,
   LoadHeadlineSettingsFn,
@@ -9,6 +9,7 @@ import {
   GetSearchResultsFn,
   LoadSearchResultsFn,
   LoadUserFoldersFn,
+  LoadFolderContentsFn,
   ManageFolderFn,
 } from "@shared/types";
 
@@ -51,6 +52,8 @@ try {
     // folders
     loadUserFolders: (...args: Parameters<LoadUserFoldersFn>) =>
       ipcRenderer.invoke("loadUserFolders", ...args),
+    loadFolderContents: (...args: Parameters<LoadFolderContentsFn>) =>
+      ipcRenderer.invoke("loadFolderContents", ...args),
     createUserFolder: (...args: Parameters<ManageFolderFn>) =>
       ipcRenderer.invoke("createUserFolder", ...args),
     removeUserFolder: (...args: Parameters<ManageFolderFn>) =>

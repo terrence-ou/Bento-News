@@ -18,6 +18,7 @@ import {
   removeTodayHeadlines,
   createUserFolder,
   removeUserFolder,
+  loadFolderContents,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -31,6 +32,7 @@ import {
   LoadSearchResultsFn,
   LoadUserFoldersFn,
   ManageFolderFn,
+  LoadFolderContentsFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -172,6 +174,12 @@ app.whenReady().then(() => {
     "removeUserFolder",
     (_, ...args: Parameters<ManageFolderFn>) =>
       removeUserFolder(...args)
+  );
+
+  ipcMain.handle(
+    "loadFolderContents",
+    (_, ...args: Parameters<LoadFolderContentsFn>) =>
+      loadFolderContents(...args)
   );
 });
 
