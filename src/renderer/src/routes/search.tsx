@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { useLoaderData } from "react-router-dom";
 import { ScanSearch as SearchIcon } from "lucide-react";
@@ -43,6 +43,7 @@ const Search = () => {
   const [layout] = useAtom(searchLayoutAtom);
   const { defaultDisplayCount, gridCols } = useResize();
   const [expanded, setExpanded] = useAtom(searchBoxExpandedAtom);
+
   const handleSetExpanded = (value: boolean) => {
     setExpanded(value);
   };
@@ -56,10 +57,6 @@ const Search = () => {
     () => sortArticles(data.articles, sortBy),
     [data, sortBy]
   );
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [data]);
 
   return (
     <div

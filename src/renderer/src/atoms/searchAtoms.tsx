@@ -15,3 +15,5 @@ export const searchQueryAtom = atom<SearchParams>({
   language: "English",
   sortBy: "Relevance",
 });
+
+export const searchCountAtom = atom<number>(0);
