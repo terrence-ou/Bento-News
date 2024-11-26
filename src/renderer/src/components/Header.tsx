@@ -17,8 +17,8 @@ const Header = () => {
   const currRoute = location.pathname.split("/")[1];
 
   return (
-    <header className="w-full grid grid-cols-3 pt-3 px-6">
-      <div className="relative mx-auto col-start-2 z-0 p-1 w-[360px] flex items-center justify-center gap-2 bg-accent rounded-full">
+    <header className="w-full grid grid-cols-4 pt-3 px-6">
+      <div className="relative mx-auto col-start-2 col-span-2 z-0 p-1 w-[360px] flex items-center justify-center gap-2 bg-accent rounded-full">
         <NavLink
           to="headlines"
           className={({ isActive }) =>
@@ -64,7 +64,7 @@ const Header = () => {
           )}
         ></span>
       </div>
-      <div className="col-start-3 flex justify-end items-center focus-visible:outline-none">
+      <div className="flex justify-end items-center focus-visible:outline-none">
         <Dialog>
           <DialogTrigger className="focus-visible:outline-none">
             <Settings

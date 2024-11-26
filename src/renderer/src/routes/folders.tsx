@@ -9,7 +9,7 @@ const Folders = () => {
   const { gridCols } = useResize();
   return (
     <div className="max-h-full px-8 py-16">
-      <div className={cn("grid items-center", gridCols)}>
+      <div className={cn("grid items-center gap-y-6", gridCols)}>
         {folders.map((folder: string) => (
           <FolderDisplay
             key={`folders-${folder}`}

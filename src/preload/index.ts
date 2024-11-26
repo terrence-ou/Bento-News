@@ -53,6 +53,8 @@ try {
       ipcRenderer.invoke("loadUserFolders", ...args),
     createUserFolder: (...args: Parameters<ManageFolderFn>) =>
       ipcRenderer.invoke("createUserFolder", ...args),
+    removeUserFolder: (...args: Parameters<ManageFolderFn>) =>
+      ipcRenderer.invoke("removeUserFolder", ...args),
   });
 } catch (error) {
   console.error(

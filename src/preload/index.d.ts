@@ -28,6 +28,7 @@ declare global {
       writeHeadlineSettings: WriteHeadlineSettingsFn;
       removeTodayHeadlines: RemoveTodayHeadlinesFn;
       createUserFolder: ManageFolderFn;
+      removeUserFolder: ManageFolderFn;
     };
   }
 }

@@ -76,16 +76,35 @@ const createUserFolder: ManageFolderFn = async (folderName) => {
   }
 };
 
-// const removeUserFolder: ManageFolderFn = async (
-//   folderName: string
-// ) => {
-//   return false;
-// };
+const removeUserFolder: ManageFolderFn = async (
+  folderName: string
+) => {
+  const folderPath = path.join(userFolder, folderName);
+  if (!fs.existsSync(folderPath)) {
+    return false;
+  }
+  try {
+    fs.rmSync(folderPath, { recursive: true, force: true });
+    return true;
+  } catch (error) {
+    console.error("Error removing user folder. [ERROR]: ", error);
+    return false;
+  }
+};
 
 // Load user's news folders
 const loadUserFolders: LoadUserFoldersFn = async () => {
   try {
-    const folders = fs.readdirSync(userFolder);
+    const folders = fs
+      .readdirSync(userFolder)
+      .map((folder) => ({
+        name: folder,
+        time: fs
+          .statSync(path.join(userFolder, folder))
+          .birthtime.getTime(),
+      }))
+      .sort((a, b) => a.time - b.time)
+      .map((folder) => folder.name);
     return folders.filter((folder) => folder !== ".DS_Store");
   } catch (error) {
     console.error("Error loading user's folders. [ERROR]: ", error);
@@ -93,4 +112,9 @@ const loadUserFolders: LoadUserFoldersFn = async () => {
   }
 };
 
-export { ensureProjectFiles, createUserFolder, loadUserFolders };
+export {
+  ensureProjectFiles,
+  createUserFolder,
+  loadUserFolders,
+  removeUserFolder,
+};

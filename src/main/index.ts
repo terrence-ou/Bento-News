@@ -17,6 +17,7 @@ import {
   ensureProjectFiles,
   removeTodayHeadlines,
   createUserFolder,
+  removeUserFolder,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -153,6 +154,7 @@ app.whenReady().then(() => {
     (_, ...args: Parameters<RemoveTodayHeadlinesFn>) =>
       removeTodayHeadlines(...args)
   );
+
   // folders
   ipcMain.handle(
     "loadUserFolders",
@@ -164,6 +166,12 @@ app.whenReady().then(() => {
     "createUserFolder",
     (_, ...args: Parameters<ManageFolderFn>) =>
       createUserFolder(...args)
+  );
+
+  ipcMain.handle(
+    "removeUserFolder",
+    (_, ...args: Parameters<ManageFolderFn>) =>
+      removeUserFolder(...args)
   );
 });
 
