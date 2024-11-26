@@ -16,6 +16,7 @@ import {
   writeHeadlineSettings,
   ensureProjectFiles,
   removeTodayHeadlines,
+  createUserFolder,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -28,6 +29,7 @@ import {
   GetSearchResultsFn,
   LoadSearchResultsFn,
   LoadUserFoldersFn,
+  ManageFolderFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -136,12 +138,6 @@ app.whenReady().then(() => {
   );
 
   ipcMain.handle(
-    "loadUserFolders",
-    (_, ...args: Parameters<LoadUserFoldersFn>) =>
-      loadUserFolders(...args)
-  );
-
-  ipcMain.handle(
     "writeApiKeys",
     (_, ...args: Parameters<WriteApiKeysFn>) => writeApiKeys(...args)
   );
@@ -156,6 +152,18 @@ app.whenReady().then(() => {
     "removeTodayHeadlines",
     (_, ...args: Parameters<RemoveTodayHeadlinesFn>) =>
       removeTodayHeadlines(...args)
+  );
+  // folders
+  ipcMain.handle(
+    "loadUserFolders",
+    (_, ...args: Parameters<LoadUserFoldersFn>) =>
+      loadUserFolders(...args)
+  );
+
+  ipcMain.handle(
+    "createUserFolder",
+    (_, ...args: Parameters<ManageFolderFn>) =>
+      createUserFolder(...args)
   );
 });
 

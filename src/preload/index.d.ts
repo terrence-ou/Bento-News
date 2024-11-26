@@ -1,14 +1,15 @@
 import {
-  LoadHeadlinesFn,
   GetHeadlinesFn,
   GetSearchResultsFn,
+  LoadHeadlinesFn,
   LoadApiKeysFn,
-  WriteApiKeysFn,
   LoadHeadlineSettingsFn,
   LoadSearchResultsFn,
   LoadUserFoldersFn,
+  WriteApiKeysFn,
   WriteHeadlineSettingsFn,
   RemoveTodayHeadlinesFn,
+  ManageFolderFn,
 } from "@shared/types";
 
 // Type definition for the preload process
@@ -26,6 +27,7 @@ declare global {
       writeApiKeys: WriteApiKeysFn;
       writeHeadlineSettings: WriteHeadlineSettingsFn;
       removeTodayHeadlines: RemoveTodayHeadlinesFn;
+      createUserFolder: ManageFolderFn;
     };
   }
 }

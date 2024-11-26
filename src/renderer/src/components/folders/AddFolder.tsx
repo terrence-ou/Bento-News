@@ -1,23 +1,38 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { cn } from "@/utils";
 
 const AddFolder = () => {
+  const data = useLoaderData() as string[];
+
   const [adding, setAdding] = useState<boolean>(false);
   const [filename, setFilename] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const navigate = useNavigate();
+  const existingFolders = useMemo(() => new Set(data), [data]);
 
   const handleToggleAdding = () => setAdding((prev) => !prev);
+
   const handleSetFilename = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const specialChars = /[!@#$%^&*(),.?":{}|<>]/g;
     if (specialChars.test(e.target.value)) {
       setError("filename contains special characters.");
+    } else if (existingFolders.has(e.target.value)) {
+      setError("filename already exists.");
     } else {
       setError("");
     }
     setFilename(e.target.value.replace(/\s+/g, " "));
+  };
+
+  const handleCreateFolder = async () => {
+    await window.context.createUserFolder(filename);
+    navigate("/folders");
+    setAdding(false);
+    setFilename("");
   };
 
   return adding ? (
@@ -43,6 +58,7 @@ const AddFolder = () => {
         <button
           className="disabled:text-primary/30 disabled:font-normal hover:font-medium hover:text-primary/80"
           disabled={error.length > 0}
+          onClick={handleCreateFolder}
         >
           add
         </button>
