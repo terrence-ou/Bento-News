@@ -1,18 +1,19 @@
 import { useEffect, useRef } from "react";
 import { useAtom } from "jotai";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { searchCountAtom } from "@/atoms/searchAtoms";
 import Header from "@/components/Header";
 
 const Root = () => {
   const [searchCount] = useAtom(searchCountAtom);
+  const { pathname } = useLocation();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (containerRef.current) {
-      containerRef.current.scrollTop = 0;
+      containerRef.current.scrollTo({ top: 0, behavior: "instant" });
     }
-  }, [searchCount]);
+  }, [searchCount, pathname]);
 
   return (
     <>
