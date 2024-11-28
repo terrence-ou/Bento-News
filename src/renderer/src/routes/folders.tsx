@@ -4,6 +4,12 @@ import useResize from "@/hooks/useResize";
 import { cn } from "@/utils";
 import { useLoaderData } from "react-router-dom";
 
+// load user folders
+export const loader = async () => {
+  const folders = await window.context.loadUserFolders();
+  return folders;
+};
+
 const Folders = () => {
   const folders = useLoaderData() as string[];
   const { gridCols } = useResize();

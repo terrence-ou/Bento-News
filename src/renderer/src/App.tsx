@@ -1,55 +1,26 @@
-import Headlines from "./routes/headlines";
-import Root from "./routes/root";
-import Search from "./routes/search";
-import Folders from "./routes/folders";
+import { useEffect } from "react";
+import { useSetAtom } from "jotai";
 import {
   createHashRouter,
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import { Articles } from "@shared/models/Articles";
+import { setFoldersAtom } from "@/atoms/fodlersAtoms";
+import Root from "@/routes/root";
+import Headlines, {
+  loader as headlineLoader,
+} from "@/routes/headlines";
+import Search, {
+  loader as searchResultsLoader,
+} from "@/routes/search";
+import Folders, {
+  loader as userFoldersLoader,
+} from "@/routes/folders";
 import Workspace, {
   loader as workspaceLoader,
-} from "./routes/workspace";
+} from "@/routes/workspace";
 
 /* ========= Route functions ========== */
-// load headlines
-const headlineLoader = async () => {
-  const [todayHeadlines, prevHeadlines, prevDays] = await Promise.all(
-    [
-      // load today's headlines
-      window.context.loadTodayHeadlines().then(async (headlines) => {
-        if (headlines === undefined) {
-          await window.context.getHeadlines();
-          return window.context.loadTodayHeadlines();
-        }
-        return headlines;
-      }),
-      // load previous headlines
-      window.context.loadPrevHeadlines(),
-      window.context
-        .loadHeadlineSettings()
-        .then(async (settings) => settings.previous_days),
-    ]
-  );
-  return {
-    todayHeadlines: todayHeadlines || new Articles([]),
-    prevHeadlines: prevHeadlines || new Articles([]),
-    prevDays,
-  };
-};
-
-// load search results
-const searchResultsLoader = async () => {
-  const searchResults = await window.context.loadSearchResults();
-  return searchResults || new Articles([]);
-};
-
-// load user folders
-const userFoldersLoader = async () => {
-  const folders = await window.context.loadUserFolders();
-  return folders;
-};
 
 // router definition
 const router = createHashRouter(
@@ -96,6 +67,14 @@ const router = createHashRouter(
 
 /*  ========== The App body ========== */
 const App = () => {
+  const setUserFolders = useSetAtom(setFoldersAtom);
+
+  useEffect(() => {
+    (async () => {
+      setUserFolders(await window.context.loadUserFolders());
+    })();
+  }, []);
+
   return (
     <RouterProvider
       router={router}

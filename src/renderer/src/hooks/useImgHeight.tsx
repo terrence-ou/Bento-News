@@ -33,7 +33,7 @@ const useImageHeight = (
       const timeout = setTimeout(() => {
         handleUpdateHeight();
         return clearTimeout(timeout);
-      }, 15);
+      }, 50);
     };
 
     loadImg();

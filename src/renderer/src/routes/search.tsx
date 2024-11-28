@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import LayoutControl from "@/components/search/LayoutControl";
 import NewsCardRow from "@/components/search/NewsCardRow";
 
+// ========== helper functions ==========
+
 const sortArticles = (articles: Article[], sortBy: string) => {
   return articles.sort((a, b) => {
     if (sortBy === "date-new") {
@@ -36,7 +38,13 @@ const sortArticles = (articles: Article[], sortBy: string) => {
   });
 };
 
-// The body of Search component
+// load search results
+export const loader = async () => {
+  const searchResults = await window.context.loadSearchResults();
+  return searchResults || new Articles([]);
+};
+
+// ========== The body of Search page ==========
 const Search = () => {
   const data = useLoaderData() as Articles;
   const [sortBy] = useAtom(displaySortByAtom);

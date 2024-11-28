@@ -31,7 +31,6 @@ const FolderDisplay = ({
 
   const handleNavigate = () => {
     if (type === "add") return;
-    console.log("go");
     navigate("/folders/" + folderName);
     setFolderRoute(folderName);
   };

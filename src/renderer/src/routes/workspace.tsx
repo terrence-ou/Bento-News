@@ -24,7 +24,6 @@ const Workspace = () => {
   const data = useLoaderData() as string;
   const setFolderRoute = useSetAtom(setFolderRouteAtom);
   const { folderName } = useParams();
-  console.log(data);
   return (
     <div className="h-full w-full">
       <div className="p-6 pt-4">

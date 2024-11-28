@@ -28,7 +28,34 @@ const groupArticles = (
   return groups;
 };
 
-// The body of Headlines component
+// loader
+export const loader = async () => {
+  const [todayHeadlines, prevHeadlines, prevDays] = await Promise.all(
+    [
+      // load today's headlines
+      window.context.loadTodayHeadlines().then(async (headlines) => {
+        if (headlines === undefined) {
+          await window.context.getHeadlines();
+          return window.context.loadTodayHeadlines();
+        }
+        return headlines;
+      }),
+      // load previous headlines
+      window.context.loadPrevHeadlines(),
+      window.context
+        .loadHeadlineSettings()
+        .then(async (settings) => settings.previous_days),
+    ]
+  );
+  return {
+    todayHeadlines: todayHeadlines || new Articles([]),
+    prevHeadlines: prevHeadlines || new Articles([]),
+    prevDays,
+  };
+};
+
+// ========== The body of Headlines page =========
+
 const Headlines = () => {
   const data = useLoaderData() as HeadlinesLoaderData;
   const { todayHeadlines, prevHeadlines, prevDays } = data;
