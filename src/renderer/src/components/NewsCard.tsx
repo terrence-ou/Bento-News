@@ -50,7 +50,7 @@ const NewsCardComponent = ({ article, ...props }: NewsCardProps) => {
           </div>
         )}
         {showDropdown && (
-          <AddToFolderDropdown>
+          <AddToFolderDropdown article={article}>
             <button
               className="w-8 absolute top-2 right-2 rounded-full bg-background focus-visible:outline-none focus-visible:outline-offset-0 shadow-md animate-fadeIn"
               onMouseMove={(e) => e.stopPropagation()}

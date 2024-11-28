@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { useAtomValue } from "jotai";
+import { Article } from "@shared/models/Articles";
 import { readFoldersAtom } from "@/atoms/foldersAtoms";
 import {
   DropdownMenu,
@@ -11,8 +12,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const AddToFolderDropdown = ({
+  article,
   children,
 }: {
+  article: Article;
   children: ReactNode;
 }) => {
   const folders = useAtomValue(readFoldersAtom);
@@ -23,7 +26,14 @@ const AddToFolderDropdown = ({
         <DropdownMenuLabel>Add to...</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {folders.map((folder) => (
-          <DropdownMenuItem key={folder}>{folder}</DropdownMenuItem>
+          <DropdownMenuItem
+            key={folder}
+            onClick={() => {
+              console.log(article);
+            }}
+          >
+            {folder}
+          </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>

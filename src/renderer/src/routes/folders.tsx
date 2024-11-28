@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSetAtom } from "jotai";
 import { setFoldersAtom } from "@/atoms/foldersAtoms";
 import { useLoaderData } from "react-router-dom";
@@ -14,7 +15,7 @@ export const loader = async () => {
 const Folders = () => {
   const setUserFolders = useSetAtom(setFoldersAtom);
   const folders = useLoaderData() as string[];
-  setUserFolders(folders);
+  useEffect(() => setUserFolders(folders), [folders]);
   const { gridCols } = useResize();
   return (
     <div className="max-h-full px-8 py-16">
