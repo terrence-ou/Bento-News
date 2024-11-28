@@ -1,8 +1,9 @@
-import FolderDisplay from "@/components/folders/ForderDisplay";
-
-import useResize from "@/hooks/useResize";
-import { cn } from "@/utils";
+import { useSetAtom } from "jotai";
+import { setFoldersAtom } from "@/atoms/foldersAtoms";
 import { useLoaderData } from "react-router-dom";
+import { cn } from "@/utils";
+import FolderDisplay from "@/components/folders/ForderDisplay";
+import useResize from "@/hooks/useResize";
 
 // load user folders
 export const loader = async () => {
@@ -11,7 +12,9 @@ export const loader = async () => {
 };
 
 const Folders = () => {
+  const setUserFolders = useSetAtom(setFoldersAtom);
   const folders = useLoaderData() as string[];
+  setUserFolders(folders);
   const { gridCols } = useResize();
   return (
     <div className="max-h-full px-8 py-16">

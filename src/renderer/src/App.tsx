@@ -5,7 +5,7 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import { setFoldersAtom } from "@/atoms/fodlersAtoms";
+import { setFoldersAtom } from "@/atoms/foldersAtoms";
 import Root from "@/routes/root";
 import Headlines, {
   loader as headlineLoader,

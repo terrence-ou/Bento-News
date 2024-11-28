@@ -22,6 +22,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 const Workspace = () => {
   const data = useLoaderData() as string;
+  console.log(data);
   const setFolderRoute = useSetAtom(setFolderRouteAtom);
   const { folderName } = useParams();
   return (

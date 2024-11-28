@@ -1,13 +1,16 @@
-import { useRef, ComponentProps, memo } from "react";
+import { useRef, ComponentProps, memo, useState } from "react";
+import { Ellipsis } from "lucide-react";
 import { Article } from "@shared/models/Articles";
 import { cn } from "@/utils";
 import useImageHeight from "@/hooks/useImgHeight";
+import AddToFolderDropdown from "./AddToFolderDropdown";
 
 type NewsCardProps = {
   article: Article;
 } & ComponentProps<"div">;
 
 const NewsCardComponent = ({ article, ...props }: NewsCardProps) => {
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
   const { imgError, loading, imgHeight } = useImageHeight(
@@ -17,12 +20,14 @@ const NewsCardComponent = ({ article, ...props }: NewsCardProps) => {
 
   return (
     <div
-      className="p-2 border bg-background/80 rounded-lg transition-all duration-150 shadow-news-card"
+      className="group p-2 border bg-background/80 rounded-lg transition-all duration-150 shadow-news-card"
       {...props}
+      onMouseOver={() => setShowDropdown(true)}
+      onMouseLeave={() => setShowDropdown(false)}
     >
       <div
         className={cn(
-          "transition-all duration-100 overflow-hidden rounded-sm",
+          "relative transition-all duration-100 overflow-hidden rounded-sm",
           loading ? "opacity-0" : "opacity-100"
         )}
         style={{ height: `${imgHeight}px` }}
@@ -43,6 +48,17 @@ const NewsCardComponent = ({ article, ...props }: NewsCardProps) => {
               {article.source.name}
             </span>
           </div>
+        )}
+        {showDropdown && (
+          <AddToFolderDropdown>
+            <button
+              className="w-8 absolute top-2 right-2 rounded-full bg-background focus-visible:outline-none focus-visible:outline-offset-0 shadow-md animate-fadeIn"
+              onMouseMove={(e) => e.stopPropagation()}
+              onMouseLeave={(e) => e.stopPropagation()}
+            >
+              <Ellipsis className="stroke-primary mx-auto" />
+            </button>
+          </AddToFolderDropdown>
         )}
       </div>
       <div className="p-1 pt-2">

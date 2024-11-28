@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { FolderIcon, CircleX } from "lucide-react";
 import { cn } from "@/utils";
@@ -13,8 +14,7 @@ import {
 } from "@/components/ui/dialog";
 
 import AddFolder from "./AddFolder";
-import { ReactNode } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useSetAtom } from "jotai";
 import { setFolderRouteAtom } from "@/atoms/routesAtoms";
 
