@@ -23,7 +23,7 @@ export type FolderContents = {
 
 // Folders
 export type ManageFolderFn = (folderName: string) => Promise<boolean>;
-export type addArticleToFolderFn = (
+export type ManageFolderArticleFn = (
   article: Article,
   folderName: string
 ) => Promise<boolean>;
