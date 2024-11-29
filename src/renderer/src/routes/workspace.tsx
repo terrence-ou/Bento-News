@@ -8,7 +8,10 @@ import {
 import { CircleArrowLeft } from "lucide-react";
 import { useSetAtom } from "jotai";
 import { setFolderRouteAtom } from "@/atoms/routesAtoms";
+import SavedNews from "@/components/workspace/SavedNews";
+import { FolderContents } from "@shared/types";
 
+// Folders loader
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const folderName = params.folderName;
   if (!folderName) {
@@ -20,11 +23,18 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return contents;
 };
 
+// ========== The Workspace component ==========
+
 const Workspace = () => {
-  const data = useLoaderData() as string;
-  console.log(data);
+  const data = useLoaderData() as FolderContents;
+  const { articles } = data;
   const setFolderRoute = useSetAtom(setFolderRouteAtom);
   const { folderName } = useParams();
+
+  const handleBack = () => {
+    setFolderRoute(undefined);
+  };
+
   return (
     <div className="h-full w-full">
       <div className="p-6 pt-4">
@@ -32,14 +42,14 @@ const Workspace = () => {
           <Link to="/folders">
             <CircleArrowLeft
               className="hover:text-primary hover:cursor-pointer transition-colors duration-150 stroke-[1.5px]"
-              onClick={() => setFolderRoute(undefined)}
+              onClick={handleBack}
             />
           </Link>
           <div className="flex gap-2 justify-center">
             <Link
               to="/folders"
               className="hover:text-primary hover:underline"
-              onClick={() => setFolderRoute(undefined)}
+              onClick={handleBack}
             >
               Folders
             </Link>
@@ -49,6 +59,10 @@ const Workspace = () => {
             </p>
           </div>
         </div>
+      </div>
+      {/* folder contents */}
+      <div className="p-4">
+        <SavedNews articles={articles} />
       </div>
     </div>
   );
