@@ -74,6 +74,7 @@ const createUserFolder: ManageFolderFn = async (folderName) => {
     fs.mkdirSync(path.join(userFolder, folderName), {
       recursive: true,
     });
+    ensureFolderContents(folderName);
     return true;
   } catch (error) {
     console.error("Error creating user folder. [ERROR]: ", error);
@@ -188,11 +189,40 @@ const addArticleToFolder: ManageFolderArticleFn = async (
   }
 };
 
+// Remove article from folder
+const removeArticleFromFolder: ManageFolderArticleFn = async (
+  article,
+  folderName
+) => {
+  try {
+    const filename = path.join(
+      userFolder,
+      folderName,
+      SAVED_ARTICLES_FILENAME
+    );
+    const fileContent = fs.readFileSync(filename, "utf-8");
+    const articles = JSON.parse(fileContent).articles.filter(
+      (curr) => curr.title !== article.title
+    );
+
+    fs.writeFileSync(
+      filename,
+      JSON.stringify({ articles }, null, 2),
+      "utf-8"
+    );
+    return true;
+  } catch (error) {
+    console.error("Error adding article to folder. [ERROR]: ", error);
+    return false;
+  }
+};
+
 // ================== Helper Functions ==================
 
 // Ensure folder has articles and generated contents files
 const ensureFolderContents = (folder: string) => {
   const folderPath = path.join(userFolder, folder);
+  // TODO: Check if files have all attributes
   const savedArticlesFile = path.join(
     folderPath,
     SAVED_ARTICLES_FILENAME
@@ -235,4 +265,5 @@ export {
   loadFolderContents,
   removeUserFolder,
   addArticleToFolder,
+  removeArticleFromFolder,
 };

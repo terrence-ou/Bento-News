@@ -62,6 +62,9 @@ try {
     addArticleToFolder: (
       ...args: Parameters<ManageFolderArticleFn>
     ) => ipcRenderer.invoke("addArticleToFolder", ...args),
+    removeArticleFromFolder: (
+      ...args: Parameters<ManageFolderArticleFn>
+    ) => ipcRenderer.invoke("removeArticleFromFolder", ...args),
   });
 } catch (error) {
   console.error(

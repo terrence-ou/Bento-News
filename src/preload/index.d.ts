@@ -33,6 +33,7 @@ declare global {
       createUserFolder: ManageFolderFn;
       removeUserFolder: ManageFolderFn;
       addArticleToFolder: ManageFolderArticleFn;
+      removeArticleFromFolder: ManageFolderArticleFn;
     };
   }
 }

@@ -1,8 +1,10 @@
 import { useAtom } from "jotai";
 import { selectedArticlesAtom } from "@/atoms/foldersAtoms";
 import { Article } from "@shared/models/Articles";
+import { Button } from "@/components/ui/button";
 import NewsCheckbox from "@/components/workspace/NewsCheckBox";
 import { useMemo } from "react";
+import { ListChecks, ListX } from "lucide-react";
 
 const SavedNews = ({ articles }: { articles: Article[] }) => {
   const [selectedArticles, setSelectedArticles] = useAtom(
@@ -14,6 +16,7 @@ const SavedNews = ({ articles }: { articles: Article[] }) => {
     [selectedArticles]
   );
 
+  // Selection handlers
   const handleSelect = (article: Article) => {
     if (selectedArticlesSet.has(article.title)) {
       setSelectedArticles((prevArticles) =>
@@ -27,8 +30,34 @@ const SavedNews = ({ articles }: { articles: Article[] }) => {
     }
   };
 
+  const handleSelectAll = () => {
+    setSelectedArticles(articles);
+  };
+
+  const handleUncheckAll = () => {
+    setSelectedArticles([]);
+  };
+
   return (
     <div>
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          className="h-8"
+          onClick={handleSelectAll}
+        >
+          <ListChecks />
+          Select all
+        </Button>
+        <Button
+          variant="outline"
+          className="h-8"
+          onClick={handleUncheckAll}
+        >
+          <ListX />
+          Uncheck all
+        </Button>
+      </div>
       {articles.map((article) => (
         <NewsCheckbox
           key={`checkbox-${article.title}`}

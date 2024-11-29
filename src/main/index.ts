@@ -20,6 +20,7 @@ import {
   removeUserFolder,
   loadFolderContents,
   addArticleToFolder,
+  removeArticleFromFolder,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -188,6 +189,11 @@ app.whenReady().then(() => {
     "addArticleToFolder",
     (_, ...args: Parameters<ManageFolderArticleFn>) =>
       addArticleToFolder(...args)
+  );
+  ipcMain.handle(
+    "removeArticleFromFolder",
+    (_, ...args: Parameters<ManageFolderArticleFn>) =>
+      removeArticleFromFolder(...args)
   );
 });
 
