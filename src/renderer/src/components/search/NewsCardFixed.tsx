@@ -1,9 +1,11 @@
-import { memo, ComponentProps, useRef } from "react";
+import { memo, ComponentProps, useRef, useState } from "react";
 import { useAtom } from "jotai";
 import { searchLayoutAtom } from "@/atoms/searchAtoms";
 import useImageHeight from "@/hooks/useImgHeight";
 import { cn } from "@/utils";
 import { Article } from "@shared/models/Articles";
+import { Ellipsis } from "lucide-react";
+import AddToFolderDropdown from "@/components/AddToFolderDropdown";
 
 type NewsCardFixedProps = {
   article: Article;
@@ -13,6 +15,7 @@ const NewsCardFixedComponent = ({
   article,
   ...props
 }: NewsCardFixedProps) => {
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
   const [layout] = useAtom(searchLayoutAtom);
@@ -27,10 +30,12 @@ const NewsCardFixedComponent = ({
       ref={divRef}
       className="flex flex-col p-2 border bg-background/80 rounded-lg transition-all duration-150 shadow-news-card"
       {...props}
+      onMouseOver={() => setShowDropdown(true)}
+      onMouseLeave={() => setShowDropdown(false)}
     >
       <div
         className={cn(
-          "transition-all duration-100 overflow-hidden rounded-sm",
+          "relative transition-all duration-100 overflow-hidden rounded-sm",
           loading ? "opacity-0" : "opacity-100"
         )}
       >
@@ -46,10 +51,21 @@ const NewsCardFixedComponent = ({
         )}
         {imgError && (
           <div className="w-full h-36 bg-primary rounded-sm flex items-center justify-center">
-            <span className="font-medium text-2xl text-background">
+            <span className="px-4 font-medium text-2xl text-background">
               {article.source.name}
             </span>
           </div>
+        )}
+        {showDropdown && (
+          <AddToFolderDropdown article={article}>
+            <button
+              className="w-8 absolute top-2 right-2 rounded-full bg-background focus-visible:outline-none focus-visible:outline-offset-0 shadow-md animate-fadeIn"
+              onMouseMove={(e) => e.stopPropagation()}
+              onMouseLeave={(e) => e.stopPropagation()}
+            >
+              <Ellipsis className="stroke-primary mx-auto" />
+            </button>
+          </AddToFolderDropdown>
         )}
       </div>
       <div
