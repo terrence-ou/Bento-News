@@ -19,6 +19,13 @@ const AddToFolderDropdown = ({
   children: ReactNode;
 }) => {
   const folders = useAtomValue(readFoldersAtom);
+  const addToFolder = async (folder: string) => {
+    const result = await window.context.addArticleToFolder(
+      article,
+      folder
+    );
+    return result;
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
@@ -28,9 +35,7 @@ const AddToFolderDropdown = ({
         {folders.map((folder) => (
           <DropdownMenuItem
             key={folder}
-            onClick={() => {
-              console.log(article);
-            }}
+            onClick={() => addToFolder(folder)}
           >
             {folder}
           </DropdownMenuItem>

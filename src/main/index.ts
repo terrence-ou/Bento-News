@@ -19,6 +19,7 @@ import {
   createUserFolder,
   removeUserFolder,
   loadFolderContents,
+  addArticleToFolder,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -33,6 +34,7 @@ import {
   LoadUserFoldersFn,
   ManageFolderFn,
   LoadFolderContentsFn,
+  ManageFolderArticleFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -180,6 +182,12 @@ app.whenReady().then(() => {
     "loadFolderContents",
     (_, ...args: Parameters<LoadFolderContentsFn>) =>
       loadFolderContents(...args)
+  );
+
+  ipcMain.handle(
+    "addArticleToFolder",
+    (_, ...args: Parameters<ManageFolderArticleFn>) =>
+      addArticleToFolder(...args)
   );
 });
 

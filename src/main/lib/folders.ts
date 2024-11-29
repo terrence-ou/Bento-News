@@ -14,6 +14,7 @@ import type {
   LoadUserFoldersFn,
   LoadFolderContentsFn,
   FolderContents,
+  ManageFolderArticleFn,
 } from "@shared/types";
 
 const projectFolder = path.join(homedir(), APP_FOLDER);
@@ -156,6 +157,37 @@ const loadFolderContents: LoadFolderContentsFn = async (
   }
 };
 
+// ================== Folder Content ==================
+
+// Add article to folder
+const addArticleToFolder: ManageFolderArticleFn = async (
+  article,
+  folderName
+) => {
+  try {
+    const filename = path.join(
+      userFolder,
+      folderName,
+      SAVED_ARTICLES_FILENAME
+    );
+    const fileContent = fs.readFileSync(filename, "utf-8");
+    const articles = JSON.parse(fileContent).articles;
+    if (articles.some((curr) => curr.title === article.title)) {
+      return false;
+    }
+    articles.push(article);
+    fs.writeFileSync(
+      filename,
+      JSON.stringify({ articles }, null, 2),
+      "utf-8"
+    );
+    return true;
+  } catch (error) {
+    console.error("Error adding article to folder. [ERROR]: ", error);
+    return false;
+  }
+};
+
 // ================== Helper Functions ==================
 
 // Ensure folder has articles and generated contents files
@@ -202,4 +234,5 @@ export {
   loadUserFolders,
   loadFolderContents,
   removeUserFolder,
+  addArticleToFolder,
 };

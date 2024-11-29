@@ -23,6 +23,10 @@ export type FolderContents = {
 
 // Folders
 export type ManageFolderFn = (folderName: string) => Promise<boolean>;
+export type addArticleToFolderFn = (
+  article: Article,
+  folderName: string
+) => Promise<boolean>;
 
 // Loaders
 export type GetHeadlinesFn = () => Promise<void>;

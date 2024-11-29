@@ -11,6 +11,7 @@ import type {
   LoadUserFoldersFn,
   LoadFolderContentsFn,
   ManageFolderFn,
+  ManageFolderArticleFn,
 } from "@shared/types";
 
 // The preload process plays a middleware role in bridging
@@ -58,6 +59,9 @@ try {
       ipcRenderer.invoke("createUserFolder", ...args),
     removeUserFolder: (...args: Parameters<ManageFolderFn>) =>
       ipcRenderer.invoke("removeUserFolder", ...args),
+    addArticleToFolder: (
+      ...args: Parameters<ManageFolderArticleFn>
+    ) => ipcRenderer.invoke("addArticleToFolder", ...args),
   });
 } catch (error) {
   console.error(

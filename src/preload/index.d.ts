@@ -10,6 +10,7 @@ import {
   WriteHeadlineSettingsFn,
   RemoveTodayHeadlinesFn,
   ManageFolderFn,
+  ManageFolderArticleFn,
   LoadFolderContentsFn,
 } from "@shared/types";
 
@@ -31,6 +32,7 @@ declare global {
       removeTodayHeadlines: RemoveTodayHeadlinesFn;
       createUserFolder: ManageFolderFn;
       removeUserFolder: ManageFolderFn;
+      addArticleToFolder: ManageFolderArticleFn;
     };
   }
 }
