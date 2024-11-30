@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { debounce, checkImageValidity } from "@/utils";
 
 const useImageHeight = (
   imgUrl: string,
@@ -13,38 +12,28 @@ const useImageHeight = (
   // check if the image is valid
   const checkImg = useCallback(async () => {
     setLoading(true);
-    const imgValid = await checkImageValidity(imgUrl);
+    // check if the image is valid
+    const imgValid = await new Promise((resolve) => {
+      const image = new Image();
+      // if loaded successfully, resolve true and set the height
+      image.onload = () => {
+        if (imgRef.current && imgRef.current.offsetHeight !== 0) {
+          setImgHeight(imgRef.current!.offsetHeight);
+        }
+        resolve(true);
+      };
+      // else, return false
+      image.onerror = () => resolve(false);
+      image.src = imgUrl; // set image url
+    });
     setLoading(false);
     if (!imgValid) {
       setImgError(true);
     }
   }, [imgUrl]);
 
-  // get the image's offsetHeight
-  const handleUpdateHeight = useCallback(() => {
-    if (imgRef.current && imgRef.current.offsetHeight !== 0) {
-      setImgHeight(imgRef.current.offsetHeight);
-    }
-  }, [imgRef.current]);
-
   useEffect(() => {
-    const loadImg = () => {
-      checkImg();
-      const timeout = setTimeout(() => {
-        handleUpdateHeight();
-        return clearTimeout(timeout);
-      }, 50);
-    };
-
-    loadImg();
-    const debouncedHandleImgHeight = debounce(
-      handleUpdateHeight,
-      200
-    );
-    window.addEventListener("resize", debouncedHandleImgHeight);
-    return () => {
-      window.removeEventListener("resize", debouncedHandleImgHeight);
-    };
+    checkImg();
   }, []);
 
   return { imgError, loading, imgHeight };
