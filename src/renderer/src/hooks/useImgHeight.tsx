@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { debounce } from "@/utils";
 
 const useImageHeight = (
   imgUrl: string,
@@ -9,6 +10,12 @@ const useImageHeight = (
   const [loading, setLoading] = useState<boolean>(true);
   const [imgHeight, setImgHeight] = useState<number>(defaultHeight);
 
+  const updateImgHeight = () => {
+    if (imgRef.current && imgRef.current.offsetHeight !== 0) {
+      setImgHeight(imgRef.current.offsetHeight);
+    }
+  };
+
   // check if the image is valid
   const checkImg = useCallback(async () => {
     setLoading(true);
@@ -17,9 +24,7 @@ const useImageHeight = (
       const image = new Image();
       // if loaded successfully, resolve true and set the height
       image.onload = () => {
-        if (imgRef.current && imgRef.current.offsetHeight !== 0) {
-          setImgHeight(imgRef.current!.offsetHeight);
-        }
+        updateImgHeight();
         resolve(true);
       };
       // else, return false
@@ -33,7 +38,14 @@ const useImageHeight = (
   }, [imgUrl]);
 
   useEffect(() => {
-    checkImg();
+    let timeout: NodeJS.Timeout | undefined = undefined;
+    setTimeout(() => {
+      checkImg();
+      return () => clearTimeout(timeout);
+    }, 50);
+    const resizeEvent = debounce(updateImgHeight, 100);
+    window.addEventListener("resize", resizeEvent);
+    return () => removeEventListener("resize", resizeEvent);
   }, []);
 
   return { imgError, loading, imgHeight };
