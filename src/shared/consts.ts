@@ -41,3 +41,10 @@ export enum SortBy {
   Popularity = "popularity",
   "Publish Date" = "publishedAt",
 }
+
+export enum SubEditor {
+  summary = "summary",
+  trend = "trend-analysis",
+  suggestion = "suggested-topics",
+  write = "write",
+}

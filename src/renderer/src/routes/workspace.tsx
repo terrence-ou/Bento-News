@@ -10,6 +10,7 @@ import { useSetAtom } from "jotai";
 import { setFolderRouteAtom } from "@/atoms/routesAtoms";
 import SavedNews from "@/components/workspace/SavedNews";
 import { FolderContents } from "@shared/types";
+import Editor from "@/components/editor/Editor";
 
 // Folders loader
 export const loader = async ({ params }: LoaderFunctionArgs) => {
@@ -36,7 +37,7 @@ const Workspace = () => {
   };
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full flex flex-col">
       <div className="p-6 pt-4">
         <div className="grid grid-cols-3 gap-2 justify-center items-center text-primary/60 text-base font-serif">
           <Link to="/folders">
@@ -61,8 +62,13 @@ const Workspace = () => {
         </div>
       </div>
       {/* folder contents */}
-      <div className="p-4">
-        <SavedNews articles={articles} />
+      <div className="flex-1 grid grid-cols-2 gap-4 p-4">
+        <div>
+          <SavedNews articles={articles} />
+        </div>
+        <div>
+          <Editor />
+        </div>
       </div>
     </div>
   );
