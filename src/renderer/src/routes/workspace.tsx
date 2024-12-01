@@ -62,8 +62,8 @@ const Workspace = () => {
         </div>
       </div>
       {/* folder contents */}
-      <div className="flex-1 grid grid-cols-2 gap-6 p-4">
-        <div>
+      <div className="flex-1 max-h-full grid grid-cols-2 gap-6 p-4 overflow-auto">
+        <div className="flex flex-col max-h-full overflow-auto">
           <SavedNews articles={articles} />
         </div>
         <div>

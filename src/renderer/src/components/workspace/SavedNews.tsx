@@ -39,7 +39,7 @@ const SavedNews = ({ articles }: { articles: Article[] }) => {
   };
 
   return (
-    <div>
+    <>
       <div className="flex gap-2">
         <Button
           variant="outline"
@@ -58,15 +58,17 @@ const SavedNews = ({ articles }: { articles: Article[] }) => {
           Uncheck all
         </Button>
       </div>
-      {articles.map((article) => (
-        <NewsCheckbox
-          key={`checkbox-${article.title}`}
-          article={article}
-          selected={selectedArticlesSet.has(article.title)}
-          onClick={() => handleSelect(article)}
-        />
-      ))}
-    </div>
+      <div className="flex-1 max-h-full overflow-auto">
+        {articles.map((article) => (
+          <NewsCheckbox
+            key={`checkbox-${article.title}`}
+            article={article}
+            selected={selectedArticlesSet.has(article.title)}
+            onClick={() => handleSelect(article)}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 
