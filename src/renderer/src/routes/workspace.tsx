@@ -62,7 +62,7 @@ const Workspace = () => {
         </div>
       </div>
       {/* folder contents */}
-      <div className="flex-1 grid grid-cols-2 gap-4 p-4">
+      <div className="flex-1 grid grid-cols-2 gap-6 p-4">
         <div>
           <SavedNews articles={articles} />
         </div>
