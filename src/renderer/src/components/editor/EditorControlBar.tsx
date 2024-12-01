@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { useAtom } from "jotai";
-import { editorAtom } from "@/atoms/editorAtoms";
+import { editorAtom } from "@/atoms/foldersAtoms";
 import { SubEditor } from "@shared/consts";
 import { cn } from "@/utils";
 import {
