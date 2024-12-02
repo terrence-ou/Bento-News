@@ -12,6 +12,7 @@ import {
   ManageFolderFn,
   ManageFolderArticleFn,
   LoadFolderContentsFn,
+  getOpenAIResponseFn,
 } from "@shared/types";
 
 // Type definition for the preload process
@@ -20,6 +21,7 @@ declare global {
     context: {
       getHeadlines: GetHeadlinesFn;
       getSearchResults: GetSearchResultsFn;
+      getOpenAIResponse: getOpenAIResponseFn;
       loadTodayHeadlines: LoadHeadlinesFn;
       loadPrevHeadlines: LoadHeadlinesFn;
       loadSearchResults: LoadSearchResultsFn;

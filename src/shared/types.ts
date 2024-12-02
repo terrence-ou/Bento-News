@@ -1,5 +1,5 @@
 import { Articles, Article } from "./models/Articles";
-import { Categories } from "./consts";
+import { Categories, SubEditor } from "./consts";
 
 export type Category = (typeof Categories)[number];
 export type SearchParams = {
@@ -28,12 +28,18 @@ export type ManageFolderArticleFn = (
   folderName: string
 ) => Promise<boolean>;
 
-// Loaders
+// Requests
 export type GetHeadlinesFn = () => Promise<void>;
 export type GetSearchResultsFn = (
   searchParams: SearchParams
 ) => Promise<void>;
+export type getOpenAIResponseFn = (
+  folder: string,
+  editor: SubEditor,
+  news: string
+) => Promise<string>;
 
+// Loaders
 export type LoadHeadlinesFn = () => Promise<Articles | undefined>;
 export type LoadSearchResultsFn = () => Promise<Articles | undefined>;
 

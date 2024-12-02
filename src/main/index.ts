@@ -21,6 +21,7 @@ import {
   loadFolderContents,
   addArticleToFolder,
   removeArticleFromFolder,
+  getOpenAIResponse,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -36,6 +37,7 @@ import {
   ManageFolderFn,
   LoadFolderContentsFn,
   ManageFolderArticleFn,
+  getOpenAIResponseFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -44,7 +46,7 @@ function createWindow(): void {
     width: 1200,
     height: 900,
     minWidth: 800,
-    minHeight: 600,
+    minHeight: 800,
     show: false,
     icon: icon,
     titleBarStyle: "hiddenInset",
@@ -111,6 +113,12 @@ app.whenReady().then(() => {
     "getSearchResults",
     (_, ...args: Parameters<GetSearchResultsFn>) =>
       getSearchResults(...args)
+  );
+
+  ipcMain.handle(
+    "getOpenAIResponse",
+    (_, ...args: Parameters<getOpenAIResponseFn>) =>
+      getOpenAIResponse(...args)
   );
 
   ipcMain.handle(

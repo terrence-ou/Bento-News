@@ -2,21 +2,32 @@ import { homedir } from "os";
 import fs from "fs";
 import axios from "axios";
 import path from "path";
-import type {
-  GetHeadlinesFn,
-  GetSearchResultsFn,
-} from "@shared/types";
+import { OpenAI } from "ai-fetcher";
 import {
   LanguageCodes,
   SEARCH_DIR,
   SEARCH_RESULTS_FILENAME,
+  USER_FOLDERS_DIR,
+  HEADLINE_DIR,
+  APP_FOLDER,
+  GENERATED_CONTENTS_FILENAME,
   SortBy,
+  SubEditor,
 } from "@shared/consts";
-import { HEADLINE_DIR, APP_FOLDER } from "@shared/consts";
+
+import { SYSTEM_PROMPTS } from "@shared/prompts";
+
+import type {
+  GetHeadlinesFn,
+  getOpenAIResponseFn,
+  GetSearchResultsFn,
+} from "@shared/types";
+import type { OpenAIMessage } from "ai-fetcher/dist/types";
 
 // Consts
-const headlineFolderDir = `${homedir()}/${HEADLINE_DIR}`;
-const searchFolderDir = `${homedir()}/${SEARCH_DIR}`;
+const headlineFolderDir = path.join(homedir(), HEADLINE_DIR);
+const searchFolderDir = path.join(homedir(), SEARCH_DIR);
+const userFolderDir = path.join(homedir(), USER_FOLDERS_DIR);
 const headlineEndpoint = "https://newsapi.org/v2/top-headlines";
 const everythingEndpoint = "https://newsapi.org/v2/everything";
 
@@ -128,4 +139,58 @@ const getSearchResults: GetSearchResultsFn = async (searchParams) => {
   }
 };
 
-export { getHeadlines, getSearchResults };
+// Get OpenAI Chat response
+const getOpenAIResponse: getOpenAIResponseFn = async (
+  folder: string,
+  editor: SubEditor,
+  news: string
+) => {
+  const settings = fs.readFileSync(
+    path.join(homedir(), APP_FOLDER, "settings.json"),
+    "utf-8"
+  );
+  const settingsJson = JSON.parse(settings);
+  if (!settingsJson.keys || !settingsJson.keys.openai) {
+    console.error("No API key found for OpenAI");
+    return;
+  }
+
+  // get the system message based on the current editor type
+  try {
+    const apiKey = settingsJson.keys.openai;
+    const openAIChatAgent = OpenAI.chat(apiKey, "gpt-4o-mini");
+    const system = SYSTEM_PROMPTS[editor];
+    const messages: OpenAIMessage[] = [
+      { role: "user", content: news },
+    ];
+    const response = await openAIChatAgent.generate(messages, system);
+    const generatedContents = response.choices[0].message.content;
+
+    // write to the file
+    const generatedContentFile = path.join(
+      userFolderDir,
+      folder,
+      GENERATED_CONTENTS_FILENAME
+    );
+
+    const data = JSON.parse(
+      fs.readFileSync(generatedContentFile, "utf-8")
+    );
+    data[editor] = generatedContents;
+    fs.writeFileSync(
+      generatedContentFile,
+      JSON.stringify(data, null, 2),
+      "utf-8"
+    );
+
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error(
+      "[ERROR]: Failed fectching OpenAI response, error: ",
+      error
+    );
+    return "Error in retrieving OpenAI response";
+  }
+};
+
+export { getHeadlines, getSearchResults, getOpenAIResponse };

@@ -12,6 +12,7 @@ import type {
   LoadFolderContentsFn,
   ManageFolderFn,
   ManageFolderArticleFn,
+  getOpenAIResponseFn,
 } from "@shared/types";
 
 // The preload process plays a middleware role in bridging
@@ -30,6 +31,8 @@ try {
       ipcRenderer.invoke("getHeadlines", ...args),
     getSearchResults: (...args: Parameters<GetSearchResultsFn>) =>
       ipcRenderer.invoke("getSearchResults", ...args),
+    getOpenAIResponse: (...args: Parameters<getOpenAIResponseFn>) =>
+      ipcRenderer.invoke("getOpenAIResponse", ...args),
     loadTodayHeadlines: (...args: Parameters<LoadHeadlinesFn>) =>
       ipcRenderer.invoke("loadTodayHeadlines", ...args),
     loadPrevHeadlines: (...args: Parameters<LoadHeadlinesFn>) =>

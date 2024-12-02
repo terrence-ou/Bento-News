@@ -44,7 +44,7 @@ export enum SortBy {
 
 export enum SubEditor {
   summary = "summary",
-  trend = "trend-analysis",
-  suggestion = "suggested-topics",
-  write = "write",
+  trend = "trends",
+  suggestion = "suggestions",
+  write = "report",
 }
