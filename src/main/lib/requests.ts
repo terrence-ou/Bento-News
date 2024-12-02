@@ -176,7 +176,7 @@ const getOpenAIResponse: getOpenAIResponseFn = async (
     const data = JSON.parse(
       fs.readFileSync(generatedContentFile, "utf-8")
     );
-    data[editor] = generatedContents;
+    data.generated_contents[editor] = generatedContents;
     fs.writeFileSync(
       generatedContentFile,
       JSON.stringify(data, null, 2),

@@ -1,0 +1,13 @@
+.markdown {
+  h3 {
+    @apply font-semibold text-lg my-2;
+  }
+  p {
+    @apply font-serif text-sm my-3 font-light;
+  }
+
+  p strong,
+  p em {
+    @apply text-base font-sans p-0 font-semibold leading-tight;
+  }
+}

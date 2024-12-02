@@ -66,7 +66,7 @@ const Workspace = () => {
         <div className="flex flex-col max-h-full overflow-auto">
           <SavedNews articles={articles} />
         </div>
-        <div>
+        <div className="max-h-full overflow-auto">
           <Editor />
         </div>
       </div>

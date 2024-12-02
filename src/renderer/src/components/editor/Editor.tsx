@@ -1,4 +1,5 @@
 import { useAtomValue, useAtom } from "jotai";
+import Markdown from "react-markdown";
 import {
   currEditorAtom,
   includeSelectedArticlesAtom,
@@ -42,30 +43,32 @@ const generateNewsList = (
 // ========== The Editor component ==========
 
 const Editor = () => {
-  const { folderName } = useParams();
-  console.log(folderName);
   const currEditor = useAtomValue(currEditorAtom);
+  const selectedArticles = useAtomValue(selectedArticlesAtom);
   const [includeSelectedOnly, setIncludeSelectedOnly] = useAtom(
     includeSelectedArticlesAtom
   );
+
   const handleToggleIncludeSelected = () => {
     setIncludeSelectedOnly((prev) => !prev);
   };
 
+  const { folderName } = useParams();
   const data = useLoaderData() as FolderContents;
-  const selectedArticles = useAtomValue(selectedArticlesAtom);
 
-  const handleGenerateSummary = async () => {
+  const generatedContent = data.generated_contents[currEditor];
+
+  // Get generated content
+  const handleGenerate = async () => {
     const newsList = generateNewsList(
       includeSelectedOnly ? selectedArticles : data.articles
     );
     if (newsList) {
-      const response = await window.context.getOpenAIResponse(
+      await window.context.getOpenAIResponse(
         folderName!,
         currEditor,
         newsList
       );
-      console.log(response);
     }
   };
 
@@ -73,7 +76,7 @@ const Editor = () => {
   return (
     <div className="h-full flex flex-col-reverse border-primary/25 border-dashed border-[1.75px] bg-background/60 shadow-md rounded-md">
       <EditorControlBar />
-      <div className="flex-1 px-6 py-3">
+      <div className="flex-1 max-h-full flex flex-col overflow-auto px-6 py-3">
         <h2 className="text-center font-serif font-semibold text-xl mt-2 mb-5">
           {title}
         </h2>
@@ -97,11 +100,15 @@ const Editor = () => {
           </div>
           <Button
             className="w-full font-sans my-2"
-            onClick={handleGenerateSummary}
+            onClick={handleGenerate}
           >
             Generate Summary
           </Button>
         </div>
+        <Markdown className="markdown flex-1 overflow-auto my-4 px-2">
+          {generatedContent}
+        </Markdown>
+        {/* <p className="flex-1 overflow-auto">{generatedContent}</p> */}
       </div>
     </div>
   );
