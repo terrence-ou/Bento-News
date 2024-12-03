@@ -1,8 +1,15 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  nativeImage,
+} from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
-import icon from "../../resources/icon.png?asset";
+import iconPath from "../../resources/icon.png?asset";
+
 import {
   getHeadlines,
   getSearchResults,
@@ -42,6 +49,9 @@ import {
 
 function createWindow(): void {
   // Create the browser window.
+  const icon = nativeImage.createFromPath(iconPath);
+  icon.setTemplateImage(true);
+
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 900,
@@ -58,6 +68,8 @@ function createWindow(): void {
       spellcheck: false,
     },
   });
+
+  app.dock.setIcon(icon);
 
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
