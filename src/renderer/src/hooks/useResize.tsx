@@ -25,26 +25,31 @@ const useResize = () => {
 
   let defaultDisplayCount = 16;
   let gridCols = "grid-cols-4";
+  let folderCols = "grid-cols-5";
 
   switch (cols) {
     case 3:
       gridCols = "grid-cols-3";
+      folderCols = "grid-cols-3";
       defaultDisplayCount = 12;
       break;
     case 5:
       gridCols = "grid-cols-5";
+      folderCols = "grid-cols-6";
       defaultDisplayCount = 20;
       break;
     case 6:
       gridCols = "grid-cols-6";
+      folderCols = "grid-cols-7";
       defaultDisplayCount = 24;
       break;
     default:
       gridCols = "grid-cols-4";
+      folderCols = "grid-cols-4";
       defaultDisplayCount = 16;
   }
 
-  return { cols, defaultDisplayCount, gridCols };
+  return { cols, defaultDisplayCount, gridCols, folderCols };
 };
 
 export default useResize;

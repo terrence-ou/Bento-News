@@ -15,11 +15,13 @@ export const loader = async () => {
 const Folders = () => {
   const setUserFolders = useSetAtom(setFoldersAtom);
   const folders = useLoaderData() as string[];
+
   useEffect(() => setUserFolders(folders), [folders]);
-  const { gridCols } = useResize();
+
+  const { folderCols } = useResize();
   return (
     <div className="max-h-full px-8 py-16">
-      <div className={cn("grid items-center gap-y-6", gridCols)}>
+      <div className={cn("grid items-center gap-y-6", folderCols)}>
         {folders.map((folder: string) => (
           <FolderDisplay
             key={`folders-${folder}`}
