@@ -103,6 +103,7 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "spin-once": "spin 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1",
+        spin: "spin 1s linear infinite",
         "bounce-slow": "bounce 3s infinite",
         fadeIn: "fadeIn 0.3s ease-out",
       },

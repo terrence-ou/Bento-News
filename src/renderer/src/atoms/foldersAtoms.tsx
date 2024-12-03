@@ -14,6 +14,12 @@ export const setFoldersAtom = atom(
 
 // Editor-related atoms
 export const selectedArticlesAtom = atom<Article[]>([]);
+export const typingEffectAtom = atom<boolean>(false);
 export const includeSelectedArticlesAtom = atom<boolean>(true);
 export const editorAtom = atom<SubEditor>(SubEditor.summary);
+
 export const currEditorAtom = atom((get) => get(editorAtom));
+export const typing = atom((get) => get(typingEffectAtom));
+export const toggleTyping = atom(null, (_, set, value: boolean) => {
+  set(typingEffectAtom, value);
+});

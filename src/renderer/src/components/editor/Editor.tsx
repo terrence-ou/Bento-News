@@ -1,22 +1,24 @@
 import { useState, useRef } from "react";
-import { useAtomValue, useAtom } from "jotai";
-import Markdown from "react-markdown";
+import { useAtomValue, useSetAtom, useAtom } from "jotai";
 import {
   useLoaderData,
   useParams,
   useNavigate,
 } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
 import {
   currEditorAtom,
   includeSelectedArticlesAtom,
   selectedArticlesAtom,
+  toggleTyping,
 } from "@/atoms/foldersAtoms";
 import type { FolderContents } from "@shared/types";
 import { Article } from "@shared/models/Articles";
 import { SubEditor } from "@shared/consts";
-import EditorControlBar from "./EditorControlBar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import EditorControlBar from "./EditorControlBar";
+import MarkdownDisplay from "./MarkdownDisplay";
 
 // ========== Helper functions ==========
 
@@ -66,6 +68,7 @@ const Editor = () => {
   const [includeSelectedOnly, setIncludeSelectedOnly] = useAtom(
     includeSelectedArticlesAtom
   );
+  const setTyping = useSetAtom(toggleTyping);
 
   const navigate = useNavigate();
   const { folderName } = useParams();
@@ -84,6 +87,7 @@ const Editor = () => {
     );
     if (newsList) {
       setGenerating(true);
+      setTyping(false);
       await window.context.getOpenAIResponse(
         folderName!,
         currEditor,
@@ -91,6 +95,7 @@ const Editor = () => {
         textAreaRef.current?.value
       );
       setGenerating(false);
+      setTyping(true);
       navigate(`/folders/${folderName}`);
     }
   };
@@ -125,70 +130,20 @@ const Editor = () => {
             <p>Include selected news only</p>
           </div>
           <Button
-            className="w-full font-sans my-2"
+            className="w-full font-sans my-2 h-9 rounded-sm"
             onClick={handleGenerate}
             disabled={generating}
           >
+            {generating && <LoaderCircle className="animate-spin" />}
             {generating
               ? ButtonLabel(currEditor)[1]
               : ButtonLabel(currEditor)[0]}
           </Button>
         </div>
-        <div className="overflow-auto my-2">
-          <Markdown components={markdownComponents}>
-            {generatedContent}
-          </Markdown>
-        </div>
+        <MarkdownDisplay generatedContent={generatedContent} />
       </div>
     </div>
   );
-};
-
-// ============ Sub Component ==========
-
-const markdownComponents = {
-  a: (props) => {
-    return (
-      <a
-        {...props}
-        className="text-primary underline"
-        target="_blank"
-      />
-    );
-  },
-  h3: (props) => {
-    return <h3 {...props} className="font-bold text-lg mt-3 mb-1" />;
-  },
-  h4: (props) => {
-    return <h4 {...props} className="font-semibold text-base my-1" />;
-  },
-  p: (props) => {
-    return (
-      <div
-        {...props}
-        className="my-2 text-sm font-light font-serif"
-      />
-    );
-  },
-  strong: (props) => {
-    return (
-      <span
-        {...props}
-        className="font-semibold font-serif text-sm mb-1"
-      />
-    );
-  },
-  li: (props) => {
-    return (
-      <li
-        {...props}
-        className="list-disc ml-4 text-sm font-light font-serif"
-      />
-    );
-  },
-  br: () => {
-    return <></>;
-  },
 };
 
 export default Editor;

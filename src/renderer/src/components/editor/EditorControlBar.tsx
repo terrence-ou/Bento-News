@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { useAtom } from "jotai";
-import { editorAtom } from "@/atoms/foldersAtoms";
+import { useAtom, useSetAtom } from "jotai";
+import { editorAtom, toggleTyping } from "@/atoms/foldersAtoms";
 import { SubEditor } from "@shared/consts";
 import { cn } from "@/utils";
 import {
@@ -12,6 +12,8 @@ import {
 
 const EditorControlBar = () => {
   const [currEditor, setCurrEditor] = useAtom(editorAtom);
+  const setIsTyping = useSetAtom(toggleTyping);
+
   const getIconStyle = (editor: SubEditor) => {
     const cmp = currEditor === editor;
     return cn(
@@ -23,6 +25,7 @@ const EditorControlBar = () => {
   };
 
   const handleEditorChange = (editor: SubEditor) => {
+    setIsTyping(false); // turn off typing effect when switching editors
     setCurrEditor(editor);
   };
 
