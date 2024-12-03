@@ -1,5 +1,11 @@
+import { useState, useRef } from "react";
 import { useAtomValue, useAtom } from "jotai";
 import Markdown from "react-markdown";
+import {
+  useLoaderData,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
 import {
   currEditorAtom,
   includeSelectedArticlesAtom,
@@ -7,29 +13,36 @@ import {
 } from "@/atoms/foldersAtoms";
 import type { FolderContents } from "@shared/types";
 import { Article } from "@shared/models/Articles";
-import EditorControlBar from "./EditorControlBar";
 import { SubEditor } from "@shared/consts";
+import EditorControlBar from "./EditorControlBar";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "../ui/checkbox";
-import {
-  useLoaderData,
-  useParams,
-  useNavigate,
-} from "react-router-dom";
-import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // ========== Helper functions ==========
 
 const EditorTitles = (editor: SubEditor) => {
   switch (editor) {
     case SubEditor.trend:
-      return "Trend Prediction";
+      return "Trend Analysis";
     case SubEditor.suggestion:
       return "Suggested Topics";
     case SubEditor.write:
       return "Writing";
     default:
       return "Summarization";
+  }
+};
+
+const ButtonLabel = (editor: SubEditor) => {
+  switch (editor) {
+    case SubEditor.trend:
+      return ["Analyze", "Analyzing..."];
+    case SubEditor.suggestion:
+      return ["Suggest", "Suggesting..."];
+    case SubEditor.write:
+      return ["Write", "Writing..."];
+    default:
+      return ["Summarize", "Summarizing..."];
   }
 };
 
@@ -54,18 +67,16 @@ const Editor = () => {
     includeSelectedArticlesAtom
   );
 
-  const handleToggleIncludeSelected = () => {
-    setIncludeSelectedOnly((prev) => !prev);
-  };
-
+  const navigate = useNavigate();
   const { folderName } = useParams();
   const data = useLoaderData() as FolderContents;
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [generating, setGenerating] = useState<boolean>(false);
-  const navigate = useNavigate();
 
-  const generatedContent = data.generated_contents[currEditor];
-
+  const handleToggleIncludeSelected = () => {
+    setIncludeSelectedOnly((prev) => !prev);
+  };
   // Get generated content
   const handleGenerate = async () => {
     const newsList = generateNewsList(
@@ -76,14 +87,17 @@ const Editor = () => {
       await window.context.getOpenAIResponse(
         folderName!,
         currEditor,
-        newsList
+        newsList,
+        textAreaRef.current?.value
       );
       setGenerating(false);
       navigate(`/folders/${folderName}`);
     }
   };
 
+  const generatedContent = data.generated_contents[currEditor];
   const title = EditorTitles(currEditor);
+
   return (
     <div className="h-full flex flex-col-reverse border-primary/25 border-dashed border-[1.75px] bg-background/60 shadow-md rounded-md">
       <EditorControlBar />
@@ -96,8 +110,9 @@ const Editor = () => {
             Extra instructions (optional):
           </label>
           <textarea
+            ref={textAreaRef}
             id="editor-instruction"
-            className="w-full h-24 px-2 py-1 mt-1 font-serif text-sm border border-primary/50 rounded-sm resize-none focus:outline-none focus:border-2 focus:border-primary"
+            className="w-full h-24 px-2 py-1 mt-1 font-serif text-sm border border-primary/50 rounded-sm resize-none focus:outline-2 focus:outline-primary"
           />
         </div>
         <div className="flex flex-col">
@@ -114,10 +129,12 @@ const Editor = () => {
             onClick={handleGenerate}
             disabled={generating}
           >
-            {generating ? "Generating..." : "Generate Summary"}
+            {generating
+              ? ButtonLabel(currEditor)[1]
+              : ButtonLabel(currEditor)[0]}
           </Button>
         </div>
-        <div className="overflow-auto">
+        <div className="overflow-auto my-2">
           <Markdown components={markdownComponents}>
             {generatedContent}
           </Markdown>
@@ -127,7 +144,7 @@ const Editor = () => {
   );
 };
 
-// Sub Component
+// ============ Sub Component ==========
 
 const markdownComponents = {
   a: (props) => {

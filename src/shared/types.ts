@@ -36,7 +36,8 @@ export type GetSearchResultsFn = (
 export type getOpenAIResponseFn = (
   folder: string,
   editor: SubEditor,
-  news: string
+  news: string,
+  extraInstruction?: string
 ) => Promise<string>;
 
 // Loaders

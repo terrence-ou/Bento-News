@@ -143,7 +143,8 @@ const getSearchResults: GetSearchResultsFn = async (searchParams) => {
 const getOpenAIResponse: getOpenAIResponseFn = async (
   folder: string,
   editor: SubEditor,
-  news: string
+  news: string,
+  extraInstruction?: string
 ) => {
   const settings = fs.readFileSync(
     path.join(homedir(), APP_FOLDER, "settings.json"),
@@ -163,6 +164,9 @@ const getOpenAIResponse: getOpenAIResponseFn = async (
     const messages: OpenAIMessage[] = [
       { role: "user", content: news },
     ];
+    if (extraInstruction) {
+      messages.push({ role: "user", content: extraInstruction });
+    }
     const response = await openAIChatAgent.generate(messages, system);
     const generatedContents = response.choices[0].message.content;
 
