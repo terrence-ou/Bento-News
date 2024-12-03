@@ -1,9 +1,9 @@
 {
-  "name": "news-app",
-  "version": "0.0.0",
+  "name": "bento-news",
+  "version": "0.1.0",
   "description": "An Electron template with React, TypeScript, and Shadcn UI",
   "main": "./out/main/index.js",
-  "author": "Author",
+  "author": "Terrence Ou",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
