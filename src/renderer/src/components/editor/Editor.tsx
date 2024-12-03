@@ -11,7 +11,12 @@ import EditorControlBar from "./EditorControlBar";
 import { SubEditor } from "@shared/consts";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "../ui/checkbox";
-import { useLoaderData, useParams } from "react-router-dom";
+import {
+  useLoaderData,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
+import { useState } from "react";
 
 // ========== Helper functions ==========
 
@@ -56,6 +61,9 @@ const Editor = () => {
   const { folderName } = useParams();
   const data = useLoaderData() as FolderContents;
 
+  const [generating, setGenerating] = useState<boolean>(false);
+  const navigate = useNavigate();
+
   const generatedContent = data.generated_contents[currEditor];
 
   // Get generated content
@@ -64,11 +72,14 @@ const Editor = () => {
       includeSelectedOnly ? selectedArticles : data.articles
     );
     if (newsList) {
+      setGenerating(true);
       await window.context.getOpenAIResponse(
         folderName!,
         currEditor,
         newsList
       );
+      setGenerating(false);
+      navigate(`/folders/${folderName}`);
     }
   };
 
@@ -101,17 +112,66 @@ const Editor = () => {
           <Button
             className="w-full font-sans my-2"
             onClick={handleGenerate}
+            disabled={generating}
           >
-            Generate Summary
+            {generating ? "Generating..." : "Generate Summary"}
           </Button>
         </div>
-        <Markdown className="markdown flex-1 overflow-auto my-4 px-2">
-          {generatedContent}
-        </Markdown>
-        {/* <p className="flex-1 overflow-auto">{generatedContent}</p> */}
+        <div className="overflow-auto">
+          <Markdown components={markdownComponents}>
+            {generatedContent}
+          </Markdown>
+        </div>
       </div>
     </div>
   );
+};
+
+// Sub Component
+
+const markdownComponents = {
+  a: (props) => {
+    return (
+      <a
+        {...props}
+        className="text-primary underline"
+        target="_blank"
+      />
+    );
+  },
+  h3: (props) => {
+    return <h3 {...props} className="font-bold text-lg mt-3 mb-1" />;
+  },
+  h4: (props) => {
+    return <h4 {...props} className="font-semibold text-base my-1" />;
+  },
+  p: (props) => {
+    return (
+      <div
+        {...props}
+        className="my-2 text-sm font-light font-serif"
+      />
+    );
+  },
+  strong: (props) => {
+    return (
+      <span
+        {...props}
+        className="font-semibold font-serif text-sm mb-1"
+      />
+    );
+  },
+  li: (props) => {
+    return (
+      <li
+        {...props}
+        className="list-disc ml-4 text-sm font-light font-serif"
+      />
+    );
+  },
+  br: () => {
+    return <></>;
+  },
 };
 
 export default Editor;
