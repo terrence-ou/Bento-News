@@ -1,6 +1,7 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
+import { X } from "lucide-react";
 import { cn } from "@/utils";
 import { LanguageCodes, SortBy } from "@shared/consts";
 import {
@@ -8,7 +9,6 @@ import {
   searchCountAtom,
 } from "@/atoms/searchAtoms";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -24,6 +24,8 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
   // Maybe change to atom setter
   const [, setSearchCount] = useAtom(searchCountAtom);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleSearchQueryUpdate = useCallback((key: string) => {
     return (value: string) => {
       setSearchQuery((prev) => ({ ...prev, [key]: value }));
@@ -32,8 +34,10 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
 
   // The search action function
   const searchAction = useCallback(async () => {
+    setLoading(true);
     await window.context.getSearchResults(searchQuery);
     navigate("/search"); // trigger the loader funciton once the search completed
+    setLoading(false);
     setSearchCount((prev) => prev + 1);
   }, [searchQuery]);
 
@@ -62,8 +66,8 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
       <SearchBlock title="Keywords (separate by comma) *">
         <textarea
           className={cn(
-            "border resize-none w-full border-primary/30 rounded-[0.3rem] px-1 py-[2px] font-mono font-light tracking-tight focus-visible:outline-primary",
-            keywordsMissing && "border-destructive/80 border-2"
+            "resize-none w-full outline-primary/30 outline rounded-[0.3rem] px-1 py-[2px] font-mono font-light tracking-tight focus-visible:outline-primary focus-visible:outline-2",
+            keywordsMissing && "outline-destructive/80 outline-2"
           )}
           defaultValue={searchQuery.keywords}
           onBlur={(e) =>
@@ -122,11 +126,12 @@ const SearchBox = ({ onClose }: { onClose: () => void }) => {
           disabled={
             keywordsMissing ||
             searchQuery.keywords === undefined ||
-            !validDates
+            !validDates ||
+            loading
           }
           onClick={searchAction}
         >
-          Search
+          {loading ? "Searching..." : "Search"}
         </Button>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { cn } from "@/utils";
-import { CircleUser, Newspaper, Search } from "lucide-react";
+import { CircleUser, Newspaper } from "lucide-react";
 import {
   DialogHeader,
   DialogTitle,
@@ -13,7 +13,7 @@ import HeadlinesSettings from "./settings/HeadlinesSettings";
 enum Menu {
   Account = "Account",
   Headlines = "Headlines",
-  Search = "Search",
+  // Search = "Search",
 }
 
 const iconStyle = {
@@ -24,19 +24,19 @@ const iconStyle = {
 const icons = {
   [Menu.Account]: <CircleUser {...iconStyle} />,
   [Menu.Headlines]: <Newspaper {...iconStyle} />,
-  [Menu.Search]: <Search {...iconStyle} />,
+  // [Menu.Search]: <Search {...iconStyle} />,
 };
 
 const selectionPositions = {
   [Menu.Account]: "top-0",
   [Menu.Headlines]: "top-8",
-  [Menu.Search]: "top-16",
+  // [Menu.Search]: "top-16",
 };
 
 const menuContent = {
   [Menu.Account]: <AccountSettings />,
   [Menu.Headlines]: <HeadlinesSettings />,
-  [Menu.Search]: <></>,
+  // [Menu.Search]: <></>,
 };
 
 // The SettingDialog component
