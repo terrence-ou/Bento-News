@@ -79,15 +79,7 @@ const Search = () => {
           </h1>
           <LayoutControl />
         </div>
-        {/* No result */}
-        {sortedData.length === 0 && (
-          <div className="absolute w-full h-full text-center content-center">
-            <h1 className="text-2xl text-primary/40">
-              No search result available. Try to start a new search.
-            </h1>
-          </div>
-        )}
-        {/* Have results */}
+        {/* Show results */}
         {sortedData.length > 0 && (
           <div
             className={cn(
@@ -119,6 +111,14 @@ const Search = () => {
           </div>
         )}
       </div>
+      {/* No result */}
+      {sortedData.length === 0 && (
+        <div className="flex h-full justify-center items-center">
+          <h1 className="text-xl text-primary/40">
+            No search result available. Try to start a new search.
+          </h1>
+        </div>
+      )}
       {/* Load more button */}
       {defaultDisplayCount + extendCount < sortedData.length && (
         <div className="flex w-full justify-center pb-6">

@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
 import { Article, Articles } from "@shared/models/Articles";
 import { useLoaderData } from "react-router-dom";
-import NewsCard from "@/components/NewsCard";
+import { Settings } from "lucide-react";
 import { cn } from "@/utils";
+import NewsCard from "@/components/NewsCard";
 import useResize from "@/hooks/useResize";
 import { Button } from "@/components/ui/button";
 
@@ -100,14 +101,29 @@ const Headlines = () => {
         Today's Headlines
       </h1>
       <div className={cn("grid gap-x-5 my-3", gridCols)}>
-        {todayArticleGroups.map((group, i) => (
-          <div key={`col-${i}`} className="flex flex-col gap-4">
-            {group.map((article) => (
-              <NewsCard key={article.title} article={article} />
-            ))}
-          </div>
-        ))}
+        {todayHeadlines.articles &&
+          todayArticleGroups.map((group, i) => (
+            <div key={`col-${i}`} className="flex flex-col gap-4">
+              {group.map((article) => (
+                <NewsCard key={article.title} article={article} />
+              ))}
+            </div>
+          ))}
       </div>
+      {todayHeadlines.articles.length === 0 && (
+        <div className="px-5 h-36 w-full content-center">
+          <p className="flex text-primary/40 text-xl items-center justify-center">
+            Failed to fetch today's headlines. Please click the
+            <span>
+              <Settings
+                className="stroke-primary/40 w-6 h-6 mx-2"
+                strokeWidth={"1.5px"}
+              />
+            </span>{" "}
+            button and check NewAPI key.
+          </p>
+        </div>
+      )}
       {totalTodayDisplayCount < todayHeadlines.articles.length && (
         <div className="flex w-full justify-center">
           <Button
@@ -132,6 +148,13 @@ const Headlines = () => {
           </div>
         ))}
       </div>
+      {prevHeadlines.articles.length === 0 && (
+        <div className="px-5 h-36 w-full content-center">
+          <p className="text-center text-primary/40 text-xl">
+            No previous headlines available.
+          </p>
+        </div>
+      )}
       {totalPrevDisplayCount < prevHeadlines.articles.length && (
         <div className="flex w-full justify-center">
           <Button
