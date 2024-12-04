@@ -18,6 +18,13 @@ module.exports = {
   rebuildConfig: {},
   makers: [
     {
+      name: "@electron-forge/maker-zip",
+      config: {
+        icon: "resources/icon",
+      },
+      platforms: ["darwin"],
+    },
+    {
       name: "@electron-forge/maker-dmg",
       config: {
         name: "Bento News Installer",
