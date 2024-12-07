@@ -47,4 +47,5 @@ export enum SubEditor {
   trend = "trends",
   suggestion = "suggestions",
   write = "report",
+  image = "image",
 }
