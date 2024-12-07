@@ -10,6 +10,7 @@ import type {
   LoadSearchResultsFn,
   LoadUserFoldersFn,
   LoadFolderContentsFn,
+  LoadFolderCoverImgFn,
   ManageFolderFn,
   ManageFolderArticleFn,
   getOpenAIResponseFn,
@@ -39,6 +40,8 @@ try {
       ipcRenderer.invoke("loadPrevHeadlines", ...args),
     loadSearchResults: (...args: Parameters<LoadSearchResultsFn>) =>
       ipcRenderer.invoke("loadSearchResults", ...args),
+    loadFolderCoverImg: (...args: Parameters<LoadFolderCoverImgFn>) =>
+      ipcRenderer.invoke("loadFolderCoverImg", ...args),
     // Settings
     loadApiKeys: (...args: Parameters<LoadHeadlinesFn>) =>
       ipcRenderer.invoke("loadApiKeys", ...args),

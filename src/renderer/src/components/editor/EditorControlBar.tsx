@@ -8,6 +8,7 @@ import {
   TrendingUpDown,
   Lightbulb,
   NotebookPen,
+  Image,
 } from "lucide-react";
 
 const EditorControlBar = () => {
@@ -51,6 +52,11 @@ const EditorControlBar = () => {
           onClick={() => handleEditorChange(SubEditor.write)}
         >
           <NotebookPen className={getIconStyle(SubEditor.write)} />
+        </ControlButton>
+        <ControlButton
+          onClick={() => handleEditorChange(SubEditor.image)}
+        >
+          <Image className={getIconStyle(SubEditor.image)} />
         </ControlButton>
       </div>
     </div>
