@@ -29,6 +29,7 @@ import {
   addArticleToFolder,
   removeArticleFromFolder,
   getOpenAIResponse,
+  loadFolderCoverImg,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -45,6 +46,7 @@ import {
   LoadFolderContentsFn,
   ManageFolderArticleFn,
   getOpenAIResponseFn,
+  LoadFolderCoverImgFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -149,6 +151,12 @@ app.whenReady().then(() => {
     "loadSearchResults",
     (_, ...args: Parameters<LoadSearchResultsFn>) =>
       loadSearchResults(...args)
+  );
+
+  ipcMain.handle(
+    "loadFolderCoverImg",
+    (_, ...args: Parameters<LoadFolderCoverImgFn>) =>
+      loadFolderCoverImg(...args)
   );
 
   // Settings

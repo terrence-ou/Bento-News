@@ -6,6 +6,7 @@ import {
   APP_FOLDER,
   SEARCH_DIR,
   HEADLINE_DIR,
+  USER_FOLDERS_DIR,
   SEARCH_RESULTS_FILENAME,
 } from "@shared/consts";
 import type {
@@ -16,10 +17,12 @@ import type {
   WriteApiKeysFn,
   WriteHeadlineSettingsFn,
   LoadSearchResultsFn,
+  LoadFolderCoverImgFn,
 } from "@shared/types";
 
 const headlinesFolder = path.join(homedir(), HEADLINE_DIR);
 const searchFolder = path.join(homedir(), SEARCH_DIR);
+const userFolders = path.join(homedir(), USER_FOLDERS_DIR);
 const settingsFile = path.join(
   homedir(),
   APP_FOLDER,
@@ -156,6 +159,27 @@ const loadHeadlineSettings: LoadHeadlineSettingsFn = async () => {
   }
 };
 
+const loadFolderCoverImg: LoadFolderCoverImgFn = async (folder) => {
+  try {
+    const folderPath = path.join(userFolders, folder);
+    const files = fs.readdirSync(folderPath);
+    const imgFiles = files.filter((file) =>
+      file.match(/\.(jpeg|jpg|gif|png)$/)
+    );
+    if (imgFiles.length === 0) {
+      return undefined;
+    }
+    const imgPath = path.join(folderPath, imgFiles[0]);
+    return fs.readFileSync(imgPath, "base64");
+  } catch (error) {
+    console.error(
+      "Error loading folder cover image. [ERROR]: ",
+      error
+    );
+    return undefined;
+  }
+};
+
 // ============ Writers =============
 
 // Write API keys to the local setting file with the user's input
@@ -268,6 +292,7 @@ export {
   loadSearchResults,
   loadHeadlineSettings,
   loadApiKeys,
+  loadFolderCoverImg,
   writeApiKeys,
   writeHeadlineSettings,
   removeTodayHeadlines,

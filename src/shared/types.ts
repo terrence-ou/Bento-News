@@ -55,6 +55,10 @@ export type LoadHeadlineSettingsFn = () => Promise<{
   previous_days: number;
 }>;
 
+export type LoadFolderCoverImgFn = (
+  folder: string
+) => Promise<string | undefined>;
+
 export type LoadUserFoldersFn = () => Promise<string[]>;
 export type LoadFolderContentsFn = (
   folder: string

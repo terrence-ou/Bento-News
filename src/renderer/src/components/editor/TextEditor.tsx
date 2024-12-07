@@ -131,7 +131,10 @@ const TextEditor = () => {
         <Button
           className="w-full font-sans my-2 h-9 rounded-sm"
           onClick={handleGenerate}
-          disabled={generating}
+          disabled={
+            generating ||
+            (includeSelectedOnly && selectedArticles.length === 0)
+          }
         >
           {generating && <LoaderCircle className="animate-spin" />}
           {generating

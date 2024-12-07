@@ -13,6 +13,7 @@ import {
   ManageFolderArticleFn,
   LoadFolderContentsFn,
   getOpenAIResponseFn,
+  LoadFolderCoverImgFn,
 } from "@shared/types";
 
 // Type definition for the preload process
@@ -29,6 +30,7 @@ declare global {
       loadHeadlineSettings: LoadHeadlineSettingsFn;
       loadUserFolders: LoadUserFoldersFn;
       loadFolderContents: LoadFolderContentsFn;
+      loadFolderCoverImg: LoadFolderCoverImgFn;
       writeApiKeys: WriteApiKeysFn;
       writeHeadlineSettings: WriteHeadlineSettingsFn;
       removeTodayHeadlines: RemoveTodayHeadlinesFn;

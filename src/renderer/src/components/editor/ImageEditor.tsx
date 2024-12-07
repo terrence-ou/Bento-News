@@ -1,4 +1,5 @@
 import { useAtom } from "jotai";
+import { useParams } from "react-router-dom";
 // import {
 //   useLoaderData,
 //   useParams,
@@ -21,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ImageStyles } from "@shared/consts";
+import { useEffect, useState } from "react";
 
 const styleDecscription = {
   [ImageStyles.stippled]: "B&W image with dots",
@@ -32,13 +34,27 @@ const ImageEditor = () => {
   const [includeSelectedOnly, setIncludeSelectedOnly] = useAtom(
     includeSelectedArticlesAtom
   );
+  const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
   // const setTyping = useSetAtom(toggleTyping);
 
   // const navigate = useNavigate();
-  // const { folderName } = useParams();
+  const { folderName } = useParams();
   const handleToggleIncludeSelected = () => {
     setIncludeSelectedOnly((prev) => !prev);
   };
+
+  const loadCoverImage = async () => {
+    const folderCoverImg = await window.context.loadFolderCoverImg(
+      folderName!
+    );
+    if (folderCoverImg) {
+      setImgSrc(folderCoverImg);
+    }
+  };
+
+  useEffect(() => {
+    loadCoverImage();
+  }, []);
 
   // const data = useLoaderData() as FolderContents;
 
@@ -88,6 +104,15 @@ const ImageEditor = () => {
             minutes. Appreciate your patience.
           </p>
         </div>
+      </div>
+      <div className="overflow-y-auto px-2 h-full block content-center align-middle">
+        {imgSrc && (
+          <img
+            src={`data:image/png;base64,${imgSrc}`}
+            alt="cover"
+            className="max-h-[80%] mx-auto"
+          />
+        )}
       </div>
     </div>
   );
