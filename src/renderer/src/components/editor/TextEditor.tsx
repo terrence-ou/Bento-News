@@ -60,6 +60,7 @@ const generateNewsList = (
 };
 
 // ========= Text Editor component ==========
+
 const TextEditor = () => {
   const currEditor = useAtomValue(currEditorAtom);
   const selectedArticles = useAtomValue(selectedArticlesAtom);
@@ -117,11 +118,13 @@ const TextEditor = () => {
         />
       </div>
       <div className="flex flex-col">
-        <div className="flex items-center gap-2 font-serif text-sm">
+        <div
+          className="flex items-center gap-2 font-serif text-sm hover:cursor-pointer w-fit"
+          onClick={handleToggleIncludeSelected}
+        >
           <Checkbox
             className="rounded-[5px]"
             checked={includeSelectedOnly}
-            onClick={handleToggleIncludeSelected}
           />
           <p>Include selected news only</p>
         </div>

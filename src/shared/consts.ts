@@ -49,3 +49,7 @@ export enum SubEditor {
   write = "report",
   image = "image",
 }
+
+export enum ImageStyles {
+  stippled = "Stippled",
+}
