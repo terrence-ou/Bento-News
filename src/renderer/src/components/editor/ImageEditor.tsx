@@ -1,17 +1,21 @@
-import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { useAtom, useAtomValue } from "jotai";
 import { useParams } from "react-router-dom";
-// import {
-//   useLoaderData,
-//   useParams,
-//   useNavigate,
-// } from "react-router-dom";
+import { FolderContents } from "@shared/types";
+import { Article } from "@shared/models/Articles";
+import {
+  useLoaderData,
+  // useParams,
+  // useNavigate,
+} from "react-router-dom";
 import {
   includeSelectedArticlesAtom,
+  generatingImg,
+  selectedArticlesAtom,
   // currEditorAtom,
-  // selectedArticlesAtom,
   // toggleTyping,
 } from "@/atoms/foldersAtoms";
-import { CircleAlert } from "lucide-react";
+import { CircleAlert, ImageOff } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,25 +26,53 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ImageStyles } from "@shared/consts";
-import { useEffect, useState } from "react";
 
 const styleDecscription = {
   [ImageStyles.stippled]: "B&W image with dots",
 };
 
+const generateNewsList = (
+  articles: Article[]
+): string | undefined => {
+  if (articles.length === 0) {
+    return undefined;
+  }
+  const message = articles.map((article, index) => {
+    return `News ${index} - title: ${article.title}`;
+  });
+  return message.join(";\n");
+};
+
 // ========== The ImageEditor component ==========
 const ImageEditor = () => {
-  // const selectedArticles = useAtomValue(selectedArticlesAtom);
+  const data = useLoaderData() as FolderContents;
+
+  const selectedArticles = useAtomValue(selectedArticlesAtom);
   const [includeSelectedOnly, setIncludeSelectedOnly] = useAtom(
     includeSelectedArticlesAtom
   );
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
+  const [generating, setGenerating] = useAtom(generatingImg);
   // const setTyping = useSetAtom(toggleTyping);
 
   // const navigate = useNavigate();
   const { folderName } = useParams();
   const handleToggleIncludeSelected = () => {
     setIncludeSelectedOnly((prev) => !prev);
+  };
+
+  const handleGenerateCoverImage = async () => {
+    const newsTitles = generateNewsList(
+      includeSelectedOnly ? selectedArticles : data.articles
+    );
+    if (newsTitles) {
+      setGenerating(true);
+      await window.context.getHuggingFaceResponse(
+        newsTitles,
+        ImageStyles.stippled
+      );
+      setGenerating(false);
+    }
   };
 
   const loadCoverImage = async () => {
@@ -55,8 +87,6 @@ const ImageEditor = () => {
   useEffect(() => {
     loadCoverImage();
   }, []);
-
-  // const data = useLoaderData() as FolderContents;
 
   return (
     <div className="flex-1 max-h-full flex flex-col overflow-auto px-6 py-3">
@@ -91,7 +121,14 @@ const ImageEditor = () => {
             />
             <p>Include selected news only</p>
           </div>
-          <Button className="w-full font-sans mt-3 mb-1 h-9 rounded-sm">
+          <Button
+            className="w-full font-sans mt-3 mb-1 h-9 rounded-sm"
+            disabled={
+              generating ||
+              (includeSelectedOnly && selectedArticles.length === 0)
+            }
+            onClick={handleGenerateCoverImage}
+          >
             Generate Cover Image
           </Button>
         </div>
@@ -100,18 +137,25 @@ const ImageEditor = () => {
             <span>
               <CircleAlert className="inline h-4 stroke-[1.5px] stroke-primary/40" />
             </span>
-            Image generation may take between 20 seconds to 1.5
-            minutes. Appreciate your patience.
+            Image generation may take between 20 seconds to 2 minutes.
+            Appreciate your patience.
           </p>
         </div>
       </div>
       <div className="overflow-y-auto px-2 h-full block content-center align-middle">
-        {imgSrc && (
+        {imgSrc ? (
           <img
             src={`data:image/png;base64,${imgSrc}`}
             alt="cover"
             className="max-h-[80%] mx-auto"
           />
+        ) : (
+          <div>
+            <ImageOff className="w-28 h-28 stroke-[0.6px] mx-auto stroke-zinc-300" />
+            <p className="text-center text-primary/30">
+              No cover image available
+            </p>
+          </div>
         )}
       </div>
     </div>
