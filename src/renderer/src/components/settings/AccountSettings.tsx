@@ -17,17 +17,27 @@ const apis = [
       "This key is used to get content generation results from OpenAI. Get a key at: ",
     href: "https://platform.openai.com/",
   },
+  {
+    title: "HuggingFace key",
+    key: "huggingface",
+    description:
+      "This key is used to generate image with HuggingFace models. Get a key at: ",
+    href: "https://huggingface.co/settings/tokens",
+  },
 ];
 
 const AccountSettings = () => {
   const [apiKeys, setApiKeys] = useState<{
     newsapi: string;
     openai: string;
-  }>({ newsapi: "", openai: "" });
+    huggingface: string;
+  }>({ newsapi: "", openai: "", huggingface: "" });
   const [writing, setWriting] = useState<boolean>(false);
   const [edited, setEdited] = useState<boolean>(false);
 
-  const handleSetApiKeys = (source: "newsapi" | "openai") => {
+  const handleSetApiKeys = (
+    source: "newsapi" | "openai" | "huggingface"
+  ) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       setEdited(true);
       setApiKeys((prev) => ({
@@ -54,14 +64,16 @@ const AccountSettings = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-full gap-5">
+    <div className="flex flex-col h-full gap-3">
       {apis.map((api) => (
         <APIInput
           key={`api-input-${api.title}`}
           title={api.title}
           description={api.description}
           value={apiKeys[api.key]}
-          onChange={handleSetApiKeys(api.key as "openai" | "newsapi")}
+          onChange={handleSetApiKeys(
+            api.key as "openai" | "newsapi" | "huggingface"
+          )}
           href={api.href}
         />
       ))}
@@ -100,7 +112,7 @@ const APIInput = ({
   return (
     <div>
       <p className="text-sm">{title}</p>
-      <p className="text-xs my-2 text-primary/60 tracking-tight">
+      <p className="text-xs my-1 text-primary/60 tracking-tight">
         {description + " "}
         <a
           href={href}

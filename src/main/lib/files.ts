@@ -113,7 +113,7 @@ const loadSearchResults: LoadSearchResultsFn = async () => {
 
 // Load API keys from the local setting file
 const loadApiKeys: LoadApiKeysFn = async () => {
-  const emptyKeys = { newsapi: "", openai: "" };
+  const emptyKeys = { newsapi: "", openai: "", huggingface: "" };
 
   try {
     const data = fs.readFileSync(settingsFile, "utf-8");
@@ -124,6 +124,7 @@ const loadApiKeys: LoadApiKeysFn = async () => {
     return {
       newsapi: settings.keys.newsapi || "",
       openai: settings.keys.openai || "",
+      huggingface: settings.keys.huggingface || "",
     };
   } catch (error) {
     console.error("Error loading API keys. [ERROR]: ", error);
@@ -183,13 +184,18 @@ const loadFolderCoverImg: LoadFolderCoverImgFn = async (folder) => {
 // ============ Writers =============
 
 // Write API keys to the local setting file with the user's input
-const writeApiKeys: WriteApiKeysFn = async ({ newsapi, openai }) => {
+const writeApiKeys: WriteApiKeysFn = async ({
+  newsapi,
+  openai,
+  huggingface,
+}) => {
   try {
     const data = fs.readFileSync(settingsFile, "utf-8");
     const settings = JSON.parse(data);
     if (!settings.keys) settings.keys = {};
     settings.keys.newsapi = newsapi;
     settings.keys.openai = openai;
+    settings.keys.huggingface = huggingface;
     fs.writeFileSync(
       settingsFile,
       JSON.stringify(settings, null, 2),

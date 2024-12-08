@@ -47,6 +47,7 @@ export type LoadSearchResultsFn = () => Promise<Articles | undefined>;
 export type LoadApiKeysFn = () => Promise<{
   newsapi: string;
   openai: string;
+  huggingface: string;
 }>;
 
 export type LoadHeadlineSettingsFn = () => Promise<{
@@ -68,9 +69,11 @@ export type LoadFolderContentsFn = (
 export type WriteApiKeysFn = ({
   newsapi,
   openai,
+  huggingface,
 }: {
   newsapi: string;
   openai: string;
+  huggingface: string;
 }) => Promise<void>;
 
 export type WriteHeadlineSettingsFn = ({
