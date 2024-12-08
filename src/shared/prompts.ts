@@ -11,4 +11,7 @@ const SYSTEM_PROMPTS = {
     "You're a professional news report write who can write article based on the given news articles and the corresponding URL links. Please write an single news-style article, or consultant-style report, based on the provided news and your knowledge. Do not split into too many sub sections. Return the result with sections, bullet points, etc. Please return results only.",
 };
 
-export { SYSTEM_PROMPTS };
+const IMG_GEN_PREPARE_PROMPT =
+  "You’re a professional analyst who can extract crucial information from the given article titles. Please provide a very concise, single sentence, summary within 30 words in total. The prompt should look like an image generation propmt rather than list of points";
+
+export { SYSTEM_PROMPTS, IMG_GEN_PREPARE_PROMPT };

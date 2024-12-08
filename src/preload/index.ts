@@ -7,13 +7,14 @@ import type {
   WriteHeadlineSettingsFn,
   RemoveTodayHeadlinesFn,
   GetSearchResultsFn,
+  GetHuggingFaceResponseFn,
   LoadSearchResultsFn,
   LoadUserFoldersFn,
   LoadFolderContentsFn,
   LoadFolderCoverImgFn,
   ManageFolderFn,
   ManageFolderArticleFn,
-  getOpenAIResponseFn,
+  GetOpenAIResponseFn,
 } from "@shared/types";
 
 // The preload process plays a middleware role in bridging
@@ -32,8 +33,11 @@ try {
       ipcRenderer.invoke("getHeadlines", ...args),
     getSearchResults: (...args: Parameters<GetSearchResultsFn>) =>
       ipcRenderer.invoke("getSearchResults", ...args),
-    getOpenAIResponse: (...args: Parameters<getOpenAIResponseFn>) =>
+    getOpenAIResponse: (...args: Parameters<GetOpenAIResponseFn>) =>
       ipcRenderer.invoke("getOpenAIResponse", ...args),
+    getHuggingFaceResponse: (
+      ...args: Parameters<GetHuggingFaceResponseFn>
+    ) => ipcRenderer.invoke("getHuggingFaceResponse", ...args),
     loadTodayHeadlines: (...args: Parameters<LoadHeadlinesFn>) =>
       ipcRenderer.invoke("loadTodayHeadlines", ...args),
     loadPrevHeadlines: (...args: Parameters<LoadHeadlinesFn>) =>

@@ -23,3 +23,7 @@ export const typing = atom((get) => get(typingEffectAtom));
 export const toggleTyping = atom(null, (_, set, value: boolean) => {
   set(typingEffectAtom, value);
 });
+
+// Image generation is slow, user might navigate away from the img editor
+// there we need to keep track of the state globally
+export const generatingImg = atom<boolean>(false);

@@ -1,5 +1,5 @@
 import { Articles, Article } from "./models/Articles";
-import { Categories, SubEditor } from "./consts";
+import { Categories, ImageStyles, SubEditor } from "./consts";
 
 export type Category = (typeof Categories)[number];
 export type SearchParams = {
@@ -30,15 +30,23 @@ export type ManageFolderArticleFn = (
 
 // Requests
 export type GetHeadlinesFn = () => Promise<void>;
+
 export type GetSearchResultsFn = (
   searchParams: SearchParams
 ) => Promise<void>;
-export type getOpenAIResponseFn = (
+
+export type GetOpenAIResponseFn = (
   folder: string,
   editor: SubEditor,
   news: string,
   extraInstruction?: string
 ) => Promise<string>;
+
+export type GetHuggingFaceResponseFn = (
+  newsTitles: string,
+  folder: string,
+  style: ImageStyles
+) => Promise<string | void>;
 
 // Loaders
 export type LoadHeadlinesFn = () => Promise<Articles | undefined>;
@@ -47,6 +55,7 @@ export type LoadSearchResultsFn = () => Promise<Articles | undefined>;
 export type LoadApiKeysFn = () => Promise<{
   newsapi: string;
   openai: string;
+  huggingface: string;
 }>;
 
 export type LoadHeadlineSettingsFn = () => Promise<{
@@ -68,9 +77,11 @@ export type LoadFolderContentsFn = (
 export type WriteApiKeysFn = ({
   newsapi,
   openai,
+  huggingface,
 }: {
   newsapi: string;
   openai: string;
+  huggingface: string;
 }) => Promise<void>;
 
 export type WriteHeadlineSettingsFn = ({

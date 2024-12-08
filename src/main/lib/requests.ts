@@ -11,15 +11,21 @@ import {
   HEADLINE_DIR,
   APP_FOLDER,
   GENERATED_CONTENTS_FILENAME,
+  COVER_IMG_FILENAME,
   SortBy,
   SubEditor,
+  ImageStyles,
 } from "@shared/consts";
 
-import { SYSTEM_PROMPTS } from "@shared/prompts";
+import {
+  IMG_GEN_PREPARE_PROMPT,
+  SYSTEM_PROMPTS,
+} from "@shared/prompts";
 
 import type {
   GetHeadlinesFn,
-  getOpenAIResponseFn,
+  GetHuggingFaceResponseFn,
+  GetOpenAIResponseFn,
   GetSearchResultsFn,
 } from "@shared/types";
 import type { OpenAIMessage } from "ai-fetcher/dist/types";
@@ -30,6 +36,16 @@ const searchFolderDir = path.join(homedir(), SEARCH_DIR);
 const userFolderDir = path.join(homedir(), USER_FOLDERS_DIR);
 const headlineEndpoint = "https://newsapi.org/v2/top-headlines";
 const everythingEndpoint = "https://newsapi.org/v2/everything";
+const hgModelEndpoint = "https://api-inference.huggingface.co/models";
+
+const styleToModelEndpoint = {
+  [ImageStyles.stippled]: "dvyio/flux-lora-stippled-illustration",
+};
+
+const triggerWords = {
+  [ImageStyles.stippled]:
+    "stippled illustration in the style of STPPLD.",
+};
 
 // Functions
 const getHeadlines: GetHeadlinesFn = async () => {
@@ -140,7 +156,7 @@ const getSearchResults: GetSearchResultsFn = async (searchParams) => {
 };
 
 // Get OpenAI Chat response
-const getOpenAIResponse: getOpenAIResponseFn = async (
+const getOpenAIResponse: GetOpenAIResponseFn = async (
   folder: string,
   editor: SubEditor,
   news: string,
@@ -197,4 +213,77 @@ const getOpenAIResponse: getOpenAIResponseFn = async (
   }
 };
 
-export { getHeadlines, getSearchResults, getOpenAIResponse };
+// Get Hugging Face response
+const getHuggingFaceResponse: GetHuggingFaceResponseFn = async (
+  newsTitles,
+  folder,
+  style
+) => {
+  const settings = fs.readFileSync(
+    path.join(homedir(), APP_FOLDER, "settings.json"),
+    "utf-8"
+  );
+  const settingsJson = JSON.parse(settings);
+  if (
+    !settingsJson.keys ||
+    !settingsJson.keys.openai ||
+    !settingsJson.keys.huggingface
+  ) {
+    console.error("No API key found for OpenAI or Huggingface");
+    return;
+  }
+
+  try {
+    // step 1: Generate short img propmt
+    const openaiApiKey = settingsJson.keys.openai;
+    const hgApiKey = settingsJson.keys.huggingface;
+    const openAIChatAgent = OpenAI.chat(openaiApiKey, "gpt-4o-mini");
+    const system = IMG_GEN_PREPARE_PROMPT;
+    const messages: OpenAIMessage[] = [
+      { role: "user", content: newsTitles },
+    ];
+    const openAIResponse = await openAIChatAgent.generate(
+      messages,
+      system
+    );
+    const prompt =
+      openAIResponse.choices[0].message.content + triggerWords[style];
+    console.log(`Prompt generated.`);
+
+    // step 2: generate image
+    const imgGenEndpoint = `${hgModelEndpoint}/${styleToModelEndpoint[style]}`;
+
+    const response = await axios.post(
+      imgGenEndpoint,
+      { inputs: prompt },
+      {
+        headers: {
+          Authorization: `Bearer ${hgApiKey}`,
+          "Content-Type": "application/json",
+        },
+        responseType: "arraybuffer",
+      }
+    );
+
+    const fileDir = path.join(
+      userFolderDir,
+      folder,
+      COVER_IMG_FILENAME
+    );
+    fs.writeFileSync(fileDir, response.data);
+
+    console.log(`Image saved to ${fileDir}`);
+  } catch (error) {
+    console.error(
+      "[ERROR]: Failed fectching OpenAI response, error: ",
+      error
+    );
+  }
+};
+
+export {
+  getHeadlines,
+  getSearchResults,
+  getOpenAIResponse,
+  getHuggingFaceResponse,
+};

@@ -12,7 +12,8 @@ import {
   ManageFolderFn,
   ManageFolderArticleFn,
   LoadFolderContentsFn,
-  getOpenAIResponseFn,
+  GetOpenAIResponseFn,
+  GetHuggingFaceResponseFn,
   LoadFolderCoverImgFn,
 } from "@shared/types";
 
@@ -22,7 +23,8 @@ declare global {
     context: {
       getHeadlines: GetHeadlinesFn;
       getSearchResults: GetSearchResultsFn;
-      getOpenAIResponse: getOpenAIResponseFn;
+      getOpenAIResponse: GetOpenAIResponseFn;
+      getHuggingFaceResponse: GetHuggingFaceResponseFn;
       loadTodayHeadlines: LoadHeadlinesFn;
       loadPrevHeadlines: LoadHeadlinesFn;
       loadSearchResults: LoadSearchResultsFn;

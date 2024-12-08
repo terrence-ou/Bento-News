@@ -30,6 +30,7 @@ import {
   removeArticleFromFolder,
   getOpenAIResponse,
   loadFolderCoverImg,
+  getHuggingFaceResponse,
 } from "@/lib";
 import {
   GetHeadlinesFn,
@@ -45,8 +46,9 @@ import {
   ManageFolderFn,
   LoadFolderContentsFn,
   ManageFolderArticleFn,
-  getOpenAIResponseFn,
+  GetOpenAIResponseFn,
   LoadFolderCoverImgFn,
+  GetHuggingFaceResponseFn,
 } from "@shared/types";
 
 function createWindow(): void {
@@ -118,6 +120,7 @@ app.whenReady().then(() => {
 
   // IPC events
 
+  // ====== Requests ======
   ipcMain.handle(
     "getHeadlines",
     (_, ...args: Parameters<GetHeadlinesFn>) => getHeadlines(...args)
@@ -131,9 +134,17 @@ app.whenReady().then(() => {
 
   ipcMain.handle(
     "getOpenAIResponse",
-    (_, ...args: Parameters<getOpenAIResponseFn>) =>
+    (_, ...args: Parameters<GetOpenAIResponseFn>) =>
       getOpenAIResponse(...args)
   );
+
+  ipcMain.handle(
+    "getHuggingFaceResponse",
+    (_, ...args: Parameters<GetHuggingFaceResponseFn>) =>
+      getHuggingFaceResponse(...args)
+  );
+
+  // ====== Loaders ======
 
   ipcMain.handle(
     "loadTodayHeadlines",
@@ -159,7 +170,7 @@ app.whenReady().then(() => {
       loadFolderCoverImg(...args)
   );
 
-  // Settings
+  // ====== Settings ======
   ipcMain.handle(
     "loadApiKeys",
     (_, ...args: Parameters<LoadApiKeysFn>) => loadApiKeys(...args)
@@ -188,7 +199,7 @@ app.whenReady().then(() => {
       removeTodayHeadlines(...args)
   );
 
-  // folders
+  // ====== Folders ======
   ipcMain.handle(
     "loadUserFolders",
     (_, ...args: Parameters<LoadUserFoldersFn>) =>
