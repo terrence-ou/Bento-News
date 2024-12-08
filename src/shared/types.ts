@@ -44,6 +44,7 @@ export type GetOpenAIResponseFn = (
 
 export type GetHuggingFaceResponseFn = (
   newsTitles: string,
+  folder: string,
   style: ImageStyles
 ) => Promise<string | void>;
 

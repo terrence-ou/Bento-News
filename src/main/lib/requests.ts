@@ -11,6 +11,7 @@ import {
   HEADLINE_DIR,
   APP_FOLDER,
   GENERATED_CONTENTS_FILENAME,
+  COVER_IMG_FILENAME,
   SortBy,
   SubEditor,
   ImageStyles,
@@ -215,6 +216,7 @@ const getOpenAIResponse: GetOpenAIResponseFn = async (
 // Get Hugging Face response
 const getHuggingFaceResponse: GetHuggingFaceResponseFn = async (
   newsTitles,
+  folder,
   style
 ) => {
   const settings = fs.readFileSync(
@@ -234,20 +236,43 @@ const getHuggingFaceResponse: GetHuggingFaceResponseFn = async (
   try {
     // step 1: Generate short img propmt
     const openaiApiKey = settingsJson.keys.openai;
-    // const hgApiKey = settingsJson.keys.huggingface;
+    const hgApiKey = settingsJson.keys.huggingface;
     const openAIChatAgent = OpenAI.chat(openaiApiKey, "gpt-4o-mini");
     const system = IMG_GEN_PREPARE_PROMPT;
     const messages: OpenAIMessage[] = [
       { role: "user", content: newsTitles },
     ];
-    const response = await openAIChatAgent.generate(messages, system);
+    const openAIResponse = await openAIChatAgent.generate(
+      messages,
+      system
+    );
     const prompt =
-      response.choices[0].message.content + triggerWords[style];
-    console.log(prompt);
+      openAIResponse.choices[0].message.content + triggerWords[style];
+    console.log(`Prompt generated.`);
 
     // step 2: generate image
     const imgGenEndpoint = `${hgModelEndpoint}/${styleToModelEndpoint[style]}`;
-    console.log("Img gen endpoint: ", imgGenEndpoint);
+
+    const response = await axios.post(
+      imgGenEndpoint,
+      { inputs: prompt },
+      {
+        headers: {
+          Authorization: `Bearer ${hgApiKey}`,
+          "Content-Type": "application/json",
+        },
+        responseType: "arraybuffer",
+      }
+    );
+
+    const fileDir = path.join(
+      userFolderDir,
+      folder,
+      COVER_IMG_FILENAME
+    );
+    fs.writeFileSync(fileDir, response.data);
+
+    console.log(`Image saved to ${fileDir}`);
   } catch (error) {
     console.error(
       "[ERROR]: Failed fectching OpenAI response, error: ",

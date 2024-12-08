@@ -69,6 +69,7 @@ const ImageEditor = () => {
       setGenerating(true);
       await window.context.getHuggingFaceResponse(
         newsTitles,
+        folderName!,
         ImageStyles.stippled
       );
       setGenerating(false);
