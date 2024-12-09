@@ -16,6 +16,18 @@ module.exports = {
     },
   },
   rebuildConfig: {},
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "terrence-ou",
+          name: "Bento-News",
+        },
+        prerelease: true,
+      },
+    },
+  ],
   makers: [
     {
       name: "@electron-forge/maker-zip",

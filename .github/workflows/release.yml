@@ -1,0 +1,54 @@
+name: CD
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [
+            # { name: 'linux', image: 'ubuntu-latest' },
+            # { name: 'windows', image: 'windows-latest' },
+            { name: "macos", image: "macos-latest" },
+          ]
+    runs-on: ${{ matrix.os.image }}
+    steps:
+      - name: Github checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+
+      - name: Install Depencies
+        run: npm install
+
+      - name: Decode Signing Certificate
+        run: |
+          echo ${{ secrets.APPLE_DEVELOPER_CERTIFICATE }} | base64 --decode > certificate.p12
+          security create-keychain -p "" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security import certificate.p12 -k build.keychain -P ${{ secrets.CERTIFICATE_PASSWORD }} -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
+        env:
+          APPLE_DEVELOPER_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+
+      - name: Build and Notarize
+        run: npm run make
+        env:
+          VITE_APPLE_ID: ${{ secrets.VITE_APPLE_ID }}
+          VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
+          VITE_TEAM_ID: ${{ secrets.VITE_TEAM_ID }}
+
+      - name: List out directory contents
+        run: ls -la out
+
+      - name: Publish app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          VITE_APPLE_ID: ${{ secrets.VITE_APPLE_ID }}
+          VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
+          VITE_TEAM_ID: ${{ secrets.VITE_TEAM_ID }}
+        run: npm run publish
