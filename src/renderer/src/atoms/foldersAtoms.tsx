@@ -26,4 +26,24 @@ export const toggleTyping = atom(null, (_, set, value: boolean) => {
 
 // Image generation is slow, user might navigate away from the img editor
 // there we need to keep track of the state globally
-export const generatingImg = atom<boolean>(false);
+export const generatingImgAtom = atom<boolean>(false);
+export const generatStartAtom = atom<number>(0); // trakcing the start time of the generation
+export const generatingFolderAtom = atom<string | null>(null); // the folder the image is being generated for
+
+export const currGeneratingFolderAtom = atom((get) =>
+  get(generatingFolderAtom)
+);
+export const setGeneratingFolder = atom(
+  null,
+  (_, set, folder: string) => {
+    set(generatingFolderAtom, folder);
+  }
+);
+
+export const getGenerateStartAtom = atom((get) =>
+  get(generatStartAtom)
+);
+export const setGenerateStartAtom = atom(
+  null,
+  (_, set, start: number) => set(generatStartAtom, start)
+);

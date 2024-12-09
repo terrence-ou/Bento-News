@@ -98,6 +98,15 @@ module.exports = {
           from: { opacity: "0" },
           to: { opacity: "1" },
         },
+        waiting: {
+          "0%, 100%": {
+            opacity: "1",
+          },
+          "50%": {
+            opacity: "0.2",
+            transform: "translateY(-20px)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -106,6 +115,7 @@ module.exports = {
         spin: "spin 1s linear infinite",
         "bounce-slow": "bounce 3s infinite",
         fadeIn: "fadeIn 0.3s ease-out",
+        waiting: "waiting 3s infinite",
       },
     },
   },
