@@ -40,11 +40,19 @@ const hgModelEndpoint = "https://api-inference.huggingface.co/models";
 
 const styleToModelEndpoint = {
   [ImageStyles.stippled]: "dvyio/flux-lora-stippled-illustration",
+  [ImageStyles.watercolor]: "alvdansen/araminta-k-illustration",
+  [ImageStyles.lineart]: "dvyio/flux-lora-simple-illustration",
+  [ImageStyles.cartoon]: "blink7630/graphic-novel-illustration",
+  [ImageStyles.kids]: "ampp/rough-kids-illustrations",
 };
 
 const triggerWords = {
   [ImageStyles.stippled]:
     "stippled illustration in the style of STPPLD.",
+  [ImageStyles.watercolor]: "",
+  [ImageStyles.lineart]: "illustration in the style of SMPL",
+  [ImageStyles.cartoon]: "graphic novel illustration",
+  [ImageStyles.kids]: "r0ughkids4rt",
 };
 
 // Functions
