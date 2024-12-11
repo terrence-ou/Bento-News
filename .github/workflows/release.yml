@@ -5,12 +5,9 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [
-            # { name: 'linux', image: 'ubuntu-latest' },
-            # { name: 'windows', image: 'windows-latest' },
-            { name: "macos", image: "macos-latest" },
-          ]
-    runs-on: ${{ matrix.os.image }}
+        os: [macos-latest]
+        arch: [x64, arm64]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Github checkout
         uses: actions/checkout@v4
@@ -36,7 +33,7 @@ jobs:
           CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
 
       - name: Build and Notarize
-        run: npm run make
+        run: npm run make -- --arch ${{ matrix.arch }}
         env:
           VITE_APPLE_ID: ${{ secrets.VITE_APPLE_ID }}
           VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
