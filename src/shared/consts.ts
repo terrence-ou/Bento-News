@@ -53,4 +53,8 @@ export enum SubEditor {
 
 export enum ImageStyles {
   stippled = "Stippled",
+  watercolor = "Watercolor",
+  lineart = "Lineart",
+  cartoon = "Cartoon",
+  kids = "Kids",
 }

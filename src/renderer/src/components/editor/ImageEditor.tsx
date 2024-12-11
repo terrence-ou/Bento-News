@@ -30,6 +30,10 @@ import {
 
 const styleDecscription = {
   [ImageStyles.stippled]: "B&W image with dots",
+  [ImageStyles.watercolor]: "Soft watercolor effect",
+  [ImageStyles.lineart]: "Simplistic high-contrast line art",
+  [ImageStyles.cartoon]: "Vibrant color and dramatic expressions",
+  [ImageStyles.kids]: "Soft, cozy, and colorful",
 };
 
 const generateNewsList = (
@@ -62,6 +66,9 @@ const ImageEditor = () => {
   );
 
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
+  const [imgStyle, setImgStyle] = useState<ImageStyles>(
+    ImageStyles.stippled
+  );
   const [generating, setGenerating] = useAtom(generatingImgAtom);
 
   const { folderName } = useParams();
@@ -81,10 +88,14 @@ const ImageEditor = () => {
       await window.context.getHuggingFaceResponse(
         newsTitles,
         folderName!,
-        ImageStyles.stippled
+        imgStyle
       );
       setGenerating(false);
     }
+  };
+
+  const handleStyleChange = (style: ImageStyles) => {
+    setImgStyle(style);
   };
 
   useEffect(() => {
@@ -109,17 +120,25 @@ const ImageEditor = () => {
         <h3 className="font-serif text-sm mb-2">
           Select an image style:
         </h3>
-        <Select>
+        <Select
+          onValueChange={(value) =>
+            handleStyleChange(value as ImageStyles)
+          }
+        >
           <SelectTrigger className="w-full h-8 font-mono focus:ring-offset-0 focus:ring-[1.5px] rounded-sm">
             <SelectValue placeholder="Stippled - Default" />
           </SelectTrigger>
           <SelectContent className="font-mono">
-            <SelectItem value={ImageStyles.stippled}>
-              {ImageStyles.stippled}
-              <span className="text-primary/50">
-                {` - ${styleDecscription[ImageStyles.stippled]}`}
-              </span>
-            </SelectItem>
+            {Object.entries(styleDecscription).map(
+              ([style, desc]) => (
+                <SelectItem key={`img-${style}`} value={style}>
+                  {style}
+                  <span className="text-primary/50">
+                    {` - ${desc}`}
+                  </span>
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
         {/* include selection checkbox and generate button */}
