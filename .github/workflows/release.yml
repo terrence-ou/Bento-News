@@ -42,10 +42,35 @@ jobs:
       - name: List out directory contents
         run: ls -la out
 
-      - name: Publish app
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          VITE_APPLE_ID: ${{ secrets.VITE_APPLE_ID }}
-          VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
-          VITE_TEAM_ID: ${{ secrets.VITE_TEAM_ID }}
-        run: npm run publish
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          release_name: v${{ github.event.inputs.version }}
+          draft: true
+          prerelease: true
+
+      - name: Upload x64 Release Asset
+        if: matrix.arch == 'x64'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./out/make/x64/BentoNews.zip
+          asset_name: BentoNews-x64.zip
+          asset_content_type: application/zip
+
+      - name: Upload arm64 Release Asset
+        if: matrix.arch == 'arm64'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./out/make/arm64/BentoNews.zip
+          asset_name: BentoNews-arm64.zip
+          asset_content_type: application/zip
