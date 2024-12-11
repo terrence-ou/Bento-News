@@ -60,7 +60,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./out/make/x64/BentoNews.zip
+          asset_path: ./out/make/zip/darwin/x64/BentoNews-darwin-x64-${{github.event.inputs.version}}.zip
           asset_name: BentoNews-x64.zip
           asset_content_type: application/zip
 
@@ -71,6 +71,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./out/make/arm64/BentoNews.zip
+          asset_path: ./out/make/zip/darwin/arm64/BentoNews-darwin-arm64-${{github.event.inputs.version}}.zip
           asset_name: BentoNews-arm64.zip
           asset_content_type: application/zip
