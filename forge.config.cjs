@@ -28,6 +28,7 @@ module.exports = {
           name: "Bento-News",
         },
         prerelease: true,
+        draft: false,
       },
     },
   ],
