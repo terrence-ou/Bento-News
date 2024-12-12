@@ -24,7 +24,9 @@ module.exports = {
           owner: "terrence-ou",
           name: "Bento-News",
         },
-        prerelease: true,
+        prerelease: false,
+        draft: true,
+        force: false,
       },
     },
   ],
@@ -32,15 +34,12 @@ module.exports = {
     {
       name: "@electron-forge/maker-zip",
       config: {
-        name: "BentoNews",
         icon: "resources/icon",
       },
-      platforms: ["darwin"],
     },
     {
       name: "@electron-forge/maker-dmg",
       config: {
-        name: "BentoNews",
         icon: "resources/icon.icns",
       },
     },

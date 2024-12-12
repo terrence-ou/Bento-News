@@ -22,13 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Get package version
-        id: version
-        run: |
-          VERSION=$(node -p -e "require('./package.json').version")
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-
       - name: Decode Signing Certificate
         run: |
           echo "${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}" | base64 --decode > certificate.p12
@@ -41,69 +34,20 @@ jobs:
           APPLE_DEVELOPER_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}
           CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
 
-      - name: Build and Notarize
-        run: npm run make -- --arch ${{ matrix.arch }}
+      # - name: Build and Notarize
+      #   run: npm run make
+      #   env:
+      #     VITE_APPLE_ID: ${{ secrets.VITE_APPLE_ID }}
+      #     VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
+      #     VITE_TEAM_ID: ${{ secrets.VITE_TEAM_ID }}
+
+      # - name: List out directory contents
+      #   run: ls -la out
+
+      - name: Publish app
         env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           VITE_APPLE_ID: ${{ secrets.VITE_APPLE_ID }}
           VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
           VITE_TEAM_ID: ${{ secrets.VITE_TEAM_ID }}
-
-      - name: Check Release Status
-        id: check_release
-        uses: actions/github-script@v7
-        with:
-          script: |
-            try {
-              const { data: releases } = await github.rest.repos.listReleases({
-                owner: context.repo.owner,
-                repo: context.repo.repo
-              });
-              const release = releases.find(r => r.tag_name === `v${process.env.VERSION}`);
-              if (release) {
-                core.exportVariable('RELEASE_EXISTS', 'true');
-                core.exportVariable('UPLOAD_URL', release.upload_url);
-              } else {
-                core.exportVariable('RELEASE_EXISTS', 'false');
-              }
-            } catch (error) {
-              if (error.status !== 404) {
-                throw error;
-              }
-              core.exportVariable('RELEASE_EXISTS', 'false');
-            }
-
-      - name: Create Release
-        id: create_release
-        if: env.RELEASE_EXISTS == 'false'
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          tag_name: v${{ env.VERSION }}
-          release_name: v${{ env.VERSION }}
-          draft: false
-          prerelease: true
-
-      - name: Set Upload URL from New Release
-        if: env.RELEASE_EXISTS == 'false'
-        run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
-
-      - name: Upload Zip Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: ./out/make/zip/darwin/${{ matrix.arch }}/BentoNews-darwin-${{ matrix.arch }}-${{ env.VERSION }}.zip
-          asset_name: BentoNews-${{ matrix.arch }}.zip
-          asset_content_type: application/zip
-
-      - name: Upload dmg Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: ./out/make/BentoNews.dmg
-          asset_name: BentoNews-${{ matrix.arch }}.dmg
-          asset_content_type: application/x-apple-diskimage
+        run: npm run publish -- --arch ${{ matrix.arch }}
