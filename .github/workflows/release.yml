@@ -4,30 +4,38 @@ on:
 
 jobs:
   build:
+    runs-on: macos-latest
     strategy:
       matrix:
-        os: [macos-latest]
         arch: [x64, arm64]
-    runs-on: ${{ matrix.os }}
+
     steps:
-      - name: Github checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Use Node.js
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
+          cache: "npm"
 
-      - name: Install Depencies
-        run: npm install
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get package version
+        id: version
+        run: |
+          VERSION=$(node -p -e "require('./package.json').version")
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Decode Signing Certificate
         run: |
-          echo $APPLE_DEVELOPER_CERTIFICATE | base64 --decode > certificate.p12
+          echo "${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}" | base64 --decode > certificate.p12
           security create-keychain -p "" build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p "" build.keychain
-          security import certificate.p12 -k build.keychain -P $CERTIFICATE_PASSWORD -T /usr/bin/codesign
+          security import certificate.p12 -k build.keychain -P "${{ secrets.CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
         env:
           APPLE_DEVELOPER_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}
@@ -40,71 +48,76 @@ jobs:
           VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
           VITE_TEAM_ID: ${{ secrets.VITE_TEAM_ID }}
 
-      - name: Get package version
-        id: get_version
-        run: echo "VERSION=$(node -p -e "require('./package.json').version")" >> $GITHUB_ENV
-
-      - name: Check if Release Exists
+      - name: Check Release Status
         id: check_release
-        uses: actions/github-script@v6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        uses: actions/github-script@v7
         with:
           script: |
             try {
-              const { data: releases } = await github.rest.repos.listReleases({
-                owner: context.repo.owner,
-                repo: context.repo.repo
-              });
-              const release = releases.find(release => release.tag_name === `v${process.env.VERSION}`);
-              if (release) {
-                await core.exportVariable('RELEASE_EXISTS', 'true');
-                await core.exportVariable('UPLOAD_URL', release.upload_url);
-              } else {
-                await core.exportVariable('RELEASE_EXISTS', 'false');
+              // Check if tag exists
+              try {
+                const { data: tag } = await github.rest.git.getRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `tags/v${process.env.VERSION}`
+                });
+                if (tag) {
+                  // Tag exists, now check for release
+                  const { data: releases } = await github.rest.repos.listReleases({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo
+                  });
+                  console.log("releases:",releases);
+                  const release = releases.find(r => r.tag_name === `v${process.env.VERSION}`);
+                  if (release) {
+                    core.setOutput('exists', 'true');
+                    core.setOutput('upload_url', release.upload_url);
+                    return;
+                  }
+                }
+              } catch (error) {
+                if (error.status !== 404) {
+                  throw error;
+                }
               }
+              
+              // If we get here, either tag or release doesn't exist
+              core.setOutput('exists', 'false');
+              core.setOutput('upload_url', '');
             } catch (error) {
-              core.setFailed(`Failed to check release: ${error.message}`);
+              core.setFailed(`Failed to check release/tag: ${error.message}`);
+              throw error;
             }
 
       - name: Create Release
         id: create_release
-        if: env.RELEASE_EXISTS == 'false'
+        if: steps.check_release.outputs.result.exists == 'false'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          tag_name: v${{ env.VERSION }}
-          release_name: v${{ env.VERSION }}
+          tag_name: v${{ steps.version.outputs.version }}
+          release_name: v${{ steps.version.outputs.version }}
           draft: true
           prerelease: true
 
       - name: Set Upload URL
+        id: set_upload_url
         run: |
-          if [ "${{ env.RELEASE_EXISTS }}" == "true" ]; then
-            echo "UPLOAD_URL=${{ env.UPLOAD_URL }}" >> $GITHUB_ENV
+          UPLOAD_URL=""
+          if [[ "${{ fromJSON(steps.check_release.outputs.result).exists }}" == "true" ]]; then
+            UPLOAD_URL="${{ fromJSON(steps.check_release.outputs.result).upload_url }}"
           else
-            echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
+            UPLOAD_URL="${{ steps.create_release.outputs.upload_url }}"
           fi
+          echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
 
-      - name: Upload x64 Zip Release Asset
-        if: matrix.arch == 'x64'
+      - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: ./out/make/zip/darwin/x64/BentoNews-darwin-x64-${{ env.VERSION }}.zip
-          asset_name: BentoNews-x64.zip
-          asset_content_type: application/zip
-
-      - name: Upload arm64 Zip Release Asset
-        if: matrix.arch == 'arm64'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: ./out/make/zip/darwin/arm64/BentoNews-darwin-arm64-${{ env.VERSION }}.zip
-          asset_name: BentoNews-arm64.zip
+          asset_path: ./out/make/zip/darwin/${{ matrix.arch }}/BentoNews-darwin-${{ matrix.arch }}-${{ env.VERSION }}.zip
+          asset_name: BentoNews-${{ matrix.arch }}.zip
           asset_content_type: application/zip
