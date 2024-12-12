@@ -44,7 +44,46 @@ jobs:
 
       - name: Get package version
         id: get_version
-        run: echo "VERSION=$(node -p -e "require('./package.json').version")" >> $GITHUB_ENV && export VERSION=$(node -p -e "require('./package.json').version")
+        run: echo "VERSION=$(node -p -e "require('./package.json').version")" >> $GITHUB_ENV
+
+      - name: Check if Release Exists
+        id: check_release
+        uses: actions/github-script@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          script: |
+            const { data: releases } = await github.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const release = releases.find(release => release.tag_name === `v${process.env.VERSION}`);
+            if (release) {
+              core.setOutput('exists', 'true');
+              core.setOutput('upload_url', release.upload_url);
+            } else {
+              core.setOutput('exists', 'false');
+            }
+
+      - name: Create Release
+        id: create_release
+        if: steps.check_release.outputs.exists == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          tag_name: v${{ env.VERSION }}
+          release_name: v${{ env.VERSION }}
+          draft: true
+          prerelease: true
+
+      - name: Set Upload URL
+        if: steps.check_release.outputs.exists == 'false'
+        run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
+
+      - name: Set Upload URL from Existing Release
+        if: steps.check_release.outputs.exists == 'true'
+        run: echo "UPLOAD_URL=${{ steps.check_release.outputs.upload_url }}" >> $GITHUB_ENV
 
       - name: Upload x64 Zip Release Asset
         if: matrix.arch == 'x64'
@@ -52,7 +91,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ env.UPLOAD_URL }}
           asset_path: ./out/make/zip/darwin/x64/BentoNews-darwin-x64-${{ env.VERSION }}.zip
           asset_name: BentoNews-x64.zip
           asset_content_type: application/zip
@@ -63,7 +102,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ env.UPLOAD_URL }}
           asset_path: ./out/make/zip/darwin/arm64/BentoNews-darwin-arm64-${{ env.VERSION }}.zip
           asset_name: BentoNews-arm64.zip
           asset_content_type: application/zip
