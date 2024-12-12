@@ -53,16 +53,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           script: |
-            const { data: releases } = await github.repos.listReleases({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
-            const release = releases.find(release => release.tag_name === `v${process.env.VERSION}`);
-            if (release) {
-              core.setOutput('exists', 'true');
-              core.setOutput('upload_url', release.upload_url);
-            } else {
-              core.setOutput('exists', 'false');
+            try {
+              const { data: releases } = await github.rest.repos.listReleases({
+                owner: context.repo.owner,
+                repo: context.repo.repo
+              });
+              const release = releases.find(release => release.tag_name === `v${process.env.VERSION}`);
+              if (release) {
+                core.setOutput('exists', 'true');
+                core.setOutput('upload_url', release.upload_url);
+              } else {
+                core.setOutput('exists', 'false');
+              }
+            } catch (error) {
+              core.setFailed(`Failed to check release: ${error.message}`);
             }
 
       - name: Create Release
