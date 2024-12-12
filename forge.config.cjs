@@ -32,6 +32,7 @@ module.exports = {
     {
       name: "@electron-forge/maker-zip",
       config: {
+        name: "BentoNews",
         icon: "resources/icon",
       },
       platforms: ["darwin"],
@@ -39,7 +40,7 @@ module.exports = {
     {
       name: "@electron-forge/maker-dmg",
       config: {
-        name: "Bento News Installer",
+        name: "BentoNews",
         icon: "resources/icon.icns",
       },
     },
