@@ -1,7 +1,7 @@
 {
   "name": "bento-news",
   "productName": "BentoNews",
-  "version": "0.2.2",
+  "version": "0.2.1",
   "description": "An AI-driven News App, 1000x faster than Google News",
   "main": "./dist/main/index.js",
   "author": "Terrence Ou",
