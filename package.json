@@ -14,7 +14,7 @@
     "dev": "electron-vite dev --outDir=dist",
     "build": "npm run typecheck && electron-vite build",
     "make": "electron-vite build --outDir=dist && electron-forge make",
-    "publish": "electron-forge publish",
+    "publish": "electron-vite build --outDir=dist && electron-forge publish",
     "test:unit": "vitest",
     "test": "npm run test:unit",
     "coverage": "vitest run --coverage"

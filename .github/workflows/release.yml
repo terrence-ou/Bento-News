@@ -34,15 +34,15 @@ jobs:
           APPLE_DEVELOPER_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}
           CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
 
-      - name: Build and Notarize
-        run: npm run make
-        env:
-          VITE_APPLE_ID: ${{ secrets.VITE_APPLE_ID }}
-          VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
-          VITE_TEAM_ID: ${{ secrets.VITE_TEAM_ID }}
+      # - name: Build and Notarize
+      #   run: npm run make
+      #   env:
+      #     VITE_APPLE_ID: ${{ secrets.VITE_APPLE_ID }}
+      #     VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
+      #     VITE_TEAM_ID: ${{ secrets.VITE_TEAM_ID }}
 
-      - name: List out directory contents
-        run: ls -la out
+      # - name: List out directory contents
+      #   run: ls -la out
 
       - name: Publish app
         env:
