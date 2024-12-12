@@ -62,7 +62,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo
               });
-              console.log(releases);
               const release = releases.find(r => r.tag_name === tagName);
               console.log(release);
               if (release) {
@@ -91,7 +90,7 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.version }}
           release_name: v${{ steps.version.outputs.version }}
-          draft: true
+          draft: false
           prerelease: true
 
       # - name: Set Upload URL
