@@ -1,4 +1,7 @@
 require("dotenv").config();
+const os = require("os");
+// const { version } = require("./package.json");
+const architecture = os.arch();
 
 module.exports = {
   packagerConfig: {
@@ -32,7 +35,7 @@ module.exports = {
     {
       name: "@electron-forge/maker-zip",
       config: {
-        name: "BentoNews",
+        name: `BentoNews-${architecture}`,
         icon: "resources/icon",
       },
       platforms: ["darwin"],
@@ -40,7 +43,7 @@ module.exports = {
     {
       name: "@electron-forge/maker-dmg",
       config: {
-        name: "BentoNews",
+        name: `BentoNews-${architecture}`,
         icon: "resources/icon.icns",
       },
     },
