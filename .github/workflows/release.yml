@@ -7,7 +7,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        arch: [x64]
+        arch: [x64, arm64]
 
     steps:
       - name: Checkout repository
@@ -50,4 +50,4 @@ jobs:
           VITE_APPLE_ID: ${{ secrets.VITE_APPLE_ID }}
           VITE_APPLE_PASSWORD: ${{ secrets.VITE_APPLE_PASSWORD }}
           VITE_TEAM_ID: ${{ secrets.VITE_TEAM_ID }}
-        run: npm run publish
+        run: npm run publish -- --arch ${{ matrix.arch }}
