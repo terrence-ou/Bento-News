@@ -22,19 +22,19 @@
 
 ## Features
 
-- Curated Daily Headlines \
+- **Curated Daily Headlines** \
   We curate daily headlines in politics, economy, technology, science, and more to keep you informed about the fields you're interested in.
 
-- Instant Keyword Search \
+- **Instant Keyword Search** \
   Search for news by keywords, dates, and fields, and get results instantly. Bento News supports searches in 10+ languages and across 3000 resources.
 
-- Local News Management
+- **Local News Management** \
   Mark, save, and organize news as you prefer to maximize its value. All file management happens locally to ensure your privacy.
 
-- AI-Assisted Analysis
+- **AI-Assisted Analysis** \
   Use AI tools to summarize collected news, predict trends, and provide suggestions on related topics to help you gain broader and deeper insights.
 
-- Cover Image Generation
+- **Cover Image Generation** \
   Generate cover images based on your selected topics in multiple styles for your posts or essays to make your work more attractive.
 
 <image src="./resources/features.jpg" width="100%"/>
