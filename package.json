@@ -1,11 +1,15 @@
 {
   "name": "bento-news",
   "productName": "BentoNews",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "An AI-driven News App, 1000x faster than Google News",
   "main": "./dist/main/index.js",
   "author": "Terrence Ou",
   "homepage": "https://github.com/terrence-ou/Bento-News",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/terrence-ou/Bento-News.git"
+  },
   "scripts": {
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
@@ -34,7 +38,8 @@
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.28.0",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "update-electron-app": "^3.1.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.6.0",
