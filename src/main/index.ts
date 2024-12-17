@@ -7,6 +7,7 @@ import {
 } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import { updateElectronApp } from "update-electron-app";
 
 import iconPath from "../../resources/icon.png?asset";
 
@@ -50,6 +51,8 @@ import {
   LoadFolderCoverImgFn,
   GetHuggingFaceResponseFn,
 } from "@shared/types";
+
+updateElectronApp();
 
 function createWindow(): void {
   // Create the browser window.
